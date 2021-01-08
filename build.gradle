@@ -12,7 +12,7 @@ buildscript {
         // in the individual module build.gradle files
     }
 }
-
+version "0.0.1"
 allprojects {
     repositories {
         google()
