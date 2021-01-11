@@ -8,12 +8,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DayPlanned">
-        <activity android:name=".SetPeriodActivity"></activity>
+
+        <service android:name=".services.NotificationService"
+            android:enabled="true"
+            android:exported="true"
+            />
+
+        <activity android:name=".SetPeriodActivity" />
 
         <receiver
             android:name=".services.MyReceiver"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true" >
+            <intent-filter>
+                <action android:name="restartservice" />
+            </intent-filter>
+        </receiver>
 
         <activity android:name=".MainActivity">
             <intent-filter>

@@ -46,7 +46,8 @@ class AddScheduleActivity : AppCompatActivity() {
 
                 }
             }else{
-                success = scheduleController!!.updateSchedule(schedule)
+                scheduleController!!.updateSchedule(schedule)
+                success = schedule.id
             }
             if (success>0) {
                 finish()

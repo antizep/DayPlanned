@@ -1,49 +1,87 @@
 package com.example.dayplanned.services
 
 import android.R
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
+import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.icu.util.Calendar
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
+import com.example.dayplanned.MainActivity
+import com.example.dayplanned.controller.AddScheduleController
+import com.example.dayplanned.model.Schedule
 
 
 class MyReceiver : BroadcastReceiver() {
+    var scheduleController: AddScheduleController? = null
 
     override fun onReceive(context: Context, intent: Intent) {
+        scheduleController = AddScheduleController(context)
 
-        val notificationManager = getSystemService(context, NotificationManager::class.java)
-        val CHANNEL_ID = "my_channel_01"
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name: CharSequence = "my_channel"
-            val Description = "This is my channel"
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val mChannel = NotificationChannel(CHANNEL_ID, name, importance)
-            mChannel.description = Description
-            mChannel.enableLights(true)
-            mChannel.lightColor = Color.RED
-            mChannel.enableVibration(true)
-            mChannel.vibrationPattern = longArrayOf(1500,50,1500)
-            mChannel.setShowBadge(false)
-            notificationManager!!.createNotificationChannel(mChannel)
+
+        val notificationService = Intent(context, NotificationService::class.java)
+        context.startForegroundService(notificationService)
+
+    }
+
+    fun addAlarmManager(schedule: Schedule, applicationContext: Context) {
+        val alarmManager: AlarmManager =
+            applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val myIntent = Intent(applicationContext, MyReceiver::class.java)
+        myIntent.putExtra("header", schedule.header);
+        myIntent.putExtra("body", schedule.description);
+        val pendingIntentpi = PendingIntent.getBroadcast(applicationContext, 0, myIntent, 0);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, schedule.time!!.timeInMillis, pendingIntentpi)
+    }
+
+    fun minSchedule(unsorted: MutableList<Schedule>): Schedule? {
+
+        var schedule: Schedule?
+        var ph = -1
+        var pm = -1
+        schedule = null;
+        unsorted.forEach {
+            if (schedule == null) {
+                schedule = it;
+                ph = it.getHour();
+                pm = it.getMinute()
+            } else {
+                if (it.getHour() < ph) {
+                    schedule = it;
+                    ph = it.getHour();
+                    pm = it.getMinute();
+                } else if (it.getHour() == ph && it.getMinute() < pm) {
+                    schedule = it;
+                    ph = it.getHour();
+                    pm = it.getMinute();
+                }
+            }
         }
 
-        val builder = NotificationCompat.Builder(context, CHANNEL_ID).setAutoCancel(true)
-            .setSmallIcon(R.mipmap.sym_def_app_icon)
-            .setContentTitle(".!.")
-            .setContentText("ЯБААААААААААААТЬ!!!!")
+        return schedule;
+    }
 
-        val notification: Notification = builder.build()
+    fun excludeNegative(unsorted: MutableList<Schedule>): MutableList<Schedule> {
+        val mutableList: MutableList<Schedule> = mutableListOf();
+        val calendar = Calendar.getInstance();
 
-        if (notificationManager != null) {
-            notificationManager.notify(1, notification)
+        unsorted.forEach {
+
+            var i = it.getHour();
+            if (i > calendar.get(Calendar.HOUR_OF_DAY)) {
+                mutableList.add(it);
+            } else if (i == calendar.get(Calendar.HOUR_OF_DAY)
+                && it.getMinute() > calendar.get(Calendar.MINUTE)
+            ) {
+                mutableList.add(it);
+            }
         }
-        Log.d("MyReceiver", "AHTUNG")
+        return mutableList
     }
 }
+

@@ -1,8 +1,8 @@
 package com.example.dayplanned
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
@@ -11,15 +11,30 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.JobIntentService.enqueueWork
 import com.example.dayplanned.controller.AddScheduleController
 import com.example.dayplanned.databinding.ActivityMainBinding
 import com.example.dayplanned.databinding.SheduleLayoutBinding
+import com.example.dayplanned.model.Schedule
 import com.example.dayplanned.services.MyReceiver
+import com.example.dayplanned.services.NotificationService
 
 class MainActivity : AppCompatActivity() {
     var scheduleController: AddScheduleController? = null
     private lateinit var activityMainBinding: ActivityMainBinding
     private lateinit var scheduleLayoutPane: SheduleLayoutBinding;
+    companion object {
+        private var calAlert: String? = null;
+    }
+
+    override fun onDestroy() {
+//        val broadcastIntent = Intent()
+//        broadcastIntent.action = "restartservice"
+//        broadcastIntent.setClass(this, MyReceiver::class.java)
+//        this.sendBroadcast(broadcastIntent)
+//        Log.d("MyRec","closed")
+        super.onDestroy()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,52 +45,140 @@ class MainActivity : AppCompatActivity() {
 
         loadSchedule();
 
+        val broadcastIntent = Intent()
+        broadcastIntent.action = "restartservice"
+        broadcastIntent.setClass(this, NotificationService::class.java)
+        startForegroundService(broadcastIntent)
+
         activityMainBinding.createNewButton.setOnClickListener {
             startActivity(Intent(this, AddScheduleActivity::class.java));
         }
-        //todo вынести в отдельную функцию уведомления
 
     }
 
-    fun addAlarmManager(calendar: Calendar){
+
+    fun addAlarmManager(schedule: Schedule) {
+        if(schedule.time == null){
+            return
+        }
+        if(calAlert != null && schedule.getTxtTime().equals(calAlert)){
+            return
+        }
+        calAlert = schedule.getTxtTime()
+        Log.d("ALERT","old:"+ calAlert+",new:"+schedule.getTxtTime())
         val alarmManager: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val myIntent = Intent(applicationContext, MyReceiver::class.java)
-        myIntent.putExtra("one_time", true);
-        val pendingIntentpi= PendingIntent.getBroadcast(applicationContext,0, myIntent,0);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntentpi)
+
+        myIntent.action = "restartservice"
+        val pendingIntentpi = PendingIntent.getBroadcast(applicationContext, 0, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        Toast.makeText(this, "notification added:"+schedule.getTxtTime(), Toast.LENGTH_LONG).show()
+
+        alarmManager.set(AlarmManager.RTC_WAKEUP, schedule.time!!.timeInMillis, pendingIntentpi)
     }
-    fun loadSchedule(){
+
+    fun sortByThisTime(unsorted: MutableList<Schedule>): MutableList<Schedule> {
+
+        val positive: MutableList<Schedule> = excludeNegative(unsorted);
+        unsorted.removeAll(positive);
+        val sorted = mutableListOf<Schedule>()
+        while (positive.size>0){
+            val min:Schedule? = minSchedule(positive);
+
+            sorted.add(min!!)
+            positive.remove(min)
+        }
+        while (unsorted.size>0){
+            val min:Schedule? = minSchedule(unsorted);
+
+            sorted.add(min!!)
+            min.time!!.add(Calendar.DAY_OF_YEAR,1);
+            unsorted.remove(min)
+        }
+        if(!sorted.isEmpty()) {
+            //addAlarmManager(sorted.get(0))
+        }
+        return sorted
+    }
+
+    fun minSchedule(unsorted: MutableList<Schedule>): Schedule? {
+
+        var schedule: Schedule?
+        var ph = -1
+        var pm = -1
+        schedule = null;
+        unsorted.forEach {
+            if (schedule == null) {
+                schedule = it;
+                ph = it.getHour();
+                pm = it.getMinute()
+            } else {
+                if (it.getHour() < ph) {
+                    schedule = it;
+                    ph = it.getHour();
+                    pm = it.getMinute();
+                }else if(it.getHour() == ph && it.getMinute()< pm){
+                    schedule = it;
+                    ph = it.getHour();
+                    pm = it.getMinute();
+                }
+            }
+        }
+
+        return schedule;
+    }
+
+    fun excludeNegative(unsorted: MutableList<Schedule>): MutableList<Schedule> {
+        val mutableList: MutableList<Schedule> = mutableListOf();
+        val calendar = Calendar.getInstance();
+
+        unsorted.forEach {
+
+            var i = it.getHour();
+            if (i > calendar.get(Calendar.HOUR_OF_DAY)) {
+                mutableList.add(it);
+            } else if (i == calendar.get(Calendar.HOUR_OF_DAY)
+                && it.getMinute() > calendar.get(Calendar.MINUTE)
+            ) {
+                mutableList.add(it);
+            }
+        }
+        return mutableList
+    }
+
+    @SuppressLint("SetTextI18n")
+    fun loadSchedule() {
         val scheduleLayout = activityMainBinding.scheduleLayout
         scheduleLayout.removeAllViews()
-        for (schedule in scheduleController!!.getSchedule()) {
+        val sorted = sortByThisTime(scheduleController!!.getSchedule())
+        for (schedule in sorted) {
+
             scheduleLayoutPane = SheduleLayoutBinding.inflate(layoutInflater);
             val slp = scheduleLayoutPane.root
             scheduleLayout.addView(slp);
             scheduleLayoutPane.scheduleBody.setText(schedule.description)
             scheduleLayoutPane.scheduleHeader.setText(schedule.header);
-            scheduleLayoutPane.time.setText(schedule.time.toString())
+            val t = schedule.getTxtTime();
+            scheduleLayoutPane.time.setText(t)
+
             scheduleLayoutPane.deleteScheduleButton.setOnClickListener {
-                scheduleLayout.removeView( it.parent as View)
+                scheduleLayout.removeView(it.parent as View)
                 scheduleController!!.delSchedule(schedule.id)
             }
             scheduleLayoutPane.editScheduleButton.setOnClickListener {
-                val intent = Intent(this,AddScheduleActivity::class.java)
-                intent.putExtra("id",schedule.id)
-                intent.putExtra("header",schedule.header)
-                intent.putExtra("description",schedule.description)
-                intent.putExtra("time",schedule.time.toString())
+                val intent = Intent(this, AddScheduleActivity::class.java)
+                intent.putExtra("id", schedule.id)
+                intent.putExtra("header", schedule.header)
+                intent.putExtra("description", schedule.description)
+                intent.putExtra("time", schedule.getTxtTime())
                 startActivity(intent)
             }
             Log.d("MainActivity", schedule.toString())
         };
     }
 
-    fun alarmManager(){
-    }
-
     override fun onResume() {
         loadSchedule()
-        Log.d("MAIN","resume");
+        Log.d("MAIN", "resume");
         super.onResume()
     }
 }

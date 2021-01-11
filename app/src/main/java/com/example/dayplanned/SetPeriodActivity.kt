@@ -24,6 +24,7 @@ class SetPeriodActivity : AppCompatActivity() {
         val schedule = Schedule(id,null,null)
         setPeriodBinding = ActivitySetPeriodBinding.inflate(layoutInflater)
         setContentView(setPeriodBinding.root)
+        setPeriodBinding.setTimePicker.setIs24HourView(true)
         if(!t.isNullOrBlank() && !t.equals("null")){
             val time = Time.valueOf(t);
             setPeriodBinding.setTimePicker.hour = time.hours
@@ -31,13 +32,14 @@ class SetPeriodActivity : AppCompatActivity() {
         }
 
         setPeriodBinding.comleteSetPeriod.setOnClickListener {
-
+            Log.d(SetPeriodActivity::class.java.name,"h"+setPeriodBinding.setTimePicker.hour+" m:"+setPeriodBinding.setTimePicker.minute)
             var calendar = Calendar.getInstance()
-            calendar.set(Calendar.HOUR,setPeriodBinding.setTimePicker.hour)
+            calendar.set(Calendar.HOUR_OF_DAY,setPeriodBinding.setTimePicker.hour)
             calendar.set(Calendar.MINUTE,setPeriodBinding.setTimePicker.minute)
             calendar.set(Calendar.SECOND,0)
-            schedule.time = Time(calendar.timeInMillis)
+            schedule.time = calendar;
             scheduleController!!.setTime(schedule)
+            Log.d(SetPeriodActivity::class.java.name,"s:"+schedule)
             Log.d(SetPeriodActivity::class.java.name,"t:"+schedule.time)
 
             val intent = Intent(this,MainActivity::class.java)
