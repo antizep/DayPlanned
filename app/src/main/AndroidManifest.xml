@@ -17,11 +17,9 @@
         <activity android:name=".SetPeriodActivity" />
 
         <receiver
-            android:name=".services.MyReceiver"
-            android:enabled="true"
-            android:exported="true" >
+            android:name=".services.MyReceiver">
             <intent-filter>
-                <action android:name="restartservice" />
+                <action android:name="android.intent.action.xxx" />
             </intent-filter>
         </receiver>
 

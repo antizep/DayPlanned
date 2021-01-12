@@ -1,76 +1,44 @@
 package com.example.dayplanned.services
+import NotificationUtils
+import NotificationUtils.Companion.CHANNEL_ID
+import NotificationUtils.Companion.CHANNEL_NAME
 import android.R
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.Service
+import android.app.*
+import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.media.RingtoneManager
 import android.os.*
 import android.os.Process.THREAD_PRIORITY_BACKGROUND
+import android.provider.Telephony
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import com.example.dayplanned.services.MyReceiver.Companion.DESCRIPTION
+import com.example.dayplanned.services.MyReceiver.Companion.HEADER
 
 class NotificationService : Service() {
 
     private var serviceLooper: Looper? = null
-    private var serviceHandler: ServiceHandler? = null
     private var context = this;
-    // Handler that receives messages from the thread
-    private inner class ServiceHandler(looper: Looper) : Handler(looper) {
 
-        override fun handleMessage(msg: Message) {
-            // Normally we would do some work here, like download a file.
-            // For our sample, we just sleep for 5 seconds.
-            try {
-                while(true){
-                    val notificationManager =
-                        ContextCompat.getSystemService(context, NotificationManager::class.java)
-                    val CHANNEL_ID = "my_channel_01"
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        val name: CharSequence = "my_channel"
-                        val Description = "This is my channel"
-                        val importance = NotificationManager.IMPORTANCE_HIGH
-                        val mChannel = NotificationChannel(CHANNEL_ID, name, importance)
-                        mChannel.description = Description
-                        mChannel.enableLights(true)
-                        mChannel.lightColor = Color.RED
-                        mChannel.enableVibration(true)
-                        mChannel.vibrationPattern = longArrayOf(100,50,100)
-                        mChannel.setShowBadge(false)
-                        notificationManager!!.createNotificationChannel(mChannel)
-                    }
+    private lateinit var nManager :NotificationManager
 
-                    val builder = NotificationCompat.Builder(context, CHANNEL_ID).setAutoCancel(true)
-                        .setSmallIcon(R.mipmap.sym_def_app_icon)
-                        .setContentTitle(".!.")
-                        .setContentText("ЯБААААААААААААТЬ!!!!")
 
-                    val notification: Notification = builder.build()
-
-                    if (notificationManager != null) {
-                        notificationManager.notify(1, notification)
-                    }
-                    Log.d("AHD","LOOP")
-                    Thread.sleep(10000)
-
-                }
-
-            } catch (e: InterruptedException) {
-                // Restore interrupt status.
-                Thread.currentThread().interrupt()
-            }
-
-            // Stop the service using the startId, so that we don't stop
-            // the service in the middle of handling another job
-            //stopSelf(msg.arg1)
+    companion object{
+        val myChannel = NotificationChannel(CHANNEL_ID,
+            CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT).apply {
+            enableLights(true)
+            enableVibration(true)
+            lightColor = Color.GREEN
+            lockscreenVisibility = Notification.VISIBILITY_PRIVATE
         }
-    }
 
+    }
     override fun onCreate() {
-        // Start up the thread running the service.  Note that we create a
+        /*// Start up the thread running the service.  Note that we create a
         // separate thread because the service normally runs in the process's
         // main thread, which we don't want to block.  We also make it
         // background priority so CPU-intensive work will not disrupt our UI.
@@ -80,10 +48,40 @@ class NotificationService : Service() {
             // Get the HandlerThread's Looper and use it for our Handler
             serviceLooper = looper
             serviceHandler = ServiceHandler(looper)
-        }
+        }*/
+        val context = this as Context
+        nManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        nManager.createNotificationChannel(myChannel)
     }
+        override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+            val defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(this)
+
+
+            val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+
+            val defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
+            val mNotificationId: Int = 1000
+
+            val mNotification = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Notification.Builder(context, CHANNEL_ID)
+            } else {
+                Notification.Builder(context)
+            }.apply {
+                setContentIntent(pendingIntent)
+                setSmallIcon(R.mipmap.sym_def_app_icon)
+                setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.sym_def_app_icon))
+                setChannelId(CHANNEL_ID)
+                setContentTitle(intent.getStringExtra(HEADER))
+                setStyle(Notification.BigTextStyle().bigText(intent.getStringExtra(DESCRIPTION)))
+                setContentText(intent.getStringExtra(DESCRIPTION))
+            }.build()
+            nManager.notify(mNotificationId, mNotification)
+            return Service.START_STICKY
+        }
+
+/*    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show()
 
         // For each start request, send a message to start a job and deliver the
@@ -96,7 +94,7 @@ class NotificationService : Service() {
         // If we get killed, after returning from here, restart
         return START_STICKY
     }
-
+*/
     override fun onBind(intent: Intent): IBinder? {
         // We don't provide binding, so return null
         return null

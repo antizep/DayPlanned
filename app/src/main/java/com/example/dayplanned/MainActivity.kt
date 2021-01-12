@@ -17,6 +17,8 @@ import com.example.dayplanned.databinding.ActivityMainBinding
 import com.example.dayplanned.databinding.SheduleLayoutBinding
 import com.example.dayplanned.model.Schedule
 import com.example.dayplanned.services.MyReceiver
+import com.example.dayplanned.services.MyReceiver.Companion.DESCRIPTION
+import com.example.dayplanned.services.MyReceiver.Companion.HEADER
 import com.example.dayplanned.services.NotificationService
 
 class MainActivity : AppCompatActivity() {
@@ -45,10 +47,10 @@ class MainActivity : AppCompatActivity() {
 
         loadSchedule();
 
-        val broadcastIntent = Intent()
-        broadcastIntent.action = "restartservice"
-        broadcastIntent.setClass(this, NotificationService::class.java)
-        startForegroundService(broadcastIntent)
+//        val broadcastIntent = Intent()
+//        broadcastIntent.action = "restartservice"
+//        broadcastIntent.setClass(this, NotificationService::class.java)
+//        startForegroundService(broadcastIntent)
 
         activityMainBinding.createNewButton.setOnClickListener {
             startActivity(Intent(this, AddScheduleActivity::class.java));
@@ -68,8 +70,10 @@ class MainActivity : AppCompatActivity() {
         Log.d("ALERT","old:"+ calAlert+",new:"+schedule.getTxtTime())
         val alarmManager: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val myIntent = Intent(applicationContext, MyReceiver::class.java)
-
         myIntent.action = "restartservice"
+        myIntent.putExtra(HEADER,schedule.header)
+        myIntent.putExtra(DESCRIPTION,schedule.description)
+
         val pendingIntentpi = PendingIntent.getBroadcast(applicationContext, 0, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         Toast.makeText(this, "notification added:"+schedule.getTxtTime(), Toast.LENGTH_LONG).show()
 
@@ -95,7 +99,7 @@ class MainActivity : AppCompatActivity() {
             unsorted.remove(min)
         }
         if(!sorted.isEmpty()) {
-            //addAlarmManager(sorted.get(0))
+            addAlarmManager(sorted.get(0))
         }
         return sorted
     }

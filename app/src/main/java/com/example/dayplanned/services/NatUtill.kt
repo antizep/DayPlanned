@@ -20,17 +20,19 @@ class NotificationUtils(base: Context) : ContextWrapper(base) {
     private fun createChannels() {
         val myChannel = NotificationChannel(CHANNEL_ID,
             CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT).apply {
+            description = "AHTUNG NOTIFICATION"
             enableLights(true)
+            lightColor = Color.RED
             enableVibration(true)
-            lightColor = Color.GREEN
-            lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+            vibrationPattern = longArrayOf(500,50,500)
+            setShowBadge(false)
         }
 
         nManager.createNotificationChannel(myChannel)
     }
 
     companion object {
-        const val CHANNEL_ID = "my.app.CHANNEL_ID"
-        const val CHANNEL_NAME = "my.app.Notification"
+        const val CHANNEL_ID = "schedule"
+        const val CHANNEL_NAME = "DailyPlannedNotification"
     }
 }
