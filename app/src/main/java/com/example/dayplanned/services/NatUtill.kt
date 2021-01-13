@@ -19,11 +19,12 @@ class NotificationUtils(base: Context) : ContextWrapper(base) {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createChannels() {
         val myChannel = NotificationChannel(CHANNEL_ID,
-            CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT).apply {
+            CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH).apply {
             description = "AHTUNG NOTIFICATION"
             enableLights(true)
             lightColor = Color.RED
             enableVibration(true)
+
             vibrationPattern = longArrayOf(500,50,500)
             setShowBadge(false)
         }

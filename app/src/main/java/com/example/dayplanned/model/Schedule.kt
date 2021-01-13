@@ -18,6 +18,7 @@ data class Schedule(val id:Int, val header: String?, val description: String?){
             return -1;
         }
     }
+
     fun getMinute():Int{
         if(time != null){
             return time!!.get(Calendar.MINUTE)

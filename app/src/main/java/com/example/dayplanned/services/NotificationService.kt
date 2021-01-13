@@ -29,7 +29,7 @@ class NotificationService : Service() {
 
     companion object{
         val myChannel = NotificationChannel(CHANNEL_ID,
-            CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT).apply {
+            CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH).apply {
             enableLights(true)
             enableVibration(true)
             lightColor = Color.GREEN
@@ -77,24 +77,12 @@ class NotificationService : Service() {
                 setStyle(Notification.BigTextStyle().bigText(intent.getStringExtra(DESCRIPTION)))
                 setContentText(intent.getStringExtra(DESCRIPTION))
             }.build()
+            Notification.DEFAULT_VIBRATE
             nManager.notify(mNotificationId, mNotification)
             return Service.START_STICKY
         }
 
-/*    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        Toast.makeText(this, "service starting", Toast.LENGTH_SHORT).show()
 
-        // For each start request, send a message to start a job and deliver the
-        // start ID so we know which request we're stopping when we finish the job
-        serviceHandler?.obtainMessage()?.also { msg ->
-            msg.arg1 = startId
-            serviceHandler?.sendMessage(msg)
-        }
-
-        // If we get killed, after returning from here, restart
-        return START_STICKY
-    }
-*/
     override fun onBind(intent: Intent): IBinder? {
         // We don't provide binding, so return null
         return null

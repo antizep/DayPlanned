@@ -67,10 +67,10 @@ class MainActivity : AppCompatActivity() {
             return
         }
         calAlert = schedule.getTxtTime()
-        Log.d("ALERT","old:"+ calAlert+",new:"+schedule.getTxtTime())
+        Log.d("MyReceiver","old:"+ calAlert+",new:"+ schedule.time!!.time.toString())
         val alarmManager: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val myIntent = Intent(applicationContext, MyReceiver::class.java)
-        myIntent.action = "restartservice"
+        //myIntent.action = "restartservice"
         myIntent.putExtra(HEADER,schedule.header)
         myIntent.putExtra(DESCRIPTION,schedule.description)
 

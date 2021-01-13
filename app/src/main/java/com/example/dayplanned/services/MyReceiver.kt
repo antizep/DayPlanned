@@ -28,23 +28,27 @@ class MyReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         scheduleController = AddScheduleController(context)
         val notificationService = Intent(context, NotificationService::class.java)
-        notificationService.putExtras(intent)
-        context.startForegroundService(notificationService)
         var schedules = scheduleController!!.getSchedule();
         schedules = sortByThisTime(schedules);
-        Log.d("MyReceiver","next schedule"+schedules[0].header+" date:"+schedules[0].time)
+        notificationService.putExtras(intent)
+        context.startForegroundService(notificationService)
+        Log.d("MyReceiver","this notification:"+intent.getStringExtra(HEADER))
+
         addAlarmManager(schedules[0],context)
     }
 
 
 
-    private fun addAlarmManager(schedule: Schedule, applicationContext: Context) {
-        val alarmManager: AlarmManager =
-            applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val myIntent = Intent(applicationContext, MyReceiver::class.java)
-        myIntent.putExtra(HEADER, schedule.header);
-        myIntent.putExtra(DESCRIPTION, schedule.description);
-        val pendingIntentpi = PendingIntent.getBroadcast(applicationContext, 0, myIntent, 0);
+    fun addAlarmManager(schedule: Schedule,context: Context) {
+        if(schedule.time == null){
+            return
+        }
+        val alarmManager: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val myIntent = Intent(context, MyReceiver::class.java)
+        myIntent.putExtra(HEADER,schedule.header)
+        myIntent.putExtra(DESCRIPTION,schedule.description)
+        Log.d("MyReceiver","next schedule:"+schedule.header+" date:"+schedule.time!!.time.toString())
+        val pendingIntentpi = PendingIntent.getBroadcast(context, 0, myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.RTC_WAKEUP, schedule.time!!.timeInMillis, pendingIntentpi)
     }
 
