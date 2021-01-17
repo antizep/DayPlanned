@@ -33,7 +33,7 @@ class NotificationService : Service() {
             enableLights(true)
             enableVibration(true)
             lightColor = Color.GREEN
-            lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+            lockscreenVisibility = Notification.VISIBILITY_SECRET
         }
 
     }

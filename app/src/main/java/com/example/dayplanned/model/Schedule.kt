@@ -5,9 +5,12 @@ import android.icu.util.Calendar
 
 data class Schedule(val id:Int, val header: String?, val description: String?){
     var time:Calendar ? = null;
+    companion object{
+        var TIEME_NOT:String = "время не задано"
+    }
     fun getTxtTime():String{
         if(time == null){
-            return "время не задано"
+            return TIEME_NOT
         }
        return String.format("%02d:%02d:00", this.time!!.get(Calendar.HOUR_OF_DAY),this.time!!.get(Calendar.MINUTE))
     }

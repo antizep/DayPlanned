@@ -6,7 +6,9 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -20,6 +22,7 @@ import com.example.dayplanned.services.MyReceiver
 import com.example.dayplanned.services.MyReceiver.Companion.DESCRIPTION
 import com.example.dayplanned.services.MyReceiver.Companion.HEADER
 import com.example.dayplanned.services.NotificationService
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
     var scheduleController: AddScheduleController? = null
@@ -95,7 +98,9 @@ class MainActivity : AppCompatActivity() {
             val min:Schedule? = minSchedule(unsorted);
 
             sorted.add(min!!)
-            min.time!!.add(Calendar.DAY_OF_YEAR,1);
+            if(min.time !=null) {
+                min.time!!.add(Calendar.DAY_OF_YEAR, 1);
+            }
             unsorted.remove(min)
         }
         if(!sorted.isEmpty()) {
@@ -163,7 +168,15 @@ class MainActivity : AppCompatActivity() {
             scheduleLayoutPane.scheduleHeader.setText(schedule.header);
             val t = schedule.getTxtTime();
             scheduleLayoutPane.time.setText(t)
-
+            val appGallery = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            val id= schedule.id
+            var file = File(appGallery!!.absolutePath + "/$id/")
+            if (file.exists()){
+                val images = file.listFiles()
+                if(images !=null &&images.size>0) {
+                    scheduleLayoutPane.ImageSchedule.setImageURI(Uri.fromFile(images[0]))
+                }
+            }
             scheduleLayoutPane.deleteScheduleButton.setOnClickListener {
                 scheduleLayout.removeView(it.parent as View)
                 scheduleController!!.delSchedule(schedule.id)

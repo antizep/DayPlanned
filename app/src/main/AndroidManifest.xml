@@ -33,6 +33,10 @@
         </activity>
         <activity android:name=".AddScheduleActivity" />
     </application>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28"
+        tools:ignore="ManifestOrder,ScopedStorage" />
+
     <uses-permission android:name="android.permission.VIBRATE"
         tools:ignore="ManifestOrder" />
 </manifest>

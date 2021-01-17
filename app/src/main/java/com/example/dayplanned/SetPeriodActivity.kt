@@ -25,7 +25,7 @@ class SetPeriodActivity : AppCompatActivity() {
         setPeriodBinding = ActivitySetPeriodBinding.inflate(layoutInflater)
         setContentView(setPeriodBinding.root)
         setPeriodBinding.setTimePicker.setIs24HourView(true)
-        if(!t.isNullOrBlank() && !t.equals("null")){
+        if(!t.isNullOrBlank() && !t.equals(Schedule.TIEME_NOT)){
             val time = Time.valueOf(t);
             setPeriodBinding.setTimePicker.hour = time.hours
             setPeriodBinding.setTimePicker.minute = time.minutes
