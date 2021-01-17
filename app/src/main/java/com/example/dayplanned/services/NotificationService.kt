@@ -1,5 +1,5 @@
 package com.example.dayplanned.services
-import NotificationUtils
+
 import NotificationUtils.Companion.CHANNEL_ID
 import NotificationUtils.Companion.CHANNEL_NAME
 import android.R
@@ -10,14 +10,13 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.RingtoneManager
 import android.os.*
-import android.os.Process.THREAD_PRIORITY_BACKGROUND
 import android.provider.Telephony
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import com.example.dayplanned.services.MyReceiver.Companion.DESCRIPTION
 import com.example.dayplanned.services.MyReceiver.Companion.HEADER
+
 
 class NotificationService : Service() {
 
@@ -28,8 +27,10 @@ class NotificationService : Service() {
 
 
     companion object{
-        val myChannel = NotificationChannel(CHANNEL_ID,
-            CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH).apply {
+        val myChannel = NotificationChannel(
+            CHANNEL_ID,
+            CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH
+        ).apply {
             enableLights(true)
             enableVibration(true)
             lightColor = Color.GREEN
@@ -64,6 +65,24 @@ class NotificationService : Service() {
 
             val mNotificationId: Int = 1000
 
+            val  runId= intent.getIntExtra("final_id",0);
+
+            if(runId != 0){
+                Log.d("AHTUNG", "final Schedule")
+                nManager.cancelAll()
+
+                return Service.START_STICKY
+            }
+
+            intent.putExtra("final_id",1000);
+            val replyPendingIntent = PendingIntent.getService(
+                applicationContext,
+                100, intent, PendingIntent.FLAG_UPDATE_CURRENT
+            )
+            val action = Notification.Action.Builder(
+                R.drawable.ic_menu_send,
+                "выполнить",replyPendingIntent).build()
+
             val mNotification = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Notification.Builder(context, CHANNEL_ID)
             } else {
@@ -71,7 +90,13 @@ class NotificationService : Service() {
             }.apply {
                 setContentIntent(pendingIntent)
                 setSmallIcon(R.mipmap.sym_def_app_icon)
-                setLargeIcon(BitmapFactory.decodeResource(context.resources, R.mipmap.sym_def_app_icon))
+                setLargeIcon(
+                    BitmapFactory.decodeResource(
+                        context.resources,
+                        R.mipmap.sym_def_app_icon
+                    )
+                )
+                addAction(action)
                 setChannelId(CHANNEL_ID)
                 setContentTitle(intent.getStringExtra(HEADER))
                 setStyle(Notification.BigTextStyle().bigText(intent.getStringExtra(DESCRIPTION)))
