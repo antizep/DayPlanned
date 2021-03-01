@@ -19,6 +19,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContentProviderCompat.requireContext
+import com.example.dayplanned.controller.AddScheduleController
 import com.example.dayplanned.services.MyReceiver.Companion.DESCRIPTION
 import com.example.dayplanned.services.MyReceiver.Companion.HEADER
 import com.example.dayplanned.services.MyReceiver.Companion.ID
@@ -29,7 +30,7 @@ class NotificationService : Service() {
 
     private var serviceLooper: Looper? = null
     private var context = this;
-
+    var scheduleController: AddScheduleController? = null
     private lateinit var nManager :NotificationManager
 
 
@@ -77,7 +78,10 @@ class NotificationService : Service() {
             if(runId != 0){
                 Log.d("AHTUNG", "final Schedule")
                 nManager.cancelAll()
-
+                if(scheduleController == null) {
+                    scheduleController = AddScheduleController(this)
+                }
+                scheduleController!!.complete(intent.getIntExtra(ID,0))
                 return Service.START_STICKY
             }
 

@@ -11,22 +11,24 @@ import java.lang.Exception
 import java.sql.Time
 
 class AddScheduleController(context: Context) :
-    SQLiteOpenHelper(context, DB_NAME, null, DB_VERSIOM) {
+    SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
     companion object {
         private val DB_NAME = "plannedTime";
         private val TABLE_NAME = "schedule"
-        private val DB_VERSIOM = 4
+        private val DB_VERSION = 12
         private val ID = "id"
         private val HEADER = "header"
         private val DESCRIPTION = "description"
         private var TIME = "time"
+        private var COMPLETED = "completed"
+        private var SKIPPED = "skipped"
 
     }
 
 
     override fun onCreate(db: SQLiteDatabase?) {
         val CREATE_TABLE =
-            "CREATE TABLE $TABLE_NAME ($ID Integer PRIMARY KEY, $HEADER TEXT, $DESCRIPTION TEXT, $TIME TEXT)"
+            "CREATE TABLE $TABLE_NAME ($ID Integer PRIMARY KEY, $HEADER TEXT, $DESCRIPTION TEXT, $TIME TEXT, $COMPLETED Integer, $SKIPPED Integer)"
         db?.execSQL(CREATE_TABLE)
 
     }
@@ -34,12 +36,24 @@ class AddScheduleController(context: Context) :
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
         if (oldVersion == 1) {
             db!!.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $TIME TIME");
+            return
         }
         if (oldVersion == 2 or 3) {
             db!!.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
             onCreate(db)
+            return
+        }
+        if(oldVersion < DB_VERSION){
+            db!!.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $COMPLETED INTEGER")
+            db.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $SKIPPED INTEGER")
         }
     }
+
+    fun complete(id:Int){
+        val  db = this.writableDatabase
+        db.execSQL("UPDATE $TABLE_NAME SET $COMPLETED =(Select $COMPLETED From $TABLE_NAME Where id = $id) + 1 WHERE id=$id");
+    }
+
 
     fun addSchedule(schedule: Schedule): Int {
         val db = this.writableDatabase
@@ -82,11 +96,13 @@ class AddScheduleController(context: Context) :
         val cursor = db.rawQuery(selectAll, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                val id = cursor.getString(cursor.getColumnIndex(ID))
+                val id = cursor.getInt(cursor.getColumnIndex(ID))
                 val header = cursor.getString(cursor.getColumnIndex(HEADER))
                 val desc = cursor.getString(cursor.getColumnIndex(DESCRIPTION))
                 val time = cursor.getString(cursor.getColumnIndex(TIME));
-                val schedule = Schedule(id.toInt(), header, desc)
+                val completed = cursor.getInt(cursor.getColumnIndex(COMPLETED))
+                val skipped = cursor.getInt(cursor.getColumnIndex(SKIPPED))
+                val schedule = Schedule(id, header, desc,completed,skipped)
                 if(!time.isNullOrBlank()) {
                     try {
                         val time = Time.valueOf(time)

@@ -21,7 +21,7 @@ class SetPeriodActivity : AppCompatActivity() {
         scheduleController = AddScheduleController(this)
         var id = intent.getIntExtra("id",0);
         var t = intent.getStringExtra("time")
-        val schedule = Schedule(id,null,null)
+        val schedule = Schedule(id,null,null,0,0)
         setPeriodBinding = ActivitySetPeriodBinding.inflate(layoutInflater)
         setContentView(setPeriodBinding.root)
         setPeriodBinding.setTimePicker.setIs24HourView(true)

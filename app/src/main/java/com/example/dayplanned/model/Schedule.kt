@@ -3,7 +3,7 @@ package com.example.dayplanned.model
 import android.icu.util.Calendar
 
 
-data class Schedule(val id:Int, val header: String?, val description: String?){
+data class Schedule(val id:Int, val header: String?, val description: String?, val complete :Int?, val skipped:Int?){
     var time:Calendar ? = null;
     companion object{
         var TIEME_NOT:String = "время не задано"

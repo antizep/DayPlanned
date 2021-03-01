@@ -170,6 +170,7 @@ class MainActivity : AppCompatActivity() {
             scheduleLayout.addView(slp);
             scheduleLayoutPane.scheduleBody.setText(schedule.description)
             scheduleLayoutPane.scheduleHeader.setText(schedule.header);
+            scheduleLayoutPane.completeCounter.setText(schedule.complete.toString())
             val t = schedule.getTxtTime();
             scheduleLayoutPane.time.setText(t)
             val id= schedule.id

@@ -184,7 +184,7 @@ class AddScheduleActivity : AppCompatActivity() {
         }
         addScheduleBinding.addScheduleButton.setOnClickListener {
             Log.d("AddScheduleActivity", "H:" + header + " D:" + descript);
-            val schedule = Schedule(id, header.toString(), descript.toString());
+            val schedule = Schedule(id, header.toString(), descript.toString(),0,0);
             var index: Int = 0;
             if (id == 0) {
                 if (!header.isBlank()) {
