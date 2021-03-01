@@ -23,6 +23,7 @@ class MyReceiver : BroadcastReceiver() {
     companion object {
         var HEADER = "header"
         var DESCRIPTION = "description"
+        var ID = "ID"
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -47,6 +48,7 @@ class MyReceiver : BroadcastReceiver() {
         val myIntent = Intent(context, MyReceiver::class.java)
         myIntent.putExtra(HEADER,schedule.header)
         myIntent.putExtra(DESCRIPTION,schedule.description)
+        myIntent.putExtra(ID,schedule.id)
         Log.d("MyReceiver","next schedule:"+schedule.header+" date:"+schedule.time!!.time.toString())
         val pendingIntentpi = PendingIntent.getBroadcast(context, 0, myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         alarmManager.set(AlarmManager.RTC_WAKEUP, schedule.time!!.timeInMillis, pendingIntentpi)

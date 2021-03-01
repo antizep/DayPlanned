@@ -13,9 +13,12 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.signature.ObjectKey
 import com.example.dayplanned.controller.AddScheduleController
 import com.example.dayplanned.databinding.ActivityAddScheduleBinding
 import com.example.dayplanned.model.Schedule
@@ -23,6 +26,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
+import javax.xml.transform.OutputKeys
 
 
 class AddScheduleActivity : AppCompatActivity() {
@@ -36,16 +40,28 @@ class AddScheduleActivity : AppCompatActivity() {
         scheduleController = AddScheduleController(this)
         Log.d("AHTUNG", "RUNNER")
         super.onCreate(savedInstanceState)
-        addScheduleBinding = ActivityAddScheduleBinding.inflate(layoutInflater)
-        addScheduleBinding.addImagesButton.setOnClickListener {
-            openGalleryForImages()
-        }
 
+        addScheduleBinding = ActivityAddScheduleBinding.inflate(layoutInflater)
         setContentView(addScheduleBinding.root)
         val id = intent.getIntExtra("id", 0);
         val header = intent.getStringExtra("header")
         val descr = intent.getStringExtra("description")
         val t = intent.getStringExtra("time")
+        val appGallery = getExternalFilesDir(DIRECTORY_PICTURES);
+        val file = File(appGallery!!.absolutePath + "/$id/0.JPG")
+        if(file.exists()){
+
+            Glide.with(cont).load(file).apply(RequestOptions().signature(ObjectKey(file.length()))).into(addScheduleBinding.scheduleImage)
+            addScheduleBinding.scheduleImage.setOnClickListener {
+                openGalleryForImages()
+            }
+            addScheduleBinding.addImagesButton.hide()
+        }else {
+            addScheduleBinding.addImagesButton.setOnClickListener {
+                openGalleryForImages()
+            }
+        }
+
         addSchedule(id, header, descr, t)
     }
 

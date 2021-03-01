@@ -14,6 +14,9 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.JobIntentService.enqueueWork
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.signature.ObjectKey
 import com.example.dayplanned.controller.AddScheduleController
 import com.example.dayplanned.databinding.ActivityMainBinding
 import com.example.dayplanned.databinding.SheduleLayoutBinding
@@ -21,6 +24,7 @@ import com.example.dayplanned.model.Schedule
 import com.example.dayplanned.services.MyReceiver
 import com.example.dayplanned.services.MyReceiver.Companion.DESCRIPTION
 import com.example.dayplanned.services.MyReceiver.Companion.HEADER
+import com.example.dayplanned.services.MyReceiver.Companion.ID
 import com.example.dayplanned.services.NotificationService
 import java.io.File
 
@@ -76,7 +80,7 @@ class MainActivity : AppCompatActivity() {
         //myIntent.action = "restartservice"
         myIntent.putExtra(HEADER,schedule.header)
         myIntent.putExtra(DESCRIPTION,schedule.description)
-
+        myIntent.putExtra(ID,schedule.id)
         val pendingIntentpi = PendingIntent.getBroadcast(applicationContext, 0, myIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         Toast.makeText(this, "notification added:"+schedule.getTxtTime(), Toast.LENGTH_LONG).show()
 
@@ -168,13 +172,13 @@ class MainActivity : AppCompatActivity() {
             scheduleLayoutPane.scheduleHeader.setText(schedule.header);
             val t = schedule.getTxtTime();
             scheduleLayoutPane.time.setText(t)
-            val appGallery = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             val id= schedule.id
+            val appGallery = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             var file = File(appGallery!!.absolutePath + "/$id/")
             if (file.exists()){
                 val images = file.listFiles()
                 if(images !=null &&images.size>0) {
-                    scheduleLayoutPane.ImageSchedule.setImageURI(Uri.fromFile(images[0]))
+                    Glide.with(this).load(images[0]).apply(RequestOptions().signature(ObjectKey(images[0].length()))).into(scheduleLayoutPane.ImageSchedule)
                 }
             }
             scheduleLayoutPane.deleteScheduleButton.setOnClickListener {

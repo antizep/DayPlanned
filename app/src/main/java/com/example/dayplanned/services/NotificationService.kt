@@ -6,16 +6,23 @@ import android.R
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.graphics.ImageDecoder
 import android.media.RingtoneManager
+import android.net.Uri
 import android.os.*
+import android.provider.MediaStore
 import android.provider.Telephony
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.dayplanned.services.MyReceiver.Companion.DESCRIPTION
 import com.example.dayplanned.services.MyReceiver.Companion.HEADER
+import com.example.dayplanned.services.MyReceiver.Companion.ID
+import java.io.File
 
 
 class NotificationService : Service() {
@@ -89,12 +96,25 @@ class NotificationService : Service() {
                 Notification.Builder(context)
             }.apply {
                 setContentIntent(pendingIntent)
-                setSmallIcon(R.mipmap.sym_def_app_icon)
-                setLargeIcon(
-                    BitmapFactory.decodeResource(
+                val id = intent.getIntExtra(ID,0)
+                val appGallery = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                var file = File(appGallery!!.absolutePath + "/$id/0.JPG")
+                val icon: Bitmap
+                if(file.exists()){
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        icon = ImageDecoder.decodeBitmap(ImageDecoder.createSource(file))
+                    } else {
+                        icon = MediaStore.Images.Media.getBitmap(contentResolver, Uri.fromFile(file))
+                    }
+                }else {
+                    icon = BitmapFactory.decodeResource(
                         context.resources,
                         R.mipmap.sym_def_app_icon
                     )
+                }
+                setSmallIcon(R.mipmap.sym_def_app_icon)
+                setLargeIcon(
+                    icon
                 )
                 addAction(action)
                 setChannelId(CHANNEL_ID)
