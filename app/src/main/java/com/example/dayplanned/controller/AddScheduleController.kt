@@ -51,7 +51,13 @@ class AddScheduleController(context: Context) :
 
     fun complete(id:Int){
         val  db = this.writableDatabase
-        db.execSQL("UPDATE $TABLE_NAME SET $COMPLETED =(Select $COMPLETED From $TABLE_NAME Where id = $id) + 1 WHERE id=$id");
+        val cursor = db.rawQuery("Select $COMPLETED From $TABLE_NAME Where id = $id",null);
+        var c  = 0;
+        if (cursor != null && cursor.moveToNext()) {
+            c  = cursor.getInt(cursor.getColumnIndex(COMPLETED));
+        }
+        c++
+        db.execSQL("UPDATE $TABLE_NAME SET $COMPLETED = $c WHERE id = $id");
     }
 
 

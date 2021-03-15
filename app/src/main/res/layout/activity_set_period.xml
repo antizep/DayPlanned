@@ -18,17 +18,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="112dp"
-        android:text="ежедневно"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
-
     <Button
         android:id="@+id/comleteSetPeriod"
         android:layout_width="wrap_content"
@@ -50,12 +39,138 @@
         android:layout_centerHorizontal="true"
 
 
-        android:layout_marginTop="10dp"
         android:timePickerMode="clock"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chipGroupWeekly"
+        tools:ignore="MissingConstraints" />
+
+    <RadioGroup
+        android:id="@+id/radioGroupMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toBottomOf="@+id/textView3">
+
+        <RadioButton
+            android:id="@+id/radioButtonDaily"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Ежедневно" />
+
+        <RadioButton
+            android:id="@+id/radioButtonWeekly"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="по дням" />
+    </RadioGroup>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroupWeekly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroupMode"
+        tools:visibility="visible">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipMon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="пн"
+            app:checkedIconEnabled="false"
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="#F44336"
+            app:chipIconEnabled="false"
+            app:chipIconTint="#673AB7"
+            app:chipIconVisible="false" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipTue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="вт"
+            app:checkedIconEnabled="false"
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="#F44336"
+            app:chipIconEnabled="false"
+            app:chipIconTint="#673AB7"
+            app:chipIconVisible="false" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipWed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="ср"
+            app:checkedIconEnabled="false"
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="#F44336"
+            app:chipIconEnabled="false"
+            app:chipIconTint="#673AB7"
+            app:chipIconVisible="false" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipTh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="чт"
+            app:checkedIconEnabled="false"
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="#F44336"
+            app:chipIconEnabled="false"
+            app:chipIconTint="#673AB7"
+            app:chipIconVisible="false" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipFr"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="пт"
+            app:checkedIconEnabled="false"
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="#F44336"
+            app:chipIconEnabled="false"
+            app:chipIconTint="#673AB7"
+            app:chipIconVisible="false" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipSat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="сб"
+            app:checkedIconEnabled="false"
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="#F44336"
+            app:chipIconEnabled="false"
+            app:chipIconTint="#673AB7"
+            app:chipIconVisible="false" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chipSun"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="вс"
+            app:checkedIconEnabled="false"
+            app:checkedIconVisible="false"
+            app:chipBackgroundColor="#F44336"
+            app:chipIconEnabled="false"
+            app:chipIconTint="#673AB7"
+            app:chipIconVisible="false" />
+
+    </com.google.android.material.chip.ChipGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

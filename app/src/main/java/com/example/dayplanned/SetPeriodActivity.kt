@@ -5,6 +5,7 @@ import android.icu.util.Calendar
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import com.example.dayplanned.controller.AddScheduleController
 import com.example.dayplanned.databinding.ActivityAddScheduleBinding
@@ -30,7 +31,15 @@ class SetPeriodActivity : AppCompatActivity() {
             setPeriodBinding.setTimePicker.hour = time.hours
             setPeriodBinding.setTimePicker.minute = time.minutes
         }
-
+        val radioButtonDaily = setPeriodBinding.radioGroupMode;
+        radioButtonDaily.setOnCheckedChangeListener { buttonView, isChecked ->
+            val chipGroupWeekly = setPeriodBinding.chipGroupWeekly
+            when(buttonView.checkedRadioButtonId){
+                setPeriodBinding.radioButtonDaily.id -> chipGroupWeekly.visibility = View.GONE
+                setPeriodBinding.radioButtonWeekly.id -> chipGroupWeekly.visibility = View.VISIBLE
+            }
+            Log.d("SetPeriodActivity","checked:"+buttonView.tooltipText)
+        }
         setPeriodBinding.comleteSetPeriod.setOnClickListener {
             Log.d(SetPeriodActivity::class.java.name,"h"+setPeriodBinding.setTimePicker.hour+" m:"+setPeriodBinding.setTimePicker.minute)
             var calendar = Calendar.getInstance()
