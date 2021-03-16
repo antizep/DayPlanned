@@ -1,9 +1,10 @@
 package com.example.dayplanned.model
 
 import android.icu.util.Calendar
+import org.json.JSONArray
 
 
-data class Schedule(val id:Int, val header: String?, val description: String?, val complete :Int?, val skipped:Int?){
+data class Schedule(val id:Int, val header: String?, val description: String?, val complete :Int?, val skipped:Int?, val mode: Int?, val schedule: JSONArray?){
     var time:Calendar ? = null;
     companion object{
         var TIEME_NOT:String = "время не задано"

@@ -86,6 +86,7 @@
             android:layout_height="wrap_content"
             android:checkable="true"
             android:text="пн"
+            android:textAllCaps="false"
             app:checkedIconEnabled="false"
             app:checkedIconVisible="false"
             app:chipBackgroundColor="#F44336"
@@ -116,7 +117,6 @@
             app:checkedIconVisible="false"
             app:chipBackgroundColor="#F44336"
             app:chipIconEnabled="false"
-            app:chipIconTint="#673AB7"
             app:chipIconVisible="false" />
 
         <com.google.android.material.chip.Chip
@@ -142,7 +142,6 @@
             app:checkedIconVisible="false"
             app:chipBackgroundColor="#F44336"
             app:chipIconEnabled="false"
-            app:chipIconTint="#673AB7"
             app:chipIconVisible="false" />
 
         <com.google.android.material.chip.Chip

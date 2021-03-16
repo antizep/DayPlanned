@@ -22,6 +22,7 @@ import com.bumptech.glide.signature.ObjectKey
 import com.example.dayplanned.controller.AddScheduleController
 import com.example.dayplanned.databinding.ActivityAddScheduleBinding
 import com.example.dayplanned.model.Schedule
+import org.json.JSONArray
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -35,6 +36,8 @@ class AddScheduleActivity : AppCompatActivity() {
     var scheduleImages: MutableList<Bitmap> = mutableListOf()
     val REQUEST_CODE = 200
     val cont = this;
+    var mode:Int? = null;
+    var schedule:String? = null;
     override fun onCreate(savedInstanceState: Bundle?) {
 
         scheduleController = AddScheduleController(this)
@@ -47,6 +50,9 @@ class AddScheduleActivity : AppCompatActivity() {
         val header = intent.getStringExtra("header")
         val descr = intent.getStringExtra("description")
         val t = intent.getStringExtra("time")
+        mode = intent.getIntExtra(AddScheduleController.MODE,0)
+        schedule = intent.getStringExtra(AddScheduleController.SCHEDULE)
+
         val appGallery = getExternalFilesDir(DIRECTORY_PICTURES);
         val file = File(appGallery!!.absolutePath + "/$id/0.JPG")
         if(file.exists()){
@@ -184,7 +190,7 @@ class AddScheduleActivity : AppCompatActivity() {
         }
         addScheduleBinding.addScheduleButton.setOnClickListener {
             Log.d("AddScheduleActivity", "H:" + header + " D:" + descript);
-            val schedule = Schedule(id, header.toString(), descript.toString(),0,0);
+            val schedule = Schedule(id, header.toString(), descript.toString(),0,0,0, JSONArray());
             var index: Int = 0;
             if (id == 0) {
                 if (!header.isBlank()) {
@@ -203,6 +209,8 @@ class AddScheduleActivity : AppCompatActivity() {
                 val intent = Intent(this, SetPeriodActivity::class.java)
                 intent.putExtra("id", index)
                 intent.putExtra("time", t)
+                intent.putExtra(AddScheduleController.MODE,this.mode)
+                intent.putExtra(AddScheduleController.SCHEDULE,this.schedule)
                 startActivity(intent)
             }
         }

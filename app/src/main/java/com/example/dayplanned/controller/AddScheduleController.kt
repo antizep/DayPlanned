@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.icu.util.Calendar
 import android.util.Log
 import com.example.dayplanned.model.Schedule
+import org.json.JSONArray
 import java.lang.Exception
 import java.sql.Time
 
@@ -15,37 +16,39 @@ class AddScheduleController(context: Context) :
     companion object {
         private val DB_NAME = "plannedTime";
         private val TABLE_NAME = "schedule"
-        private val DB_VERSION = 12
+        private val DB_VERSION = 13
         private val ID = "id"
         private val HEADER = "header"
         private val DESCRIPTION = "description"
         private var TIME = "time"
         private var COMPLETED = "completed"
         private var SKIPPED = "skipped"
-
+        public var MODE = "mode"
+        public var DAILY_MODE = 1
+        public var VEEKLY_MODE = 2
+        public var SCHEDULE = "schedule"
     }
 
 
     override fun onCreate(db: SQLiteDatabase?) {
         val CREATE_TABLE =
-            "CREATE TABLE $TABLE_NAME ($ID Integer PRIMARY KEY, $HEADER TEXT, $DESCRIPTION TEXT, $TIME TEXT, $COMPLETED Integer, $SKIPPED Integer)"
+            "CREATE TABLE $TABLE_NAME ($ID Integer PRIMARY KEY," +
+                    " $HEADER TEXT," +
+                    " $DESCRIPTION TEXT," +
+                    " $TIME TEXT," +
+                    " $COMPLETED Integer," +
+                    " $SKIPPED Integer," +
+                    " $MODE Integer," +
+                    " $SCHEDULE String)"
         db?.execSQL(CREATE_TABLE)
 
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        if (oldVersion == 1) {
-            db!!.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $TIME TIME");
-            return
-        }
-        if (oldVersion == 2 or 3) {
-            db!!.execSQL("DROP TABLE IF EXISTS $TABLE_NAME")
-            onCreate(db)
-            return
-        }
-        if(oldVersion < DB_VERSION){
-            db!!.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $COMPLETED INTEGER")
-            db.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $SKIPPED INTEGER")
+
+        if(12 < DB_VERSION){
+            db!!.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $MODE INTEGER")
+            db.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $SCHEDULE String")
         }
     }
 
@@ -77,6 +80,8 @@ class AddScheduleController(context: Context) :
         val cv = ContentValues();
         cv.put(HEADER, schedule.header)
         cv.put(DESCRIPTION, schedule.description)
+        cv.put(MODE,schedule.mode)
+        cv.put(SCHEDULE,schedule.schedule.toString())
 
         val _success = db.update(TABLE_NAME, cv, "$ID = ?", arrayOf(schedule.id.toString()))
         db.close()
@@ -90,6 +95,9 @@ class AddScheduleController(context: Context) :
             return 0;
         }
         cv.put(TIME,schedule.getTxtTime())
+        cv.put(MODE,schedule.mode)
+        cv.put(SCHEDULE,schedule.schedule.toString())
+
         val _success = db.update(TABLE_NAME, cv, "$ID = ?", arrayOf(schedule.id.toString()))
         db.close()
         return (_success)
@@ -108,7 +116,14 @@ class AddScheduleController(context: Context) :
                 val time = cursor.getString(cursor.getColumnIndex(TIME));
                 val completed = cursor.getInt(cursor.getColumnIndex(COMPLETED))
                 val skipped = cursor.getInt(cursor.getColumnIndex(SKIPPED))
-                val schedule = Schedule(id, header, desc,completed,skipped)
+                Log.d("AddScheduleController","gs"+cursor.getColumnIndex(MODE))
+                val mode = cursor.getInt(cursor.getColumnIndex(MODE))
+                var s = cursor.getString(cursor.getColumnIndex(SCHEDULE))
+                if(s == null){
+                    s = "[]"
+                }
+                val arra = JSONArray(s)
+                val schedule = Schedule(id, header, desc,completed,skipped,mode,arra)
                 if(!time.isNullOrBlank()) {
                     try {
                         val time = Time.valueOf(time)

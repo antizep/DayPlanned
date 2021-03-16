@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
+import android.media.MediaCodec.MetricsConstants.MODE
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -190,8 +191,13 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(this, AddScheduleActivity::class.java)
                 intent.putExtra("id", schedule.id)
                 intent.putExtra("header", schedule.header)
+
+                intent.putExtra(AddScheduleController.MODE,schedule.mode)
+                intent.putExtra(AddScheduleController.SCHEDULE,schedule.schedule.toString())
+
                 intent.putExtra("description", schedule.description)
                 intent.putExtra("time", schedule.getTxtTime())
+
                 startActivity(intent)
             }
             Log.d("MainActivity", schedule.toString())
