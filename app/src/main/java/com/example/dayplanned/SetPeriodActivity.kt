@@ -18,7 +18,7 @@ import java.sql.Time
 class SetPeriodActivity : AppCompatActivity() {
     var scheduleController: AddScheduleController? = null
     companion object{
-        var shedle = JSONArray()
+        var shedle = JSONArray("[true,true,true,true,true,false,false]")
     }
     private lateinit var setPeriodBinding: ActivitySetPeriodBinding
     @SuppressLint("ResourceType")
@@ -28,7 +28,14 @@ class SetPeriodActivity : AppCompatActivity() {
         val id = intent.getIntExtra("id", 0);
         val t = intent.getStringExtra("time")
         var mode = intent.getIntExtra(AddScheduleController.MODE,0)
+        val scheduleS = intent.getStringExtra(AddScheduleController.SCHEDULE)
 
+        if(scheduleS != null) {
+            val s = JSONArray(scheduleS)
+            if(s.length() != 0) {
+                shedle = s
+            }
+        }
         setPeriodBinding = ActivitySetPeriodBinding.inflate(layoutInflater)
         setContentView(setPeriodBinding.root)
         setPeriodBinding.setTimePicker.setIs24HourView(true)
@@ -72,13 +79,13 @@ class SetPeriodActivity : AppCompatActivity() {
         val chipSun = setPeriodBinding.chipSun
         val chipTh = setPeriodBinding.chipTh
 
-        setChip(chipMon)
-        setChip(chipFr)
-        setChip(chipWed)
-        setChip(chipSat)
-        setChip(chipTue)
-        setChip(chipSun)
-        setChip(chipTh)
+        setChip(chipMon, shedle.getBoolean(0))
+        setChip(chipTue, shedle.getBoolean(1))
+        setChip(chipWed, shedle.getBoolean(2))
+        setChip(chipTh, shedle.getBoolean(3))
+        setChip(chipFr, shedle.getBoolean(4))
+        setChip(chipSat, shedle.getBoolean(5))
+        setChip(chipSun, shedle.getBoolean(6))
 
         setPeriodBinding.comleteSetPeriod.setOnClickListener {
             Log.d(
@@ -89,7 +96,7 @@ class SetPeriodActivity : AppCompatActivity() {
             calendar.set(Calendar.HOUR_OF_DAY, setPeriodBinding.setTimePicker.hour)
             calendar.set(Calendar.MINUTE, setPeriodBinding.setTimePicker.minute)
             calendar.set(Calendar.SECOND, 0)
-            val schedule = Schedule(id, null, null, 0, 0,mode,JSONArray())
+            val schedule = Schedule(id, null, null, 0, 0,mode, shedle)
             schedule.time = calendar;
             scheduleController!!.setTime(schedule)
             Log.d(SetPeriodActivity::class.java.name, "s:" + schedule)
@@ -102,7 +109,14 @@ class SetPeriodActivity : AppCompatActivity() {
         }
     }
 
-    fun  setChip(chip: Chip){
+    fun  setChip(chip: Chip,check: Boolean){
+        if(check){
+            chip.setChipBackgroundColor(getColorStateList(R.color.green))
+            chip.isChecked = true
+        }else{
+            chip.setChipBackgroundColor(getColorStateList(R.color.red))
+            chip.isChecked = false
+        }
         chip.setOnCheckedChangeListener { buttonView, isChecked ->
             Log.d("SetPeriodActivity", "checked:" + buttonView.id +"|"+isChecked)
             if(isChecked) {
@@ -110,6 +124,30 @@ class SetPeriodActivity : AppCompatActivity() {
             }else{
                 chip.setChipBackgroundColor(getColorStateList(R.color.red))
             }
+            when(buttonView.id){
+                setPeriodBinding.chipMon.id -> {
+                    shedle.put(0,isChecked)
+                }
+                setPeriodBinding.chipTue.id ->{
+                    shedle.put(1,isChecked)
+                }
+                setPeriodBinding.chipWed.id ->{
+                    shedle.put(2,isChecked)
+                }
+                setPeriodBinding.chipTh.id ->{
+                    shedle.put(3,isChecked)
+                }
+                setPeriodBinding.chipFr.id ->{
+                    shedle.put(4,isChecked)
+                }
+                setPeriodBinding.chipSat.id ->{
+                    shedle.put(5,isChecked)
+                }
+                setPeriodBinding.chipSun.id ->{
+                    shedle.put(6,isChecked)
+                }
+            }
+            Log.d("SetPeriodActivity", shedle.toString())
         }
     }
 

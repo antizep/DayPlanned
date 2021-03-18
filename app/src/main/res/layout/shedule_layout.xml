@@ -6,80 +6,105 @@
     android:layout_height="wrap_content"
     android:visibility="visible">
 
-    <TextView
-        android:id="@+id/scheduleHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="220dp"
-        android:text="TextView"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.474"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/scheduleBody"
-        android:layout_width="0dp"
-        android:layout_height="53dp"
-        android:layout_marginTop="20dp"
-        android:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scheduleHeader" />
-
-    <Button
-        android:id="@+id/deleteScheduleButton"
-        android:layout_width="50sp"
-        android:layout_height="40dp"
-        android:layout_marginTop="4dp"
-        android:text="del"
-        android:textSize="8sp"
-        app:icon="@android:drawable/ic_menu_delete"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/editScheduleButton"
-        android:layout_width="50sp"
-        android:layout_height="40dp"
-        android:layout_marginTop="4dp"
-        android:text="ed"
-        android:textSize="8sp"
-        app:icon="@android:drawable/ic_menu_edit"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        android:textSize="8sp"
-        app:layout_constraintStart_toEndOf="@+id/scheduleHeader"
-        app:layout_constraintTop_toTopOf="@+id/scheduleHeader" />
-
     <ImageView
         android:id="@+id/ImageSchedule"
         android:layout_width="match_parent"
         android:layout_height="209dp"
+        android:layout_marginTop="4dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/sym_def_app_icon"
-        tools:srcCompat="@color/purple_200"
+        tools:srcCompat="@color/green"
         tools:visibility="visible" />
 
-    <TextView
-        android:id="@+id/completeCounter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="28dp"
-        android:text="0"
-        app:layout_constraintEnd_toStartOf="@+id/scheduleHeader"
-        app:layout_constraintTop_toBottomOf="@+id/ImageSchedule" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="61dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="140dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/schedule_shape"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ImageSchedule">
+
+        <TextView
+            android:id="@+id/scheduleBody"
+            android:layout_width="269dp"
+            android:layout_height="77dp"
+            android:layout_marginTop="4dp"
+            android:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView"
+            android:textColor="#FFFFFF"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/time"
+            tools:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/scheduleHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="TextView"
+            android:textColor="#FBFBFB"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/completeCounter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="0"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toStartOf="@+id/scheduleHeader"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="time"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/scheduleHeader" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <Button
+        android:id="@+id/deleteScheduleButton"
+        android:layout_width="58dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/schedule_shape"
+        app:icon="@android:drawable/ic_menu_delete"
+        app:iconTint="@color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/editScheduleButton"
+        android:layout_width="58dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/schedule_shape"
+        app:icon="@android:drawable/ic_menu_edit"
+        app:iconTint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
