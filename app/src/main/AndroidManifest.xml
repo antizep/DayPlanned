@@ -10,15 +10,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DayPlanned">
 
-        <service android:name=".services.NotificationService"
+        <service
+            android:name=".services.NotificationService"
             android:enabled="true"
-            android:exported="false"
-            />
+            android:exported="false" />
 
         <activity android:name=".SetPeriodActivity" />
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
-        <receiver
-            android:name=".services.MyReceiver">
+        <receiver android:name=".services.MyReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.xxx" />
             </intent-filter>
@@ -33,10 +36,16 @@
         </activity>
         <activity android:name=".AddScheduleActivity" />
     </application>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28"
         tools:ignore="ManifestOrder,ScopedStorage" />
 
-    <uses-permission android:name="android.permission.VIBRATE"
+
+
+    <uses-permission
+        android:name="android.permission.VIBRATE"
         tools:ignore="ManifestOrder" />
 </manifest>

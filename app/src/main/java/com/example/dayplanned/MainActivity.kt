@@ -187,6 +187,8 @@ class MainActivity : AppCompatActivity() {
                 scheduleLayout.removeView(it.parent as View)
                 scheduleController!!.delSchedule(schedule.id)
             }
+            scheduleLayoutPane.deleteScheduleButton.visibility = View.GONE
+            scheduleLayoutPane.editScheduleButton.visibility = View.GONE
             scheduleLayoutPane.editScheduleButton.setOnClickListener {
                 val intent = Intent(this, AddScheduleActivity::class.java)
                 intent.putExtra("id", schedule.id)
