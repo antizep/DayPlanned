@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.get
@@ -25,7 +26,7 @@ import com.example.dayplanned.services.MyReceiver.Companion.HEADER
 import com.example.dayplanned.services.MyReceiver.Companion.ID
 import com.example.dayplanned.utills.ScheduleUtils
 import java.io.File
-import java.util.*
+import android.icu.util.Calendar
 
 class MainActivity : AppCompatActivity() {
     var scheduleController: AddScheduleController? = null
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
         scheduleController = AddScheduleController(this)
-
+        createDayBtn()
         loadSchedule();
 
 //        val broadcastIntent = Intent()
@@ -95,19 +96,20 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     fun loadSchedule() {
+
         val scheduleLayout = activityMainBinding.scheduleLayout
         scheduleLayout.removeAllViews()
         val scheduleAll = scheduleController!!.getSchedule();
         if(scheduleAll.size == 0){
             return
         }
-        val sorted = ScheduleUtils.sortByTimeToday(scheduleAll)
+        val sorted = ScheduleUtils.sortByDay(scheduleAll,focusCalendar)
         if(sorted.size ==0){
             return
         }
         val nextTask = ScheduleUtils.nextTask(sorted)
         if (nextTask!=null) {
-            addAlarmManager(nextTask)
+            //addAlarmManager(nextTask)
         }
         val indexTask:Int
         if(nextTask!!.time!!.get(Calendar.DAY_OF_YEAR) <= Calendar.getInstance().get(Calendar.DAY_OF_YEAR) ) {
@@ -172,6 +174,71 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    }
+    var focusCalendar = Calendar.getInstance();
+    fun createDayBtn(){
+        val today = Calendar.getInstance();
+        var todayBatton: Button? = null
+        val mondayBtn = activityMainBinding.mondayBtn
+        val tuesdayBtn = activityMainBinding.tuesdayBtn
+        val wednesdayBth = activityMainBinding.wednesdayBth
+        val thursdayBtn = activityMainBinding.thursdayBtn
+        val fridayBtn = activityMainBinding.fridayBtn
+        val saturdayBtn= activityMainBinding.saturdayBtn
+        val sundayBtn = activityMainBinding.sundayBtn
+
+        when (today.get(Calendar.DAY_OF_WEEK)){
+            Calendar.MONDAY -> todayBatton = mondayBtn
+            Calendar.TUESDAY -> todayBatton = tuesdayBtn
+            Calendar.WEDNESDAY -> todayBatton = wednesdayBth
+            Calendar.THURSDAY-> todayBatton = thursdayBtn
+            Calendar.FRIDAY -> todayBatton = fridayBtn
+            Calendar.SATURDAY-> todayBatton = saturdayBtn
+            Calendar.SUNDAY-> todayBatton = sundayBtn
+        }
+        todayBatton!!.backgroundTintList = this.getColorStateList(R.color.buttonColorActive)
+        val onClickListener =View.OnClickListener{
+            vineButton(todayBatton)
+            if (today!=it) {
+                it.backgroundTintList = this.getColorStateList(R.color.buttonColorActive)
+                if(it==mondayBtn){
+                    focusCalendar.set(Calendar.DAY_OF_WEEK,Calendar.MONDAY)
+                }else if(it==tuesdayBtn){
+                    focusCalendar.set(Calendar.DAY_OF_WEEK,Calendar.TUESDAY)
+                }else if(it==wednesdayBth){
+                    focusCalendar.set(Calendar.DAY_OF_WEEK,Calendar.WEDNESDAY)
+                }else if(it==thursdayBtn){
+                    focusCalendar.set(Calendar.DAY_OF_WEEK,Calendar.THURSDAY)
+                }else if(it==fridayBtn){
+                    focusCalendar.set(Calendar.DAY_OF_WEEK,Calendar.FRIDAY)
+                }else if(it==saturdayBtn){
+                    focusCalendar.set(Calendar.DAY_OF_WEEK,Calendar.SATURDAY)
+                }else if(it==sundayBtn){
+                    focusCalendar.set(Calendar.DAY_OF_WEEK,Calendar.SUNDAY)
+                }
+            }else{
+                focusCalendar = Calendar.getInstance()
+            }
+            loadSchedule()
+        }
+        mondayBtn.setOnClickListener(onClickListener)
+        tuesdayBtn.setOnClickListener(onClickListener)
+        wednesdayBth.setOnClickListener(onClickListener)
+        thursdayBtn.setOnClickListener(onClickListener)
+        fridayBtn.setOnClickListener (onClickListener)
+        saturdayBtn.setOnClickListener(onClickListener)
+        sundayBtn.setOnClickListener (onClickListener)
+
+    }
+    fun vineButton(today:Button){
+        activityMainBinding.mondayBtn.backgroundTintList = null
+        activityMainBinding.tuesdayBtn.backgroundTintList = null
+        activityMainBinding.wednesdayBth.backgroundTintList = null
+        activityMainBinding.thursdayBtn.backgroundTintList = null
+        activityMainBinding.fridayBtn.backgroundTintList = null
+        activityMainBinding.saturdayBtn.backgroundTintList = null
+        activityMainBinding.sundayBtn.backgroundTintList = null
+        today.backgroundTintList = this.getColorStateList(R.color.green)
     }
 
     override fun onResume() {

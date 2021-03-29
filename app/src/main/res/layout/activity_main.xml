@@ -6,6 +6,72 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/mondayBtn"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonshape"
+            android:text="П"
+            android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/tuesdayBtn"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonshape"
+            android:text="В"
+            android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/wednesdayBth"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonshape"
+            android:text="С"
+            android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/thursdayBtn"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonshape"
+            android:text="Ч"
+            android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/fridayBtn"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonshape"
+            android:text="П"
+            android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/saturdayBtn"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonshape"
+            android:text="С"
+            android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/sundayBtn"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/buttonshape"
+            android:text="В"
+            android:textColor="@color/black" />
+    </com.google.android.material.chip.ChipGroup>
+
     <Button
         android:id="@+id/createNewButton"
         android:layout_width="50dp"
@@ -18,7 +84,7 @@
         android:shadowDy="0"
         android:shadowRadius="5"
         android:text="+"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/black"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,15 +92,17 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ScrollView
-        android:layout_width="match_parent"
         android:id="@+id/SV"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="10dp"
+        android:layout_marginTop="70dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="50dp"
         app:layout_constraintBottom_toTopOf="@+id/createNewButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
         <LinearLayout
             android:id="@+id/scheduleLayout"
             android:layout_width="match_parent"

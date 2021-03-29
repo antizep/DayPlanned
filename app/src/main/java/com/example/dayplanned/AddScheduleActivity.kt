@@ -53,7 +53,7 @@ class AddScheduleActivity : AppCompatActivity() {
         val header = intent.getStringExtra("header")
         val descr = intent.getStringExtra("description")
         val t = intent.getStringExtra("time")
-        mode = intent.getIntExtra(AddScheduleController.MODE, 0)
+        mode = intent.getIntExtra(AddScheduleController.MODE, AddScheduleController.VEEKLY_MODE)
         schedule = intent.getStringExtra(AddScheduleController.SCHEDULE)
 
         val appGallery = getExternalFilesDir(DIRECTORY_PICTURES);

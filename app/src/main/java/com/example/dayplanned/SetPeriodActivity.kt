@@ -27,7 +27,7 @@ class SetPeriodActivity : AppCompatActivity() {
         scheduleController = AddScheduleController(this)
         val id = intent.getIntExtra("id", 0);
         val t = intent.getStringExtra("time")
-        var mode = intent.getIntExtra(AddScheduleController.MODE,0)
+        var mode = intent.getIntExtra(AddScheduleController.MODE,AddScheduleController.VEEKLY_MODE)
         val scheduleS = intent.getStringExtra(AddScheduleController.SCHEDULE)
 
         if(scheduleS != null) {

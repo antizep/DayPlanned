@@ -15,10 +15,9 @@ class ScheduleUtils {
 
         fun excludeNotDay(
             unsorted: MutableList<Schedule>,
-            calendar: Calendar?
+            calendar: Calendar
         ): MutableList<Schedule> {
             val mutableList: MutableList<Schedule> = mutableListOf();
-            val calendar = Calendar.getInstance();
 
             unsorted.forEach {
 
@@ -73,9 +72,9 @@ class ScheduleUtils {
             return schedule;
         }
 
-        fun sortByTimeToday(unsorted: MutableList<Schedule>): MutableList<Schedule> {
+        fun sortByDay(unsorted: MutableList<Schedule>,day:Calendar): MutableList<Schedule> {
 
-            val positive: MutableList<Schedule> = excludeNotToday(unsorted);
+            val positive: MutableList<Schedule> = excludeNotDay(unsorted,day);
             unsorted.removeAll(positive);
             val sorted = mutableListOf<Schedule>()
             while (positive.size > 0) {
