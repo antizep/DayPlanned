@@ -38,11 +38,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-//        val broadcastIntent = Intent()
-//        broadcastIntent.action = "restartservice"
-//        broadcastIntent.setClass(this, MyReceiver::class.java)
-//        this.sendBroadcast(broadcastIntent)
-//        Log.d("MyRec","closed")
         super.onDestroy()
     }
 
@@ -54,11 +49,9 @@ class MainActivity : AppCompatActivity() {
         scheduleController = AddScheduleController(this)
         createDayBtn()
         loadSchedule();
-
-//        val broadcastIntent = Intent()
-//        broadcastIntent.action = "restartservice"
-//        broadcastIntent.setClass(this, NotificationService::class.java)
-//        startForegroundService(broadcastIntent)
+        val scheduleAll = scheduleController!!.getSchedule();
+        val nextTask = ScheduleUtils.nextTask(scheduleAll)
+        addAlarmManager(nextTask!!)
 
         activityMainBinding.createNewButton.setOnClickListener {
             startActivity(Intent(this, AddScheduleActivity::class.java));
@@ -109,7 +102,6 @@ class MainActivity : AppCompatActivity() {
         }
         val nextTask = ScheduleUtils.nextTask(sorted)
         if (nextTask!=null) {
-            //addAlarmManager(nextTask)
         }
         val indexTask:Int
         if(nextTask!!.time!!.get(Calendar.DAY_OF_YEAR) <= Calendar.getInstance().get(Calendar.DAY_OF_YEAR) ) {
@@ -121,8 +113,15 @@ class MainActivity : AppCompatActivity() {
 
             scheduleLayoutPane = SheduleLayoutBinding.inflate(layoutInflater);
             val slp = scheduleLayoutPane.root
+            slp.setOnClickListener {
+                Log.d("MainActivity","click task name:"+schedule.header)
+                val intent = Intent(this, Detail::class.java)
+                intent.putExtra("id", schedule.id)
+                startActivity(intent)
+            }
             scheduleLayout.addView(slp);
-            scheduleLayoutPane.scheduleBody.setText(schedule.description)
+//            scheduleLayoutPane.scheduleBody.setText(schedule.description)
+            scheduleLayoutPane.scheduleBody.visibility = View.INVISIBLE
             scheduleLayoutPane.scheduleHeader.setText(schedule.header);
             scheduleLayoutPane.completeCounter.setText(schedule.complete.toString())
             val t = schedule.getTxtTime();
@@ -142,24 +141,7 @@ class MainActivity : AppCompatActivity() {
                     ).into(scheduleLayoutPane.ImageSchedule)
                 }
             }
-            scheduleLayoutPane.deleteScheduleButton.setOnClickListener {
-                scheduleLayout.removeView(it.parent as View)
-                scheduleController!!.delSchedule(schedule.id)
-            }
 
-            scheduleLayoutPane.editScheduleButton.setOnClickListener {
-                val intent = Intent(this, AddScheduleActivity::class.java)
-                intent.putExtra("id", schedule.id)
-                intent.putExtra("header", schedule.header)
-
-                intent.putExtra(AddScheduleController.MODE, schedule.mode)
-                intent.putExtra(AddScheduleController.SCHEDULE, schedule.schedule.toString())
-
-                intent.putExtra("description", schedule.description)
-                intent.putExtra("time", schedule.getTxtTime())
-
-                startActivity(intent)
-            }
 
             Log.d("MainActivity", schedule.toString())
         }
@@ -243,6 +225,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         loadSchedule()
+        val scheduleAll = scheduleController!!.getSchedule();
+        val nextTask = ScheduleUtils.nextTask(scheduleAll)
+        addAlarmManager(nextTask!!)
         Log.d("MAIN", "resume");
         super.onResume()
     }

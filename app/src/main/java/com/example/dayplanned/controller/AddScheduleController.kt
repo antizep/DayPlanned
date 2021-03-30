@@ -102,7 +102,45 @@ class AddScheduleController(context: Context) :
         db.close()
         return (_success)
     }
+    fun getScheduleById(id: Int): Schedule{
+        val db = readableDatabase
+        val selectAll = "Select * from $TABLE_NAME WHERE id= $id";
+        val cursor = db.rawQuery(selectAll, null);
+        var result: Schedule? = null;
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                val header = cursor.getString(cursor.getColumnIndex(HEADER))
+                val desc = cursor.getString(cursor.getColumnIndex(DESCRIPTION))
+                val time = cursor.getString(cursor.getColumnIndex(TIME));
+                val completed = cursor.getInt(cursor.getColumnIndex(COMPLETED))
+                val skipped = cursor.getInt(cursor.getColumnIndex(SKIPPED))
+                Log.d("AddScheduleController","gs"+cursor.getColumnIndex(MODE))
+                val mode = cursor.getInt(cursor.getColumnIndex(MODE))
+                var s = cursor.getString(cursor.getColumnIndex(SCHEDULE))
+                if(s == null){
+                    s = "[]"
+                }
+                val arra = JSONArray(s)
+                val schedule = Schedule(id, header, desc,completed,skipped,mode,arra)
+                if(!time.isNullOrBlank()) {
+                    try {
+                        val time = Time.valueOf(time)
+                        schedule.time = Calendar.getInstance();
+                        schedule.time!!.set(Calendar.HOUR_OF_DAY,time.hours)
+                        schedule.time!!.set(Calendar.MINUTE,time.minutes)
+                        schedule.time!!.set(Calendar.SECOND,0)
+                    }catch (e:Exception){
 
+                    }
+                }
+                result = schedule
+
+            }
+        }
+        cursor.close();
+        db.close();
+        return result!!
+    }
     fun getSchedule(): MutableList<Schedule> {
         val schedules: MutableList<Schedule> = mutableListOf()
         val db = readableDatabase;
