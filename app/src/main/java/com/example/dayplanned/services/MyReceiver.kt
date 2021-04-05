@@ -24,6 +24,7 @@ class MyReceiver : BroadcastReceiver() {
     companion object {
         var HEADER = "header"
         var DESCRIPTION = "description"
+        var TIME = "time"
         var ID = "ID"
     }
 
@@ -48,6 +49,7 @@ class MyReceiver : BroadcastReceiver() {
         val alarmManager: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val myIntent = Intent(context, MyReceiver::class.java)
         myIntent.putExtra(HEADER,schedule.header)
+        myIntent.putExtra(TIME,schedule.getTxtTime())
         myIntent.putExtra(DESCRIPTION,schedule.description)
         myIntent.putExtra(ID,schedule.id)
         Log.d("MyReceiver","next schedule:"+schedule.header+" date:"+schedule.time!!.time.toString())

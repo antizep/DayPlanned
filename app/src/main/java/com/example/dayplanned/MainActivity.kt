@@ -27,6 +27,7 @@ import com.example.dayplanned.services.MyReceiver.Companion.ID
 import com.example.dayplanned.utills.ScheduleUtils
 import java.io.File
 import android.icu.util.Calendar
+import com.example.dayplanned.services.MyReceiver.Companion.TIME
 
 class MainActivity : AppCompatActivity() {
     var scheduleController: AddScheduleController? = null
@@ -51,8 +52,9 @@ class MainActivity : AppCompatActivity() {
         loadSchedule();
         val scheduleAll = scheduleController!!.getSchedule();
         val nextTask = ScheduleUtils.nextTask(scheduleAll)
-        addAlarmManager(nextTask!!)
-
+        if(nextTask != null) {
+            addAlarmManager(nextTask)
+        }
         activityMainBinding.createNewButton.setOnClickListener {
             startActivity(Intent(this, AddScheduleActivity::class.java));
         }
@@ -74,6 +76,7 @@ class MainActivity : AppCompatActivity() {
         //myIntent.action = "restartservice"
         myIntent.putExtra(HEADER, schedule.header)
         myIntent.putExtra(DESCRIPTION, schedule.description)
+        myIntent.putExtra(TIME,schedule.getTxtTime())
         myIntent.putExtra(ID, schedule.id)
         val pendingIntentpi = PendingIntent.getBroadcast(
             applicationContext,
@@ -124,6 +127,7 @@ class MainActivity : AppCompatActivity() {
             scheduleLayoutPane.scheduleBody.visibility = View.INVISIBLE
             scheduleLayoutPane.scheduleHeader.setText(schedule.header);
             scheduleLayoutPane.completeCounter.setText(schedule.complete.toString())
+            scheduleLayoutPane.canceledCounter.setText(schedule.skipped.toString())
             val t = schedule.getTxtTime();
             scheduleLayoutPane.time.setText(t)
             val id = schedule.id
@@ -227,7 +231,9 @@ class MainActivity : AppCompatActivity() {
         loadSchedule()
         val scheduleAll = scheduleController!!.getSchedule();
         val nextTask = ScheduleUtils.nextTask(scheduleAll)
-        addAlarmManager(nextTask!!)
+        if(nextTask != null) {
+            addAlarmManager(nextTask)
+        }
         Log.d("MAIN", "resume");
         super.onResume()
     }

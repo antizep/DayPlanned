@@ -63,6 +63,16 @@ class AddScheduleController(context: Context) :
         db.execSQL("UPDATE $TABLE_NAME SET $COMPLETED = $c WHERE id = $id");
     }
 
+    fun cancel(id:Int){
+        val  db = this.writableDatabase
+        val cursor = db.rawQuery("Select $SKIPPED From $TABLE_NAME Where id = $id",null);
+        var c  = 0;
+        if (cursor != null && cursor.moveToNext()) {
+            c  = cursor.getInt(cursor.getColumnIndex(SKIPPED));
+        }
+        c++
+        db.execSQL("UPDATE $TABLE_NAME SET $SKIPPED = $c WHERE id = $id");
+    }
 
     fun addSchedule(schedule: Schedule): Int {
         val db = this.writableDatabase

@@ -69,12 +69,21 @@
                 android:id="@+id/completeCounter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
                 android:text="0"
-                android:textColor="@color/white"
-                app:layout_constraintEnd_toStartOf="@+id/scheduleHeader"
+                android:textColor="#74FDB2"
+                app:layout_constraintEnd_toStartOf="@+id/time"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/scheduleHeader" />
+
+            <TextView
+                android:id="@+id/canceledCounter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="#FF003B"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/time"
+                app:layout_constraintTop_toBottomOf="@+id/scheduleHeader" />
 
             <TextView
                 android:id="@+id/time"
