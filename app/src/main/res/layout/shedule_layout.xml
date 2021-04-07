@@ -10,7 +10,7 @@
         android:layout_width="386dp"
         android:layout_height="216dp"
         android:layout_marginTop="4dp"
-        app:cardCornerRadius="30dp"
+        app:cardCornerRadius="3dp"
         app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,77 +25,87 @@
 
             android:visibility="visible"
             app:srcCompat="@android:drawable/sym_def_app_icon"
-            tools:srcCompat="@color/green"
+            tools:srcCompat="@color/base_yellow"
             tools:visibility="visible" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="63dp"
-            android:layout_marginStart="65dp"
-            android:layout_marginTop="140dp"
-            android:layout_marginEnd="65dp"
-            android:background="@drawable/schedule_shape"
+            android:layout_height="60dp"
+            android:layout_marginTop="156dp"
+            android:background="@color/base_white_glass"
+            android:clipToPadding="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@id/ImageSchedule"
             tools:layout_editor_absoluteX="65dp">
-
-            <TextView
-                android:id="@+id/scheduleBody"
-                android:layout_width="269dp"
-                android:layout_height="77dp"
-                android:layout_marginTop="4dp"
-                android:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView"
-                android:textColor="#FFFFFF"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/time"
-                tools:visibility="gone" />
 
             <TextView
                 android:id="@+id/scheduleHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="TextView"
-                android:textColor="#FBFBFB"
+                android:fontFamily="@font/inter_regular"
+                android:text="Header"
+                android:textColor="@color/base_black"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/completeCounter"
+            <LinearLayout
+                android:id="@+id/linearLayout2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0"
-                android:textColor="#74FDB2"
+                android:background="@drawable/calendar_yellow_button"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@+id/time"
                 app:layout_constraintEnd_toStartOf="@+id/time"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/scheduleHeader" />
+                app:layout_constraintHorizontal_bias="0.15"
+                app:layout_constraintStart_toStartOf="parent">
 
-            <TextView
-                android:id="@+id/canceledCounter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textColor="#FF003B"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/time"
-                app:layout_constraintTop_toBottomOf="@+id/scheduleHeader" />
+                <TextView
+                    android:id="@+id/completeCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_regular"
+                    android:text="0"
+                    android:textColor="@color/base_black" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/inter_regular"
                 android:text="time"
-                android:textColor="@color/white"
+                android:textColor="@color/base_black"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/scheduleHeader" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/calendar_shady_button"
+                android:gravity="center"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@+id/time"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.85"
+                app:layout_constraintStart_toEndOf="@+id/scheduleHeader">
+
+                <TextView
+                    android:id="@+id/canceledCounter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter_regular"
+                    android:text="0"
+                    android:textColor="@color/base_black" />
+            </LinearLayout>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

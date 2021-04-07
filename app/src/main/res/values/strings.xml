@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Clay</string>
+    <string name="everyday">everyday</string>
+    <string name="the_goal_title">The goal title...</string>
+    <string name="tell_us_mere_about_your_goal">Tell us more about your goal...</string>
+    <string name="continue_text">continue</string>
 </resources>

@@ -13,7 +13,9 @@
         android:layout_height="50dp"
         android:layout_alignParentStart="true"
         android:layout_marginStart="28dp"
-        android:background="@mipmap/complete_nat_foreground" />
+        android:background="@drawable/calendar_yellow_button"
+        android:fontFamily="@font/inter_regular"
+        android:text="com" />
 
     <Button
         android:id="@+id/buttonNatiCancel"
@@ -21,7 +23,9 @@
         android:layout_height="50dp"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="28dp"
-        android:background="@mipmap/cancel_button" />
+        android:background="@drawable/calendar_shady_button"
+        android:fontFamily="@font/inter_regular"
+        tools:text="brk" />
 
     <ImageView
         android:id="@+id/ImageScheduleNatification"
@@ -30,7 +34,7 @@
 
         android:visibility="visible"
         app:srcCompat="@android:drawable/sym_def_app_icon"
-        tools:srcCompat="@color/green"
+        tools:srcCompat="@color/base_shady1"
         tools:visibility="visible" />
 
     <LinearLayout
@@ -42,7 +46,7 @@
         android:layout_marginStart="28dp"
         android:layout_marginEnd="28dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/schedule_shape"
+        android:background="@color/base_white_glass"
         android:orientation="vertical">
 
         <TextView
@@ -54,7 +58,7 @@
             android:layout_marginBottom="10dp"
             android:text="header"
             android:textAlignment="center"
-            android:textColor="@color/white" />
+            android:textColor="@color/base_black" />
 
         <TextView
             android:id="@+id/timenatification"
@@ -62,7 +66,7 @@
             android:layout_height="wrap_content"
             android:text="00:00"
             android:textAlignment="center"
-            android:textColor="@color/white" />
+            android:textColor="@color/base_black" />
 
         <TextView
             android:id="@+id/bodyNatification"
@@ -73,7 +77,7 @@
             android:layout_marginBottom="10dp"
             android:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView"
             android:textAlignment="center"
-            android:textColor="@color/white" />
+            android:textColor="@color/base_black" />
 
     </LinearLayout>
 

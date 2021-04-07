@@ -7,68 +7,55 @@
     tools:context=".AddScheduleActivity">
 
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text="цель"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scheduleImage" />
-
     <EditText
         android:id="@+id/textChedule"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="15dp"
         android:layout_marginEnd="15dp"
         android:autofillHints=""
         android:ems="10"
+        android:fontFamily="@font/inter_regular"
         android:gravity="start|top"
         android:inputType="textMultiLine"
+        android:textColor="@color/base_shady2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/scheduleImage"
+        tools:text="@string/the_goal_title" />
 
     <EditText
         android:id="@+id/descriptionSchedule"
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
+        android:layout_width="382dp"
+        android:layout_height="212dp"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="15dp"
         android:layout_marginEnd="15dp"
         android:ems="10"
+        android:fontFamily="@font/inter_regular"
         android:gravity="start|top"
         android:inputType="textMultiLine"
+        android:textColor="@color/base_shady2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+        app:layout_constraintTop_toBottomOf="@+id/textChedule"
+        tools:text="@string/tell_us_mere_about_your_goal" />
 
     <Button
         android:id="@+id/addScheduleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/button_text_shape"
+        android:fontFamily="@font/inter_regular"
         android:text="далее"
+        android:textColor="@color/base_black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text="Опишите для чего вам эта цель"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textChedule" />
+        app:layout_constraintTop_toBottomOf="@+id/descriptionSchedule"
+        tools:text="@string/continue_text" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addImagesButton"

@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Clay</string>
+    <string name="everyday">eжеднено</string>
+    <string name="the_goal_title">Заголовок цели…</string>
+    <string name="tell_us_mere_about_your_goal">Расскажите подробнее о Вашей цели…</string>
+    <string name="continue_text">continue</string>
+</resources>

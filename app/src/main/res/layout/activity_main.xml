@@ -8,8 +8,9 @@
 
     <com.google.android.material.chip.ChipGroup
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,74 +18,125 @@
 
         <Button
             android:id="@+id/mondayBtn"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/buttonshape"
-            android:text="П"
-            android:textColor="@color/black" />
+            android:layout_width="40dp"
+            android:layout_height="23dp"
+            android:background="@drawable/calendar_inactive_button"
+            android:fontFamily="@font/inter_regular"
+            android:shadowColor="#000"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:stateListAnimator="@android:anim/anticipate_interpolator"
+            android:text="Пн"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/base_black"
+            android:textSize="14sp"
+            android:typeface="normal" />
 
         <Button
             android:id="@+id/tuesdayBtn"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/buttonshape"
-            android:text="В"
-            android:textColor="@color/black" />
+            android:layout_width="40dp"
+            android:layout_height="22dp"
+            android:background="@drawable/calendar_inactive_button"
+            android:fontFamily="@font/inter_regular"
+            android:shadowColor="#000"
+            android:stateListAnimator="@android:anim/anticipate_interpolator"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:text="Вт"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/base_black" />
 
         <Button
             android:id="@+id/wednesdayBth"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/buttonshape"
-            android:text="С"
-            android:textColor="@color/black" />
+            android:layout_width="40dp"
+            android:stateListAnimator="@android:anim/anticipate_interpolator"
+            android:layout_height="22dp"
+            android:background="@drawable/calendar_inactive_button"
+            android:fontFamily="@font/inter_regular"
+            android:shadowColor="#000"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:text="Ср"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/base_black" />
 
         <Button
             android:id="@+id/thursdayBtn"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/buttonshape"
-            android:text="Ч"
-            android:textColor="@color/black" />
+            android:layout_width="40dp"
+            android:layout_height="22dp"
+            android:background="@drawable/calendar_inactive_button"
+            android:fontFamily="@font/inter_regular"
+            android:stateListAnimator="@android:anim/anticipate_interpolator"
+            android:shadowColor="#000"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:text="Чт"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/base_black" />
 
         <Button
             android:id="@+id/fridayBtn"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/buttonshape"
-            android:text="П"
-            android:textColor="@color/black" />
+            android:layout_width="40dp"
+            android:layout_height="22dp"
+            android:background="@drawable/calendar_inactive_button"
+            android:fontFamily="@font/inter_regular"
+            android:stateListAnimator="@android:anim/anticipate_interpolator"
+            android:shadowColor="#000"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:text="Пт"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/base_black" />
 
         <Button
             android:id="@+id/saturdayBtn"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/buttonshape"
-            android:text="С"
-            android:textColor="@color/black" />
+            android:layout_width="40dp"
+            android:layout_height="22dp"
+            android:background="@drawable/calendar_inactive_button"
+            android:fontFamily="@font/inter_regular"
+            android:shadowColor="#000"
+            android:stateListAnimator="@android:anim/anticipate_interpolator"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:text="Сб"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/base_black" />
 
         <Button
             android:id="@+id/sundayBtn"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/buttonshape"
-            android:text="В"
-            android:textColor="@color/black" />
+            android:layout_width="40dp"
+            android:layout_height="22dp"
+            android:background="@drawable/calendar_inactive_button"
+            android:fontFamily="@font/inter_regular"
+            android:shadowColor="#000"
+            android:stateListAnimator="@android:anim/anticipate_interpolator"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:text="Вс"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/base_black" />
     </com.google.android.material.chip.ChipGroup>
 
     <Button
         android:id="@+id/createNewButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="50dp"
 
-        android:background="@drawable/buttonshape"
+        android:background="@drawable/button_icon_shape"
         android:shadowColor="#A8A8A8"
         android:shadowDx="0"
         android:shadowDy="0"
         android:shadowRadius="5"
         android:text="+"
-        android:textColor="@color/black"
+        android:textColor="@color/base_black"
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

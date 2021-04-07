@@ -17,8 +17,6 @@
         android:shadowDx="0"
         android:shadowDy="0"
         android:shadowRadius="5"
-        android:textColor="@color/black"
-        android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.955"
@@ -29,24 +27,21 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
 
-        android:layout_marginBottom="10dp"
         android:background="@mipmap/del_button_foreground"
         android:shadowColor="#A8A8A8"
         android:shadowDx="0"
         android:shadowDy="0"
         android:shadowRadius="5"
-        android:textColor="@color/black"
         android:textSize="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/cardView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.961"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="@+id/scheduleBody"
+        app:layout_constraintTop_toTopOf="@+id/editScheduleButton" />
 
     <TextView
         android:id="@+id/scheduleHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="64dp"
+        android:fontFamily="@font/inter_regular"
         android:text="TextView"
         android:textColor="#000000"
         android:textStyle="bold"
@@ -59,8 +54,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
+        android:fontFamily="@font/inter_regular"
         android:text="time"
-        android:textColor="@color/black"
+        android:textColor="@color/base_black"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -74,8 +70,9 @@
         android:layout_marginStart="15dp"
         android:layout_marginTop="52dp"
         android:layout_marginEnd="15dp"
+        android:fontFamily="@font/inter_regular"
         android:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView"
-        android:textColor="@color/black"
+        android:textColor="@color/base_black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -100,7 +97,7 @@
 
             android:visibility="visible"
             app:srcCompat="@android:drawable/sym_def_app_icon"
-            tools:srcCompat="@color/green"
+            tools:srcCompat="@color/base_yellow"
             tools:visibility="visible" />
 
     </androidx.cardview.widget.CardView>
@@ -122,15 +119,18 @@
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/inter_regular"
             android:text="выполнено:"
-            android:textColor="@color/black" />
+            android:textColor="@color/base_black"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/completeCounter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="172dp"
+            android:fontFamily="@font/inter_regular"
             android:text="0"
-            android:textColor="@color/green" />
+            android:textColor="@color/base_black" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
