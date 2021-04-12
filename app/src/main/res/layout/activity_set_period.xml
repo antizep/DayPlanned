@@ -69,14 +69,18 @@
             android:id="@+id/radioButtonDaily"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:buttonTint="@color/base_yellow"
             android:text="@string/everyday" />
 
         <RadioButton
             android:id="@+id/radioButtonWeekly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:buttonTint="@color/base_yellow"
             android:checked="true"
-            android:text="по дням" />
+            android:text="по дням"
+            android:textColorHighlight="@color/base_yellow"
+            android:textColorLink="@color/base_yellow" />
     </RadioGroup>
 
     <com.google.android.material.chip.ChipGroup
