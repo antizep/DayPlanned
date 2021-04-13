@@ -192,7 +192,7 @@ class AddScheduleActivity : AppCompatActivity() {
     private fun openEditor() {
         val u = UCrop.of(imageUri!!, Uri.fromFile(File(cacheDir, imageUri.hashCode().toString())))
             .withAspectRatio(16F, 9F)
-            .withMaxResultSize(1028, 1028)
+            .withMaxResultSize(640, 360)
             .start(this);
         Log.d("AddScheduleActivity",imageUri.toString())
     }

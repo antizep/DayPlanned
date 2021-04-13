@@ -1,7 +1,13 @@
 <resources>
     <string name="app_name">Clay</string>
     <string name="everyday">everyday</string>
+    <string name="day_of_week">day of week</string>
+    <string name="notification_time">Notification time</string>
+    <string name="save_button">Save</string>
     <string name="the_goal_title">The goal title...</string>
     <string name="tell_us_mere_about_your_goal">Tell us more about your goal...</string>
     <string name="continue_text">continue</string>
+    <string name="complited_text">Complited:</string>
+    <string name="canceled_text">Canceled:</string>
+
 </resources>

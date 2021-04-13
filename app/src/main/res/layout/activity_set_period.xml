@@ -7,27 +7,181 @@
     android:background="#FFFFFF"
     tools:context=".SetPeriodActivity">
 
+    <Button
+        android:id="@+id/comleteSetPeriod"
+        android:layout_width="102dp"
+        android:layout_height="36dp"
+        android:layout_marginBottom="83dp"
+        android:background="@drawable/button_text_shape"
+        android:fontFamily="@font/inter_regular"
+        android:text="@string/save_button"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="@color/base_black"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionSchedule" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/dayOfWeekLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginTop="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroupMode">
+
+        <Button
+            android:id="@+id/mondayBtn"
+            android:layout_width="40dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="8dp"
+
+            android:background="@drawable/calendar_inactive_button"
+            android:fontFamily="@font/inter_regular"
+            android:text="Пн"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/base_black"
+            android:textSize="14sp"
+            android:typeface="normal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/saturdayBtn"
+            android:layout_width="40dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/calendar_inactive_button"
+            android:fontFamily="@font/inter_regular"
+            android:shadowColor="#000"
+
+
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:text="Сб"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/base_black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/fridayBtn"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/sundayBtn"
+            android:layout_width="40dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/calendar_inactive_button"
+            android:fontFamily="@font/inter_regular"
+
+
+            android:shadowColor="#000"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:text="Вс"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/base_black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/saturdayBtn"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/thursdayBtn"
+            android:layout_width="40dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/calendar_inactive_button"
+            android:fontFamily="@font/inter_regular"
+            android:shadowColor="#000"
+
+
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:text="Чт"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/base_black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/wednesdayBth"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/wednesdayBth"
+            android:layout_width="40dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/calendar_inactive_button"
+            android:fontFamily="@font/inter_regular"
+            android:shadowColor="#000"
+
+
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:text="Ср"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/base_black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tuesdayBtn"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/tuesdayBtn"
+            android:layout_width="40dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/calendar_inactive_button"
+            android:fontFamily="@font/inter_regular"
+            android:shadowColor="#000"
+
+
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:text="Вт"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/base_black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/mondayBtn"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/fridayBtn"
+            android:layout_width="40dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/calendar_inactive_button"
+            android:fontFamily="@font/inter_regular"
+            android:shadowColor="#000"
+
+
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:text="Пт"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@color/base_black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/thursdayBtn"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="время оповещения"
+        android:layout_marginTop="18dp"
+        android:fontFamily="@font/inter_regular"
 
+        android:text="@string/notification_time"
+        android:textColor="@color/base_black"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/comleteSetPeriod"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="готово"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <TimePicker
 
@@ -40,7 +194,7 @@
         android:layout_centerHorizontal="true"
 
 
-        android:layout_marginTop="44dp"
+        android:layout_marginTop="18dp"
         android:amPmTextColor="@color/base_yellow"
         android:backgroundTint="#FFFFFF"
         android:headerBackground="#fff171"
@@ -52,13 +206,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chipGroupWeekly"
+        app:layout_constraintTop_toBottomOf="@+id/dayOfWeekLayout"
         tools:ignore="MissingConstraints" />
 
     <RadioGroup
         android:id="@+id/radioGroupMode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -78,111 +233,9 @@
             android:layout_height="wrap_content"
             android:buttonTint="@color/base_yellow"
             android:checked="true"
-            android:text="по дням"
+            android:text="@string/day_of_week"
             android:textColorHighlight="@color/base_yellow"
             android:textColorLink="@color/base_yellow" />
     </RadioGroup>
-
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chipGroupWeekly"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroupMode"
-        tools:visibility="visible">
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipMon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checkable="true"
-            android:text="пн"
-            android:textAllCaps="false"
-            app:checkedIconEnabled="false"
-            app:checkedIconVisible="false"
-            app:chipBackgroundColor="#F44336"
-            app:chipIconEnabled="false"
-            app:chipIconTint="#673AB7"
-            app:chipIconVisible="false" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipTue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checkable="true"
-            android:text="вт"
-            app:checkedIconEnabled="false"
-            app:checkedIconVisible="false"
-            app:chipBackgroundColor="#F44336"
-            app:chipIconEnabled="false"
-            app:chipIconTint="#673AB7"
-            app:chipIconVisible="false" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipWed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checkable="true"
-            android:text="ср"
-            app:checkedIconEnabled="false"
-            app:checkedIconVisible="false"
-            app:chipBackgroundColor="#F44336"
-            app:chipIconEnabled="false"
-            app:chipIconVisible="false" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipTh"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checkable="true"
-            android:text="чт"
-            app:checkedIconEnabled="false"
-            app:checkedIconVisible="false"
-            app:chipBackgroundColor="#F44336"
-            app:chipIconEnabled="false"
-            app:chipIconTint="#673AB7"
-            app:chipIconVisible="false" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipFr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checkable="true"
-            android:text="пт"
-            app:checkedIconEnabled="false"
-            app:checkedIconVisible="false"
-            app:chipBackgroundColor="#F44336"
-            app:chipIconEnabled="false"
-            app:chipIconVisible="false" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipSat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checkable="true"
-            android:text="сб"
-            app:checkedIconEnabled="false"
-            app:checkedIconVisible="false"
-            app:chipBackgroundColor="#F44336"
-            app:chipIconEnabled="false"
-            app:chipIconTint="#673AB7"
-            app:chipIconVisible="false" />
-
-        <com.google.android.material.chip.Chip
-            android:id="@+id/chipSun"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checkable="true"
-            android:text="вс"
-            app:checkedIconEnabled="false"
-            app:checkedIconVisible="false"
-            app:chipBackgroundColor="#F44336"
-            app:chipIconEnabled="false"
-            app:chipIconTint="#673AB7"
-            app:chipIconVisible="false" />
-
-    </com.google.android.material.chip.ChipGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

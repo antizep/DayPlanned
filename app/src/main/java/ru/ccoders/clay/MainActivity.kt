@@ -1,17 +1,23 @@
 package ru.ccoders.clay
 
+import android.R.attr.*
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.icu.util.Calendar
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.view.get
+import androidx.core.view.updateLayoutParams
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
@@ -23,12 +29,11 @@ import ru.ccoders.clay.services.MyReceiver
 import ru.ccoders.clay.services.MyReceiver.Companion.DESCRIPTION
 import ru.ccoders.clay.services.MyReceiver.Companion.HEADER
 import ru.ccoders.clay.services.MyReceiver.Companion.ID
+import ru.ccoders.clay.services.MyReceiver.Companion.TIME
+import ru.ccoders.clay.utills.ImageUtil
 import ru.ccoders.clay.utills.ScheduleUtils
 import java.io.File
-import android.icu.util.Calendar
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.view.get
-import ru.ccoders.clay.services.MyReceiver.Companion.TIME
+
 
 class MainActivity : AppCompatActivity() {
     var scheduleController: AddScheduleController? = null
@@ -77,7 +82,7 @@ class MainActivity : AppCompatActivity() {
         //myIntent.action = "restartservice"
         myIntent.putExtra(HEADER, schedule.header)
         myIntent.putExtra(DESCRIPTION, schedule.description)
-        myIntent.putExtra(TIME,schedule.getTxtTime())
+        myIntent.putExtra(TIME, schedule.getTxtTime())
         myIntent.putExtra(ID, schedule.id)
         val pendingIntentpi = PendingIntent.getBroadcast(
             applicationContext,
@@ -85,8 +90,6 @@ class MainActivity : AppCompatActivity() {
             myIntent,
             PendingIntent.FLAG_CANCEL_CURRENT
         );
-        Toast.makeText(this, "notification added:" + schedule.getTxtTime(), Toast.LENGTH_LONG)
-            .show()
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, schedule.time!!.timeInMillis, pendingIntentpi)
     }
@@ -100,7 +103,7 @@ class MainActivity : AppCompatActivity() {
         if(scheduleAll.size == 0){
             return
         }
-        val sorted = ScheduleUtils.sortByDay(scheduleAll,focusCalendar)
+        val sorted = ScheduleUtils.sortByDay(scheduleAll, focusCalendar)
         if(sorted.size ==0){
             return
         }
@@ -118,7 +121,7 @@ class MainActivity : AppCompatActivity() {
             scheduleLayoutPane = SheduleLayoutBinding.inflate(layoutInflater);
             val slp = scheduleLayoutPane.root
             slp.setOnClickListener {
-                Log.d("MainActivity","click task name:"+schedule.header)
+                Log.d("MainActivity", "click task name:" + schedule.header)
                 val intent = Intent(this, Detail::class.java)
                 intent.putExtra("id", schedule.id)
                 startActivity(intent)
@@ -147,6 +150,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+            ImageUtil().resizeImage(scheduleLayoutPane,getResources().getDisplayMetrics().widthPixels)
 
             Log.d("MainActivity", schedule.toString())
         }
@@ -179,31 +183,37 @@ class MainActivity : AppCompatActivity() {
             Calendar.MONDAY -> todayBatton = mondayBtn
             Calendar.TUESDAY -> todayBatton = tuesdayBtn
             Calendar.WEDNESDAY -> todayBatton = wednesdayBth
-            Calendar.THURSDAY-> todayBatton = thursdayBtn
+            Calendar.THURSDAY -> todayBatton = thursdayBtn
             Calendar.FRIDAY -> todayBatton = fridayBtn
-            Calendar.SATURDAY-> todayBatton = saturdayBtn
-            Calendar.SUNDAY-> todayBatton = sundayBtn
+            Calendar.SATURDAY -> todayBatton = saturdayBtn
+            Calendar.SUNDAY -> todayBatton = sundayBtn
         }
         //todo сделать с обводкой
-        todayBatton!!.background= AppCompatResources.getDrawable(this,R.drawable.calendar_yellow_button)
+        todayBatton!!.background= AppCompatResources.getDrawable(
+            this,
+            R.drawable.calendar_yellow_button
+        )
         val onClickListener =View.OnClickListener{
             vineButton(todayBatton)
             if (today!=it) {
-                it.background = AppCompatResources.getDrawable(this,R.drawable.calendar_shady_button)
+                it.background = AppCompatResources.getDrawable(
+                    this,
+                    R.drawable.calendar_shady_button
+                )
                 if(it==mondayBtn){
-                    focusCalendar.set(Calendar.DAY_OF_WEEK,Calendar.MONDAY)
+                    focusCalendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
                 }else if(it==tuesdayBtn){
-                    focusCalendar.set(Calendar.DAY_OF_WEEK,Calendar.TUESDAY)
+                    focusCalendar.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY)
                 }else if(it==wednesdayBth){
-                    focusCalendar.set(Calendar.DAY_OF_WEEK,Calendar.WEDNESDAY)
+                    focusCalendar.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY)
                 }else if(it==thursdayBtn){
-                    focusCalendar.set(Calendar.DAY_OF_WEEK,Calendar.THURSDAY)
+                    focusCalendar.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY)
                 }else if(it==fridayBtn){
-                    focusCalendar.set(Calendar.DAY_OF_WEEK,Calendar.FRIDAY)
+                    focusCalendar.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY)
                 }else if(it==saturdayBtn){
-                    focusCalendar.set(Calendar.DAY_OF_WEEK,Calendar.SATURDAY)
+                    focusCalendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY)
                 }else if(it==sundayBtn){
-                    focusCalendar.set(Calendar.DAY_OF_WEEK,Calendar.SUNDAY)
+                    focusCalendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
                 }
             }else{
                 focusCalendar = Calendar.getInstance()
@@ -214,21 +224,42 @@ class MainActivity : AppCompatActivity() {
         tuesdayBtn.setOnClickListener(onClickListener)
         wednesdayBth.setOnClickListener(onClickListener)
         thursdayBtn.setOnClickListener(onClickListener)
-        fridayBtn.setOnClickListener (onClickListener)
+        fridayBtn.setOnClickListener(onClickListener)
         saturdayBtn.setOnClickListener(onClickListener)
-        sundayBtn.setOnClickListener (onClickListener)
+        sundayBtn.setOnClickListener(onClickListener)
 
     }
     @SuppressLint("ResourceType")
-    fun vineButton(today:Button){
-        activityMainBinding.mondayBtn.background = AppCompatResources.getDrawable(this,R.drawable.calendar_inactive_button)
-        activityMainBinding.tuesdayBtn.background = AppCompatResources.getDrawable(this,R.drawable.calendar_inactive_button)
-        activityMainBinding.wednesdayBth.background = AppCompatResources.getDrawable(this,R.drawable.calendar_inactive_button)
-        activityMainBinding.thursdayBtn.background = AppCompatResources.getDrawable(this,R.drawable.calendar_inactive_button)
-        activityMainBinding.fridayBtn.background = AppCompatResources.getDrawable(this,R.drawable.calendar_inactive_button)
-        activityMainBinding.saturdayBtn.background = AppCompatResources.getDrawable(this,R.drawable.calendar_inactive_button)
-        activityMainBinding.sundayBtn.background = AppCompatResources.getDrawable(this,R.drawable.calendar_inactive_button)
-        today.background = AppCompatResources.getDrawable(this,R.drawable.calendar_yellow_button)
+    fun vineButton(today: Button){
+        activityMainBinding.mondayBtn.background = AppCompatResources.getDrawable(
+            this,
+            R.drawable.calendar_inactive_button
+        )
+        activityMainBinding.tuesdayBtn.background = AppCompatResources.getDrawable(
+            this,
+            R.drawable.calendar_inactive_button
+        )
+        activityMainBinding.wednesdayBth.background = AppCompatResources.getDrawable(
+            this,
+            R.drawable.calendar_inactive_button
+        )
+        activityMainBinding.thursdayBtn.background = AppCompatResources.getDrawable(
+            this,
+            R.drawable.calendar_inactive_button
+        )
+        activityMainBinding.fridayBtn.background = AppCompatResources.getDrawable(
+            this,
+            R.drawable.calendar_inactive_button
+        )
+        activityMainBinding.saturdayBtn.background = AppCompatResources.getDrawable(
+            this,
+            R.drawable.calendar_inactive_button
+        )
+        activityMainBinding.sundayBtn.background = AppCompatResources.getDrawable(
+            this,
+            R.drawable.calendar_inactive_button
+        )
+        today.background = AppCompatResources.getDrawable(this, R.drawable.calendar_yellow_button)
     }
 
     override fun onResume() {

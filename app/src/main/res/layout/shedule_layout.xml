@@ -7,10 +7,12 @@
     android:visibility="visible">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="386dp"
-        android:layout_height="216dp"
-        android:layout_marginTop="4dp"
-        app:cardCornerRadius="3dp"
+        android:id="@+id/imageCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        app:cardBackgroundColor="#00EA1D1D"
+        app:cardCornerRadius="6dp"
         app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,8 +22,8 @@
 
         <ImageView
             android:id="@+id/ImageSchedule"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
 
             android:visibility="visible"
             app:srcCompat="@android:drawable/sym_def_app_icon"
@@ -29,23 +31,26 @@
             tools:visibility="visible" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/info"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginTop="156dp"
+            android:layout_marginBottom="0dp"
             android:background="@color/base_white_glass"
             android:clipToPadding="false"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@id/ImageSchedule"
             tools:layout_editor_absoluteX="65dp">
 
             <TextView
                 android:id="@+id/scheduleHeader"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="70dp"
                 android:layout_marginTop="4dp"
+                android:layout_marginEnd="70dp"
                 android:fontFamily="@font/inter_regular"
-                android:text="Header"
+                android:gravity="center"
+                android:text="HeaderHeaderHeaderHeaderHeaderHeaderHeaderHeaderHeaderHeader"
                 android:textColor="@color/base_black"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -57,13 +62,13 @@
                 android:id="@+id/linearLayout2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
                 android:background="@drawable/calendar_yellow_button"
                 android:gravity="center"
                 android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="@+id/time"
-                app:layout_constraintEnd_toStartOf="@+id/time"
-                app:layout_constraintHorizontal_bias="0.15"
-                app:layout_constraintStart_toStartOf="parent">
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/completeCounter"
@@ -90,13 +95,15 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="6dp"
                 android:background="@drawable/calendar_shady_button"
                 android:gravity="center"
                 android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="@+id/time"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.85"
-                app:layout_constraintStart_toEndOf="@+id/scheduleHeader">
+                app:layout_constraintStart_toEndOf="@+id/scheduleHeader"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/canceledCounter"

@@ -117,12 +117,7 @@ class NotificationService : Service() {
             val remoteViews = RemoteViews(packageName, R.layout.shedule_natification)
             remoteViews.setImageViewBitmap(R.id.ImageScheduleNatification, icon)
             remoteViews.setTextViewText(R.id.headerNatification, intent.getStringExtra(HEADER))
-            remoteViews.setTextViewText(R.id.timenatification, intent.getStringExtra(TIME))
-            remoteViews.setTextViewText(
-                R.id.bodyNatification, intent.getStringExtra(
-                    DESCRIPTION
-                )
-            )
+            remoteViews.setImageViewBitmap(R.id.iconNatification,BitmapFactory.decodeResource(context.resources,R.mipmap.icon_apolo))
             val cancelIntent = Intent(context, NotificationService::class.java)
             cancelIntent.putExtra("final_id",CANCELL_BUTTON_CODE)
             cancelIntent.putExtra(ID, id)
@@ -147,6 +142,8 @@ class NotificationService : Service() {
                     PendingIntent.FLAG_UPDATE_CURRENT
                 )
             )
+
+
             setCustomContentView(remoteViews)
             setCustomBigContentView(remoteViews)
             setChannelId(CHANNEL_ID)

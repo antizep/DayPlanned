@@ -10,13 +10,18 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import ru.ccoders.clay.controller.AddScheduleController
 import ru.ccoders.clay.databinding.ActivityDetailBinding
+import ru.ccoders.clay.databinding.SheduleLayoutBinding
+import ru.ccoders.clay.utills.ImageUtil
 import java.io.File
 
 class Detail : AppCompatActivity() {
     private lateinit var activityDetailBinding: ActivityDetailBinding
+    private lateinit var scheduleLayoutPane: SheduleLayoutBinding;
     var scheduleController: AddScheduleController? = null
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        scheduleLayoutPane = SheduleLayoutBinding.inflate(layoutInflater);
         super.onCreate(savedInstanceState)
         activityDetailBinding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(activityDetailBinding.root)
@@ -29,10 +34,7 @@ class Detail : AppCompatActivity() {
             startActivity(intent)
         }
         val t = schedule.getTxtTime();
-        activityDetailBinding.time.setText(t)
         activityDetailBinding.scheduleBody.setText(schedule.description)
-        activityDetailBinding.scheduleHeader.setText(schedule.header);
-
         val appGallery = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         var file = File(appGallery!!.absolutePath + "/$id/")
         if (file.exists()) {
@@ -44,10 +46,16 @@ class Detail : AppCompatActivity() {
                             images[0].length()
                         )
                     )
-                ).into(activityDetailBinding.ImageSchedule)
+                ).into(scheduleLayoutPane.ImageSchedule)
             }
         }
+        scheduleLayoutPane.time.setText(schedule.getTxtTime())
+        scheduleLayoutPane.scheduleHeader.setText(schedule.header)
+        scheduleLayoutPane.canceledCounter.setText(schedule.skipped.toString())
+        scheduleLayoutPane.completeCounter.setText(schedule.complete.toString())
 
+        activityDetailBinding.ImageLayout.addView(scheduleLayoutPane.root)
+        ImageUtil().resizeImage(scheduleLayoutPane,getResources().getDisplayMetrics().widthPixels)
         activityDetailBinding.editScheduleButton.setOnClickListener {
             Log.d("Detail","click edit:"+schedule.header)
             val intent = Intent(this, AddScheduleActivity::class.java)
