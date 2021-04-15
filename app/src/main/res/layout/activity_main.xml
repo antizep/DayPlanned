@@ -21,7 +21,7 @@
             android:layout_width="40dp"
             android:layout_height="25dp"
             android:layout_marginStart="8dp"
-
+            android:elevation="8dp"
             android:background="@drawable/calendar_inactive_button"
             android:fontFamily="@font/inter_regular"
             android:text="Пн"
@@ -155,12 +155,14 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginEnd="16dp"
-
         android:layout_marginBottom="78dp"
-        android:background="@drawable/add_button"
+
+        android:background="@mipmap/add_button_foreground"
+        android:fontFamily="@font/inter_regular"
+        android:scaleType="centerCrop"
         android:shadowColor="#A8A8A8"
-        android:shadowDx="0"
-        android:shadowDy="0"
+        android:src="@mipmap/add_button_foreground"
+        android:textColor="#090909"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -173,8 +175,10 @@
         android:layout_marginEnd="10dp"
         app:layout_constraintBottom_toTopOf="@+id/createNewButton"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
 
         <LinearLayout
             android:id="@+id/scheduleLayout"
@@ -183,5 +187,6 @@
             android:layout_marginBottom="32dp"
             android:orientation="vertical" />
     </ScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

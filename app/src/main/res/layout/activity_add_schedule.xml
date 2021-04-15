@@ -31,7 +31,7 @@
                 android:gravity="start|top"
                 android:hint="@string/the_goal_title"
                 android:inputType="textMultiLine"
-                android:maxLength="25"
+                android:maxLength="48"
                 android:textColor="@color/base_black"
                 android:textColorHighlight="@color/base_shady2"
                 android:textColorHint="@color/base_shady2"

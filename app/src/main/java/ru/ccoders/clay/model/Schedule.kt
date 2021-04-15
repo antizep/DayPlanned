@@ -15,6 +15,12 @@ data class Schedule(val id:Int, val header: String?, val description: String?, v
         }
        return String.format("%02d:%02d:00", this.time!!.get(Calendar.HOUR_OF_DAY),this.time!!.get(Calendar.MINUTE))
     }
+    fun getTxtTimeNotSecond():String{
+        if(time == null){
+            return TIEME_NOT
+        }
+        return String.format("%02d:%02d", this.time!!.get(Calendar.HOUR_OF_DAY),this.time!!.get(Calendar.MINUTE))
+    }
     fun getHour() :Int{
         if(time != null){
             return time!!.get(Calendar.HOUR_OF_DAY)

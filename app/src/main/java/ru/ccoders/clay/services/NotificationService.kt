@@ -36,7 +36,6 @@ class NotificationService : Service() {
     private val COMPLETE_BUTTON_CODE = 101;
     var scheduleController: AddScheduleController? = null
     private lateinit var nManager: NotificationManager
-    private lateinit var activityMainBinding: ActivityMainBinding
 
     companion object {
         val myChannel = NotificationChannel(
@@ -109,13 +108,13 @@ class NotificationService : Service() {
             } else {
                 icon = BitmapFactory.decodeResource(
                     context.resources,
-                    R.mipmap.icon_apolo_foreground
+                    R.mipmap.pic_dafault
                 )
             }
             setSmallIcon(R.mipmap.icon_apolo_round)
 
             val remoteViews = RemoteViews(packageName, R.layout.shedule_natification)
-            remoteViews.setImageViewBitmap(R.id.ImageScheduleNatification, icon)
+            //remoteViews.setImageViewBitmap(R.id.ImageScheduleNatification, icon)
             remoteViews.setTextViewText(R.id.headerNatification, intent.getStringExtra(HEADER))
             remoteViews.setImageViewBitmap(R.id.iconNatification,BitmapFactory.decodeResource(context.resources,R.mipmap.icon_apolo))
             val cancelIntent = Intent(context, NotificationService::class.java)

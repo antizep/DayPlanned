@@ -1,10 +1,12 @@
 package ru.ccoders.clay
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
+import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
@@ -13,6 +15,7 @@ import ru.ccoders.clay.databinding.ActivityDetailBinding
 import ru.ccoders.clay.databinding.SheduleLayoutBinding
 import ru.ccoders.clay.utills.ImageUtil
 import java.io.File
+import java.nio.file.Files
 
 class Detail : AppCompatActivity() {
     private lateinit var activityDetailBinding: ActivityDetailBinding
@@ -28,15 +31,25 @@ class Detail : AppCompatActivity() {
         scheduleController = AddScheduleController(this)
         val id =  intent.getIntExtra("id",0)
         val schedule = scheduleController!!.getScheduleById(id)
+        val appGallery = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        var file = File(appGallery!!.absolutePath + "/$id/")
+
         activityDetailBinding.deleteScheduleButton.setOnClickListener {
             scheduleController!!.delSchedule(schedule.id)
+            if(file.exists()) {
+                file.deleteRecursively()
+            }
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
-        val t = schedule.getTxtTime();
+        scheduleLayoutPane.timeScheduleLayout.setText(schedule.getTxtTimeNotSecond())
+        scheduleLayoutPane.scheduleHeader.setText(schedule.header)
+        scheduleLayoutPane.canceledCounter.setText(schedule.skipped.toString())
+        scheduleLayoutPane.completeCounter.setText(schedule.complete.toString())
+
+        activityDetailBinding.ImageLayout.addView(scheduleLayoutPane.root)
+
         activityDetailBinding.scheduleBody.setText(schedule.description)
-        val appGallery = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        var file = File(appGallery!!.absolutePath + "/$id/")
         if (file.exists()) {
             val images = file.listFiles()
             if (images != null && images.size > 0) {
@@ -48,14 +61,13 @@ class Detail : AppCompatActivity() {
                     )
                 ).into(scheduleLayoutPane.ImageSchedule)
             }
+        }else{
+            scheduleLayoutPane.ImageSchedule.setImageBitmap(BitmapFactory.decodeResource(resources,R.mipmap.pic_dafault))
         }
-        scheduleLayoutPane.time.setText(schedule.getTxtTime())
-        scheduleLayoutPane.scheduleHeader.setText(schedule.header)
-        scheduleLayoutPane.canceledCounter.setText(schedule.skipped.toString())
-        scheduleLayoutPane.completeCounter.setText(schedule.complete.toString())
 
-        activityDetailBinding.ImageLayout.addView(scheduleLayoutPane.root)
         ImageUtil().resizeImage(scheduleLayoutPane,getResources().getDisplayMetrics().widthPixels)
+
+
         activityDetailBinding.editScheduleButton.setOnClickListener {
             Log.d("Detail","click edit:"+schedule.header)
             val intent = Intent(this, AddScheduleActivity::class.java)

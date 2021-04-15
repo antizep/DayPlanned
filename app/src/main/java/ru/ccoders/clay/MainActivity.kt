@@ -133,7 +133,7 @@ class MainActivity : AppCompatActivity() {
             scheduleLayoutPane.completeCounter.setText(schedule.complete.toString())
             scheduleLayoutPane.canceledCounter.setText(schedule.skipped.toString())
             val t = schedule.getTxtTime();
-            scheduleLayoutPane.time.setText(t)
+            scheduleLayoutPane.timeScheduleLayout.setText(schedule.getTxtTimeNotSecond())
             val id = schedule.id
             val appGallery = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             var file = File(appGallery!!.absolutePath + "/$id/")

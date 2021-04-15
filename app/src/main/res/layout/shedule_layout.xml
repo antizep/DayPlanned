@@ -26,14 +26,14 @@
             android:layout_height="0dp"
 
             android:visibility="visible"
-            app:srcCompat="@android:drawable/sym_def_app_icon"
+            app:srcCompat="@mipmap/pic_dafault"
             tools:srcCompat="@color/base_yellow"
             tools:visibility="visible" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/info"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="75dp"
             android:layout_marginBottom="0dp"
             android:background="@color/base_white_glass"
             android:clipToPadding="false"
@@ -45,13 +45,14 @@
                 android:id="@+id/scheduleHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="70dp"
+                android:layout_marginStart="63dp"
                 android:layout_marginTop="4dp"
-                android:layout_marginEnd="70dp"
+                android:layout_marginEnd="63dp"
                 android:fontFamily="@font/inter_regular"
                 android:gravity="center"
                 android:text="HeaderHeaderHeaderHeaderHeaderHeaderHeaderHeaderHeaderHeader"
                 android:textColor="@color/base_black"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -80,17 +81,18 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/time"
+                android:id="@+id/timeScheduleLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
                 android:fontFamily="@font/inter_regular"
                 android:text="time"
                 android:textColor="@color/base_black"
-                android:textSize="14sp"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/scheduleHeader" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <LinearLayout
                 android:layout_width="wrap_content"

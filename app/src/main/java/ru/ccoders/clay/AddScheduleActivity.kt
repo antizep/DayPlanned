@@ -69,6 +69,7 @@ class AddScheduleActivity : AppCompatActivity() {
             addScheduleBinding.addImagesButton.setOnClickListener {
                 openGalleryForImages()
             }
+
         }
 
         addSchedule(id, header, descr, t)
