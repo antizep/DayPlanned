@@ -1,13 +1,22 @@
 <resources>
     <string name="app_name">Clay</string>
-    <string name="everyday">everyday</string>
-    <string name="day_of_week">day of week</string>
+    <string name="everyday">Everyday</string>
+    <string name="day_of_week">Day of week</string>
     <string name="notification_time">Notification time</string>
     <string name="save_button">Save</string>
     <string name="the_goal_title">The goal title...</string>
-    <string name="tell_us_mere_about_your_goal">Tell us more about your goal...</string>
-    <string name="continue_text">continue</string>
-    <string name="complited_text">Complited:</string>
+    <string name="tell_us_mere_about_your_goal">Tell more about your goal...</string>
+    <string name="continue_text">Continue</string>
+    <string name="complited_text">Completed:</string>
     <string name="canceled_text">Canceled:</string>
-
+    <string name="monday">Mo</string>
+    <string name="tuesday">Tu</string>
+    <string name="wednesday">We</string>
+    <string name="thursday">Th</string>
+    <string name="friday">Fr</string>
+    <string name="saturday">Sa</string>
+    <string name="sunday">Su</string>
+    <string name="make_natification">    Accept</string>
+    <string name="cancel_natification">Skip    </string>
+    <string name="title">Clay - Task Manager, reminder</string>
 </resources>

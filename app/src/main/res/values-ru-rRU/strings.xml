@@ -9,4 +9,14 @@
     <string name="continue_text">Далее</string>
     <string name="complited_text">Достигнуто целей:</string>
     <string name="canceled_text">Не достигнуто:</string>
+    <string name="monday">Пн</string>
+    <string name="tuesday">Вт</string>
+    <string name="wednesday">Ср</string>
+    <string name="thursday">Чт</string>
+    <string name="friday">Пт</string>
+    <string name="saturday">Сб</string>
+    <string name="sunday">Вс</string>
+    <string name="make_natification">    Выполнить</string>
+    <string name="cancel_natification">Отменить    </string>
+    <string name="title">Clay-Планировщик задач, напоминания</string>
 </resources>
