@@ -61,9 +61,9 @@ class MainActivity : AppCompatActivity() {
         if(nextTask != null) {
             addAlarmManager(nextTask)
         }
-        activityMainBinding.createNewButton.setOnClickListener {
-            startActivity(Intent(this, AddScheduleActivity::class.java));
-        }
+//        activityMainBinding.createNewButton.setOnClickListener {
+//            startActivity(Intent(this, AddScheduleActivity::class.java));
+//        }
 
     }
 
