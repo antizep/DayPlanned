@@ -65,7 +65,7 @@ class Detail : AppCompatActivity() {
             scheduleLayoutPane.ImageSchedule.setImageBitmap(BitmapFactory.decodeResource(resources,R.mipmap.pic_dafault))
         }
 
-        ImageUtil().resizeImage(scheduleLayoutPane,getResources().getDisplayMetrics().widthPixels)
+        ImageUtil().resizeImage(scheduleLayoutPane.info,scheduleLayoutPane.ImageSchedule,getResources().getDisplayMetrics().widthPixels)
 
 
         activityDetailBinding.editScheduleButton.setOnClickListener {

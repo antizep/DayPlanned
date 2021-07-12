@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/base_white"
+    android:scrollbarThumbHorizontal="@color/base_black"
     tools:context=".MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -170,7 +171,7 @@
         app:layout_constraintStart_toStartOf="@+id/SV"
         app:layout_constraintTop_toTopOf="@+id/imageView"
         app:layout_constraintVertical_bias="0.32"
-        app:srcCompat="@android:drawable/ic_menu_compass" />
+        app:srcCompat="@mipmap/my_profile_icon" />
 
     <TextView
         android:id="@+id/friendCount"
@@ -191,7 +192,7 @@
         app:layout_constraintStart_toStartOf="@+id/frieendIco"
         app:layout_constraintTop_toBottomOf="@+id/frieendIco"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@android:drawable/btn_star" />
+        app:srcCompat="@mipmap/i_following_icon" />
 
     <TextView
         android:id="@+id/likedCount"
@@ -244,16 +245,16 @@
     <ImageButton
         android:id="@+id/imageButton"
         android:layout_width="35dp"
-        android:layout_height="22dp"
+        android:layout_height="25dp"
         android:background="#00FFFFFF"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="@+id/textView"
         app:layout_constraintStart_toStartOf="@+id/SV"
         app:layout_constraintTop_toTopOf="@+id/textView"
-        app:srcCompat="@android:drawable/ic_menu_send" />
+        app:srcCompat="@mipmap/send_message_icon" />
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabLayout"
+        android:id="@+id/scseduleListSwiper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -275,41 +276,39 @@
             android:text="Доступные Всем" />
     </com.google.android.material.tabs.TabLayout>
 
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/SV"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:accessibilityLiveRegion="assertive"
-        android:accessibilityTraversalAfter="@id/tabLayout"
-        android:accessibilityTraversalBefore="@id/bottomNavigationView"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        android:accessibilityTraversalAfter="@id/scseduleListSwiper"
+        android:accessibilityTraversalBefore="@id/navigationBar"
+        app:layout_constraintBottom_toTopOf="@+id/navigationBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabLayout">
+        app:layout_constraintTop_toBottomOf="@+id/scseduleListSwiper">
 
-        <LinearLayout
-            android:id="@+id/scheduleLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:orientation="vertical" />
-    </ScrollView>
+    </androidx.recyclerview.widget.RecyclerView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
+        android:id="@+id/navigationBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="false"
+        android:animationCache="false"
         android:background="@color/base_white"
+        android:contextClickable="false"
         app:itemHorizontalTranslationEnabled="false"
-        app:labelVisibilityMode="selected"
+        app:itemIconTint="@drawable/selector"
+        app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/nav_menu" />
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>
+

@@ -1,6 +1,6 @@
 package ru.ccoders.clay
 
-import android.R.attr.*
+import SimpleItemTouchHelperCallback
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -8,19 +8,14 @@ import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.view.get
-import androidx.core.view.updateLayoutParams
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.signature.ObjectKey
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import ru.ccoders.clay.adapter.ScheduleCaustomAdapter
 import ru.ccoders.clay.controller.AddScheduleController
 import ru.ccoders.clay.databinding.ActivityMainBinding
 import ru.ccoders.clay.databinding.SheduleLayoutBinding
@@ -30,16 +25,14 @@ import ru.ccoders.clay.services.MyReceiver.Companion.DESCRIPTION
 import ru.ccoders.clay.services.MyReceiver.Companion.HEADER
 import ru.ccoders.clay.services.MyReceiver.Companion.ID
 import ru.ccoders.clay.services.MyReceiver.Companion.TIME
-import ru.ccoders.clay.utills.ImageUtil
 import ru.ccoders.clay.utills.ScheduleUtils
-import java.io.File
 
 
 class MainActivity : AppCompatActivity() {
     var scheduleController: AddScheduleController? = null
     private lateinit var activityMainBinding: ActivityMainBinding
     private lateinit var scheduleLayoutPane: SheduleLayoutBinding;
-
+    lateinit var ctx:Context
     companion object {
         private var calAlert: String? = null;
     }
@@ -48,9 +41,11 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        ctx = this
+        activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
         scheduleController = AddScheduleController(this)
@@ -61,9 +56,12 @@ class MainActivity : AppCompatActivity() {
         if(nextTask != null) {
             addAlarmManager(nextTask)
         }
-//        activityMainBinding.createNewButton.setOnClickListener {
-//            startActivity(Intent(this, AddScheduleActivity::class.java));
-//        }
+        activityMainBinding.navigationBar.setOnNavigationItemSelectedListener {
+            when(it.itemId){
+                R.id.addSchedule -> startActivity(Intent(this, AddScheduleActivity::class.java));
+            }
+            false
+        }
 
     }
 
@@ -91,13 +89,17 @@ class MainActivity : AppCompatActivity() {
             PendingIntent.FLAG_CANCEL_CURRENT
         );
 
+
         alarmManager.set(AlarmManager.RTC_WAKEUP, schedule.time!!.timeInMillis, pendingIntentpi)
     }
 
     @SuppressLint("SetTextI18n")
     fun loadSchedule() {
 
-        val scheduleLayout = activityMainBinding.scheduleLayout
+        val scheduleLayout = activityMainBinding.SV
+        if(scheduleLayout.layoutManager == null) {
+            scheduleLayout.layoutManager = LinearLayoutManager(ctx)
+        }
         scheduleLayout.removeAllViews()
         val scheduleAll = scheduleController!!.getSchedule();
         if(scheduleAll.size == 0){
@@ -116,55 +118,10 @@ class MainActivity : AppCompatActivity() {
         }else{
             indexTask = sorted.size-1;
         }
-        for (schedule in sorted) {
-
-            scheduleLayoutPane = SheduleLayoutBinding.inflate(layoutInflater);
-            val slp = scheduleLayoutPane.root
-            slp.setOnClickListener {
-                Log.d("MainActivity", "click task name:" + schedule.header)
-                val intent = Intent(this, Detail::class.java)
-                intent.putExtra("id", schedule.id)
-                startActivity(intent)
-            }
-            scheduleLayout.addView(slp);
-//            scheduleLayoutPane.scheduleBody.setText(schedule.description)
-
-            scheduleLayoutPane.scheduleHeader.setText(schedule.header);
-            scheduleLayoutPane.completeCounter.setText(schedule.complete.toString())
-            scheduleLayoutPane.canceledCounter.setText(schedule.skipped.toString())
-            val t = schedule.getTxtTime();
-            scheduleLayoutPane.timeScheduleLayout.setText(schedule.getTxtTimeNotSecond())
-            val id = schedule.id
-            val appGallery = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-            var file = File(appGallery!!.absolutePath + "/$id/")
-            if (file.exists()) {
-                val images = file.listFiles()
-                if (images != null && images.size > 0) {
-                    Glide.with(this).load(images[0]).apply(
-                        RequestOptions().signature(
-                            ObjectKey(
-                                images[0].length()
-                            )
-                        )
-                    ).into(scheduleLayoutPane.ImageSchedule)
-                }
-            }
-
-            ImageUtil().resizeImage(scheduleLayoutPane,getResources().getDisplayMetrics().widthPixels)
-
-            Log.d("MainActivity", schedule.toString())
-        }
-        //todo сейчас листаем до 6-й записи необходимо листать до следующей по времени + сделать разделение по времени и дням.
-        //определить ближайщее по времни событие.
-        //запомнить индекс элемента и сфокусироваться на нем.
-
-            scheduleLayout.post {
-                activityMainBinding.SV.scrollTo(0, scheduleLayout.get(indexTask).top)
-                activityMainBinding.SV.computeScroll()
-            }
-
-
-
+        val adapter = ScheduleCaustomAdapter(sorted,this)
+        scheduleLayout.adapter  = adapter
+        val itemTouchHelper = ItemTouchHelper(SimpleItemTouchHelperCallback(adapter))
+        itemTouchHelper.attachToRecyclerView(scheduleLayout)
     }
     var focusCalendar = Calendar.getInstance();
     @SuppressLint("ResourceType")

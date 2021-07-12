@@ -2,18 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:icon="@android:drawable/ic_menu_myplaces"
+        android:icon="@mipmap/my_profile_icon"
         android:title="" />
     <item
-        android:icon="@android:drawable/ic_menu_search"
+        android:icon="@mipmap/searching_icon"
+        android:iconTint="#FF5722"
         android:title="" />
     <item
-        android:icon="@drawable/shape_shadow"
+        android:id="@+id/addSchedule"
+        android:icon="@mipmap/add_task_icon"
         android:title="" />
     <item
-        android:icon="@android:drawable/btn_star"
+        android:icon="@mipmap/saved_tasks_icon"
         android:title="" />
     <item
-        android:icon="@android:drawable/ic_menu_manage"
+        android:icon="@mipmap/settings_icon"
+        android:iconTint="@color/base_black"
         android:title="" />
 </menu>
