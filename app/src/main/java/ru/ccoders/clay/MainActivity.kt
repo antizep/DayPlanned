@@ -120,8 +120,8 @@ class MainActivity : AppCompatActivity() {
         }
         val adapter = ScheduleCaustomAdapter(sorted,this)
         scheduleLayout.adapter  = adapter
-        val itemTouchHelper = ItemTouchHelper(SimpleItemTouchHelperCallback(adapter))
-        itemTouchHelper.attachToRecyclerView(scheduleLayout)
+//        val itemTouchHelper = ItemTouchHelper(SimpleItemTouchHelperCallback(adapter))
+//        itemTouchHelper.attachToRecyclerView(scheduleLayout)
     }
     var focusCalendar = Calendar.getInstance();
     @SuppressLint("ResourceType")
