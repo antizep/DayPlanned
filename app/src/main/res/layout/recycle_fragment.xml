@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
-</fragment>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/SV"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:accessibilityLiveRegion="assertive"
+        android:accessibilityTraversalAfter="@id/scseduleListSwiper"
+        android:accessibilityTraversalBefore="@id/navigationBar">
+
+    </androidx.recyclerview.widget.RecyclerView>
+</FrameLayout>

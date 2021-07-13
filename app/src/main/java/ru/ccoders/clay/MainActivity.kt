@@ -1,6 +1,6 @@
 package ru.ccoders.clay
 
-import SimpleItemTouchHelperCallback
+import PagerAdapterSchedule
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -13,9 +13,9 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
-import ru.ccoders.clay.adapter.ScheduleCaustomAdapter
+import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.coroutines.*
+import ru.antizep.russua_victory.dataprovider.rest.ProfileRest
 import ru.ccoders.clay.controller.AddScheduleController
 import ru.ccoders.clay.databinding.ActivityMainBinding
 import ru.ccoders.clay.databinding.SheduleLayoutBinding
@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         private var calAlert: String? = null;
     }
 
+
     override fun onDestroy() {
         super.onDestroy()
     }
@@ -47,10 +48,12 @@ class MainActivity : AppCompatActivity() {
         ctx = this
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
+        loadProfile()
         setContentView(activityMainBinding.root)
         scheduleController = AddScheduleController(this)
         createDayBtn()
-        loadSchedule();
+        loadSchedule()
+
         val scheduleAll = scheduleController!!.getSchedule();
         val nextTask = ScheduleUtils.nextTask(scheduleAll)
         if(nextTask != null) {
@@ -65,6 +68,24 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    fun loadProfile(){
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.async {
+            val  profile = ProfileRest().loadProfile(1)
+            withContext(Dispatchers.Main) {
+
+                if (profile!=null) {
+                    activityMainBinding.friendCount.text = profile.followed.toString()
+                    activityMainBinding.likedCount.text = profile.followers.toString()
+                    activityMainBinding.nameField.text = profile.username
+                    activityMainBinding.altNameField.text = "@${profile.altName}"
+                    activityMainBinding.bioField.text = profile.bio
+                }else{
+                    Log.d("MainActivity_CoroutineScope", "profile is null")
+                }
+            }
+        }
+    }
 
     fun addAlarmManager(schedule: Schedule) {
         if (schedule.time == null) {
@@ -96,11 +117,7 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     fun loadSchedule() {
 
-        val scheduleLayout = activityMainBinding.SV
-        if(scheduleLayout.layoutManager == null) {
-            scheduleLayout.layoutManager = LinearLayoutManager(ctx)
-        }
-        scheduleLayout.removeAllViews()
+
         val scheduleAll = scheduleController!!.getSchedule();
         if(scheduleAll.size == 0){
             return
@@ -109,20 +126,17 @@ class MainActivity : AppCompatActivity() {
         if(sorted.size ==0){
             return
         }
-        val nextTask = ScheduleUtils.nextTask(sorted)
-        if (nextTask!=null) {
-        }
-        val indexTask:Int
-        if(nextTask!!.time!!.get(Calendar.DAY_OF_YEAR) <= Calendar.getInstance().get(Calendar.DAY_OF_YEAR) ) {
-             indexTask = sorted.indexOf(nextTask);
-        }else{
-            indexTask = sorted.size-1;
-        }
-        val adapter = ScheduleCaustomAdapter(sorted,this)
-        scheduleLayout.adapter  = adapter
-//        val itemTouchHelper = ItemTouchHelper(SimpleItemTouchHelperCallback(adapter))
-//        itemTouchHelper.attachToRecyclerView(scheduleLayout)
+        val words = arrayListOf("Личные", "Доступные Всем")
+
+        val adapter = PagerAdapterSchedule(this,sorted)
+        val pager = activityMainBinding.pager
+        val tab = activityMainBinding.scseduleListSwiper
+        pager.adapter = adapter
+        TabLayoutMediator(tab,pager){tab, position ->
+            tab.text = words[position]
+        }.attach()
     }
+
     var focusCalendar = Calendar.getInstance();
     @SuppressLint("ResourceType")
     fun createDayBtn(){
