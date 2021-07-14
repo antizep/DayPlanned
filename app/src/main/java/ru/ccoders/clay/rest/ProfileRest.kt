@@ -2,12 +2,10 @@ package ru.antizep.russua_victory.dataprovider.rest
 
 import ProfileModel
 import android.util.Log
-import okhttp3.*
-import org.json.JSONArray
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.json.JSONObject
 import ru.ccoders.clay.rest.ProfileRestInterface
-import java.io.IOException
-import java.lang.Exception
 
 class ProfileRest : AbstractRest(), ProfileRestInterface {
     val tag = "ProfileRest"

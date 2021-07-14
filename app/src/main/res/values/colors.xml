@@ -6,4 +6,7 @@
     <color name="base_black">#000000</color>
     <color name="base_white">#fff</color>
     <color name="base_white_glass">#B3FFFFFF</color>
+    <color name="base_shady3">#949494</color>
+    <color name="base_violet">#7542B5</color>
+
 </resources>
