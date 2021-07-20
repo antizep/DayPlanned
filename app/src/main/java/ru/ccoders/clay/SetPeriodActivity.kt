@@ -2,7 +2,6 @@ package ru.ccoders.clay
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color.green
 import android.icu.util.Calendar
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,11 +10,16 @@ import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import ru.ccoders.clay.controller.AddScheduleController
 import ru.ccoders.clay.databinding.ActivitySetPeriodBinding
-import ru.ccoders.clay.model.Schedule
-import com.google.android.material.chip.Chip
+import ru.ccoders.clay.model.TaskModel
 import org.json.JSONArray
+import ru.antizep.russua_victory.dataprovider.rest.ProfileRest
+import ru.ccoders.clay.rest.TaskRest
 import java.sql.Time
 
 class SetPeriodActivity : AppCompatActivity() {
@@ -33,6 +37,7 @@ class SetPeriodActivity : AppCompatActivity() {
         scheduleController = AddScheduleController(this)
         val id = intent.getIntExtra("id", 0);
         val t = intent.getStringExtra("time")
+        val isPublic = intent.getBooleanExtra("isPublic",false)
         var mode = intent.getIntExtra(AddScheduleController.MODE, AddScheduleController.VEEKLY_MODE)
         val scheduleS = intent.getStringExtra(AddScheduleController.SCHEDULE)
 
@@ -45,7 +50,7 @@ class SetPeriodActivity : AppCompatActivity() {
         setPeriodBinding = ActivitySetPeriodBinding.inflate(layoutInflater)
         setContentView(setPeriodBinding.root)
         setPeriodBinding.setTimePicker.setIs24HourView(true)
-        if (!t.isNullOrBlank() && !t.equals(Schedule.TIEME_NOT)) {
+        if (!t.isNullOrBlank() && !t.equals(TaskModel.TIEME_NOT)) {
             val time = Time.valueOf(t);
             setPeriodBinding.setTimePicker.hour = time.hours
             setPeriodBinding.setTimePicker.minute = time.minutes
@@ -102,16 +107,40 @@ class SetPeriodActivity : AppCompatActivity() {
             calendar.set(Calendar.HOUR_OF_DAY, setPeriodBinding.setTimePicker.hour)
             calendar.set(Calendar.MINUTE, setPeriodBinding.setTimePicker.minute)
             calendar.set(Calendar.SECOND, 0)
-            val schedule = Schedule(id, null, null, 0, 0, mode, shedle)
+
+            val schedule = scheduleController!!.getScheduleById(id)//TaskModel(id, null, null, 0, 0, mode, shedle)
+            schedule.mode = mode
+            schedule.schedule = shedle
             schedule.time = calendar;
-            scheduleController!!.setTime(schedule)
+
+
             Log.d(SetPeriodActivity::class.java.name, "s:" + schedule)
             Log.d(SetPeriodActivity::class.java.name, "t:" + schedule.time)
 
+
+            val scope = CoroutineScope(Dispatchers.IO)
             val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            Toast.makeText(this, "Saved Successfully", Toast.LENGTH_LONG).show()
-            finish()
+            val ctx= this
+            if(isPublic) {
+                scope.async {
+                    val taskSaveResult = TaskRest().uploadTask(schedule)
+                    withContext(Dispatchers.Main) {
+
+                        if (taskSaveResult>0) {
+                            schedule.setRemoteId(taskSaveResult)
+                            scheduleController!!.setTime(schedule)
+                            startActivity(intent)
+                            Toast.makeText(ctx, "Saved Successfully", Toast.LENGTH_LONG).show()
+                            finish()
+                        }
+                    }
+                }
+            }else {
+                scheduleController!!.setTime(schedule)
+                startActivity(intent)
+                Toast.makeText(ctx, "Saved Successfully", Toast.LENGTH_LONG).show()
+                finish()
+            }
         }
     }
 

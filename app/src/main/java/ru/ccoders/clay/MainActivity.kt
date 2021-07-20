@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -19,13 +20,14 @@ import ru.antizep.russua_victory.dataprovider.rest.ProfileRest
 import ru.ccoders.clay.controller.AddScheduleController
 import ru.ccoders.clay.databinding.ActivityMainBinding
 import ru.ccoders.clay.databinding.SheduleLayoutBinding
-import ru.ccoders.clay.model.Schedule
+import ru.ccoders.clay.model.TaskModel
 import ru.ccoders.clay.services.MyReceiver
 import ru.ccoders.clay.services.MyReceiver.Companion.DESCRIPTION
 import ru.ccoders.clay.services.MyReceiver.Companion.HEADER
 import ru.ccoders.clay.services.MyReceiver.Companion.ID
 import ru.ccoders.clay.services.MyReceiver.Companion.TIME
 import ru.ccoders.clay.utills.ScheduleUtils
+import java.io.File
 
 
 class MainActivity : AppCompatActivity() {
@@ -35,6 +37,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var ctx:Context
     companion object {
         private var calAlert: String? = null;
+        public val ID_PROFILE = 1;
     }
 
 
@@ -71,7 +74,7 @@ class MainActivity : AppCompatActivity() {
     fun loadProfile(){
         val scope = CoroutineScope(Dispatchers.IO)
         scope.async {
-            val  profile = ProfileRest().loadProfile(1)
+            val  profile = ProfileRest().loadProfile(ID_PROFILE)
             withContext(Dispatchers.Main) {
 
                 if (profile!=null) {
@@ -87,22 +90,22 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun addAlarmManager(schedule: Schedule) {
-        if (schedule.time == null) {
+    fun addAlarmManager(taskModel: TaskModel) {
+        if (taskModel.time == null) {
             return
         }
-        if (calAlert != null && schedule.getTxtTime().equals(calAlert)) {
+        if (calAlert != null && taskModel.getTxtTime().equals(calAlert)) {
             return
         }
-        calAlert = schedule.getTxtTime()
-        Log.d("MyReceiver", "old:" + calAlert + ",new:" + schedule.time!!.time.toString())
+        calAlert = taskModel.getTxtTime()
+        Log.d("MyReceiver", "old:" + calAlert + ",new:" + taskModel.time!!.time.toString())
         val alarmManager: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val myIntent = Intent(applicationContext, MyReceiver::class.java)
         //myIntent.action = "restartservice"
-        myIntent.putExtra(HEADER, schedule.header)
-        myIntent.putExtra(DESCRIPTION, schedule.description)
-        myIntent.putExtra(TIME, schedule.getTxtTime())
-        myIntent.putExtra(ID, schedule.id)
+        myIntent.putExtra(HEADER, taskModel.header)
+        myIntent.putExtra(DESCRIPTION, taskModel.description)
+        myIntent.putExtra(TIME, taskModel.getTxtTime())
+        myIntent.putExtra(ID, taskModel.id)
         val pendingIntentpi = PendingIntent.getBroadcast(
             applicationContext,
             0,
@@ -111,29 +114,37 @@ class MainActivity : AppCompatActivity() {
         );
 
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, schedule.time!!.timeInMillis, pendingIntentpi)
+        alarmManager.set(AlarmManager.RTC_WAKEUP, taskModel.time!!.timeInMillis, pendingIntentpi)
     }
 
     @SuppressLint("SetTextI18n")
     fun loadSchedule() {
 
-
+        var isPublic = false
         val scheduleAll = scheduleController!!.getSchedule();
         if(scheduleAll.size == 0){
             return
         }
-        val sorted = ScheduleUtils.sortByDay(scheduleAll, focusCalendar)
-        if(sorted.size ==0){
-            return
+
+        scheduleAll.forEach {
+            if(it.time == null||it.mode == null){
+                scheduleController!!.delSchedule(it.id)
+                val appGallery = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                var file = File(appGallery!!.absolutePath + "/${it.id}/")
+                if(file.exists()) {
+                    file.deleteRecursively()
+                }
+            }
         }
         val words = arrayListOf("Личные", "Доступные Всем")
 
-        val adapter = PagerAdapterSchedule(this,sorted)
+        val adapter = PagerAdapterSchedule(this,scheduleAll,focusCalendar,isPublic)
         val pager = activityMainBinding.pager
         val tab = activityMainBinding.scseduleListSwiper
         pager.adapter = adapter
         TabLayoutMediator(tab,pager){tab, position ->
             tab.text = words[position]
+            isPublic = words[0].equals(words[position])
         }.attach()
     }
 

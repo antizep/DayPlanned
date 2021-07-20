@@ -9,12 +9,12 @@ import ru.ccoders.clay.rest.ProfileRestInterface
 
 class ProfileRest : AbstractRest(), ProfileRestInterface {
     val tag = "ProfileRest"
+    val url = "$DOMAIN/api/profile/get/"
     override fun loadProfile(id: Int): ProfileModel? {
         val client = OkHttpClient()
         val request = Request.Builder()
-            .url("$domain/api/profile/get/$id")
+            .url(url+id)
             .build()
-        Log.d(tag,"rest:$domain/api/profile/get/$id")
         try {
 
             val response = client.newCall(request).execute()

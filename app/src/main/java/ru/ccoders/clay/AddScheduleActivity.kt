@@ -20,7 +20,7 @@ import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import ru.ccoders.clay.controller.AddScheduleController
 import ru.ccoders.clay.databinding.ActivityAddScheduleBinding
-import ru.ccoders.clay.model.Schedule
+import ru.ccoders.clay.model.TaskModel
 import com.yalantis.ucrop.UCrop
 import org.json.JSONArray
 import java.io.File
@@ -205,9 +205,15 @@ class AddScheduleActivity : AppCompatActivity() {
             header.insert(0, head)
             descript.insert(0, discr)
         }
+
+        val publicSwich = addScheduleBinding.publicSwich
+        var isPublic = false
+        publicSwich.setOnCheckedChangeListener { buttonView, isChecked ->
+            isPublic = isChecked
+        }
         addScheduleBinding.addScheduleButton.setOnClickListener {
             Log.d("AddScheduleActivity", "H:" + header + " D:" + descript);
-            val schedule = Schedule(
+            val schedule = TaskModel(
                 id,
                 header.toString(),
                 descript.toString(),
@@ -234,6 +240,7 @@ class AddScheduleActivity : AppCompatActivity() {
                 val intent = Intent(this, SetPeriodActivity::class.java)
                 intent.putExtra("id", index)
                 intent.putExtra("time", t)
+                intent.putExtra("isPublic",isPublic)
                 intent.putExtra(AddScheduleController.MODE, this.mode)
                 intent.putExtra(AddScheduleController.SCHEDULE, this.schedule)
                 startActivity(intent)

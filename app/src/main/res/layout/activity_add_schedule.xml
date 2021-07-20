@@ -84,6 +84,7 @@
                 android:textColorHint="@color/base_shady2"
                 android:textColorLink="@color/base_yellow"
                 android:textCursorDrawable="@drawable/yellow_cursor"
+                android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -121,6 +122,7 @@
                 android:textColorHint="@color/base_shady2"
                 android:textColorLink="@color/base_yellow"
                 android:textCursorDrawable="@color/base_yellow"
+                android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -149,26 +151,29 @@
                 app:layout_constraintTop_toBottomOf="@+id/divider" />
 
             <Switch
-                android:id="@+id/switch1"
+                android:id="@+id/publicSwich"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
-                android:thumbTint="@color/base_violet"
-                android:track="@drawable/calendar_shady_button"
+
+                android:thumbTint="@drawable/swich_selector"
+                android:track="@drawable/shady_swich_bg"
                 app:layout_constraintBottom_toBottomOf="@+id/textView"
                 app:layout_constraintEnd_toEndOf="@+id/descriptionSchedule"
-                app:layout_constraintTop_toTopOf="@+id/textView" />
+                app:layout_constraintTop_toTopOf="@+id/textView"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
             <Switch
                 android:id="@+id/switch2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="false"
-                android:thumbTint="@color/base_violet"
+                android:thumbTint="@drawable/swich_selector"
                 android:track="@drawable/calendar_shady_button"
                 app:layout_constraintBottom_toBottomOf="@+id/textView7"
                 app:layout_constraintEnd_toEndOf="@+id/descriptionSchedule"
-                app:layout_constraintTop_toTopOf="@+id/textView7" />
+                app:layout_constraintTop_toTopOf="@+id/textView7"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
 
             <TextView
                 android:id="@+id/textView6"
@@ -177,6 +182,7 @@
                 android:layout_marginTop="3dp"
                 android:fontFamily="@font/inter_regular"
                 android:text="Люди смогут делиться вашей задачей и сохранять её себе в профиль. "
+                android:textSize="10sp"
                 app:layout_constraintStart_toStartOf="@+id/textView"
                 app:layout_constraintTop_toBottomOf="@+id/textView" />
 
@@ -187,6 +193,7 @@
                 android:layout_marginTop="4dp"
                 android:fontFamily="@font/inter_regular"
                 android:text="Те, кто сохранят задачу себе в профиль, смогут изменять время и дату выполнения, но только для себя"
+                android:textSize="10sp"
                 app:layout_constraintStart_toStartOf="@+id/textView"
                 app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
@@ -204,15 +211,17 @@
 
             <Button
                 android:id="@+id/addScheduleButton"
-                android:layout_width="102dp"
-                android:layout_height="36dp"
+                android:layout_width="154dp"
+                android:layout_height="38dp"
                 android:layout_marginTop="15dp"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/button_text_shape"
                 android:fontFamily="@font/inter_regular"
                 android:text="@string/continue_text"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="@color/base_black"
                 android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"

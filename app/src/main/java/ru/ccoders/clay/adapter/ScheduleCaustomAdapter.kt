@@ -2,6 +2,7 @@ package ru.ccoders.clay.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.icu.util.Calendar
 import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,19 +16,27 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import ru.ccoders.clay.Detail
 import ru.ccoders.clay.R
-import ru.ccoders.clay.model.Schedule
+import ru.ccoders.clay.model.TaskModel
 import ru.ccoders.clay.utills.ImageUtil
+import ru.ccoders.clay.utills.ScheduleUtils
 import java.io.File
 
-class ScheduleCaustomAdapter(
-    val dataSet: MutableList<Schedule>,
-    val context: Context) :
+class ScheduleCaustomAdapter constructor(
+    private var dataSet: MutableList<TaskModel>,
+    private val context: Context,
+    private val day: Calendar,
+    private val isPublic: Boolean
+) :
 RecyclerView.Adapter<ScheduleCaustomAdapter.ViewHolder>() {
 
+init {
+    dataSet = ScheduleUtils.sort(dataSet, day,isPublic);
+}
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
      */
+
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         val panel = view
@@ -46,12 +55,14 @@ RecyclerView.Adapter<ScheduleCaustomAdapter.ViewHolder>() {
             timeScheduleLayout = view.findViewById(R.id.timeScheduleLayout)
             ImageSchedule = view.findViewById(R.id.ImageSchedule)
             info = view.findViewById(R.id.info)
+
         }
     }
 
     // Create new views (invoked by the layout manager)
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
+
         val view = LayoutInflater.from(viewGroup.context)
             .inflate(R.layout.shedule_layout, viewGroup, false)
 
@@ -61,8 +72,8 @@ RecyclerView.Adapter<ScheduleCaustomAdapter.ViewHolder>() {
     // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
+
+        if(dataSet.isEmpty()) return
         val schedule = dataSet[position]
         viewHolder.panel.setOnClickListener {
             Log.d("MainActivity", "click task name:" + schedule.header)
@@ -96,7 +107,7 @@ RecyclerView.Adapter<ScheduleCaustomAdapter.ViewHolder>() {
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount() = dataSet.size
+    override fun getItemCount(): Int = dataSet.size
 
     fun onItemDismiss(position: Int) {
         //mItems.remove(position)
