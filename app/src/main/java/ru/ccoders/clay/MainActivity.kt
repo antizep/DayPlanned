@@ -14,6 +14,9 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.*
 import ru.antizep.russua_victory.dataprovider.rest.ProfileRest
@@ -26,8 +29,11 @@ import ru.ccoders.clay.services.MyReceiver.Companion.DESCRIPTION
 import ru.ccoders.clay.services.MyReceiver.Companion.HEADER
 import ru.ccoders.clay.services.MyReceiver.Companion.ID
 import ru.ccoders.clay.services.MyReceiver.Companion.TIME
+import ru.ccoders.clay.services.MyWorker
 import ru.ccoders.clay.utills.ScheduleUtils
 import java.io.File
+import java.time.Duration
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -91,30 +97,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun addAlarmManager(taskModel: TaskModel) {
-        if (taskModel.time == null) {
-            return
-        }
-        if (calAlert != null && taskModel.getTxtTime().equals(calAlert)) {
-            return
-        }
-        calAlert = taskModel.getTxtTime()
-        Log.d("MyReceiver", "old:" + calAlert + ",new:" + taskModel.time!!.time.toString())
-        val alarmManager: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val myIntent = Intent(applicationContext, MyReceiver::class.java)
-        //myIntent.action = "restartservice"
-        myIntent.putExtra(HEADER, taskModel.header)
-        myIntent.putExtra(DESCRIPTION, taskModel.description)
-        myIntent.putExtra(TIME, taskModel.getTxtTime())
-        myIntent.putExtra(ID, taskModel.id)
-        val pendingIntentpi = PendingIntent.getBroadcast(
-            applicationContext,
-            0,
-            myIntent,
-            PendingIntent.FLAG_CANCEL_CURRENT
-        );
-
-
-        alarmManager.set(AlarmManager.RTC_WAKEUP, taskModel.time!!.timeInMillis, pendingIntentpi)
+        WorkManager.getInstance().cancelAllWorkByTag("natWorker");
+        val data  = Data.Builder().putInt(MyReceiver.ID,taskModel.id)
+            .putString(MyReceiver.HEADER,taskModel.header)
+            .build()
+        val onTimeWorkRequest =    OneTimeWorkRequest.Builder(MyWorker::class.java)
+            .setInitialDelay(Duration.ofMillis(taskModel.time!!.timeInMillis - Date().time))
+            .addTag("natWorker")
+            .setInputData(data)
+            .build()
+        val workManager = WorkManager.getInstance()
+        workManager.enqueue(onTimeWorkRequest)
     }
 
     @SuppressLint("SetTextI18n")
