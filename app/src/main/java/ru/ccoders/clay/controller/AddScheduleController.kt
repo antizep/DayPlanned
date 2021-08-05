@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.icu.util.Calendar
 import android.util.Log
-import ru.ccoders.clay.model.TaskModel
+import ru.ccoders.clay.model.ScheduleModel
 import org.json.JSONArray
 import java.lang.Exception
 import java.sql.Time
@@ -81,50 +81,50 @@ class AddScheduleController(context: Context) :
         db.execSQL("UPDATE $TABLE_NAME SET $SKIPPED = $c WHERE id = $id");
     }
 
-    fun addSchedule(taskModel: TaskModel): Int {
+    fun addSchedule(scheduleModel: ScheduleModel): Int {
         val db = this.writableDatabase
         val values = ContentValues()
-        values.put("header", taskModel.header)
-        values.put("description", taskModel.description)
+        values.put("header", scheduleModel.header)
+        values.put("description", scheduleModel.description)
         val _success = db.insert(TABLE_NAME, null, values);
         db.close();
         Log.v("InsertedID", "$_success")
         return Integer.parseInt("$_success")
     }
 
-    fun updateSchedule(taskModel: TaskModel): Int {
+    fun updateSchedule(scheduleModel: ScheduleModel): Int {
         val db = this.writableDatabase
         val cv = ContentValues();
-        cv.put(HEADER, taskModel.header)
-        cv.put(DESCRIPTION, taskModel.description)
-        cv.put(MODE,taskModel.mode)
-        cv.put(SCHEDULE,taskModel.schedule.toString())
+        cv.put(HEADER, scheduleModel.header)
+        cv.put(DESCRIPTION, scheduleModel.description)
+        cv.put(MODE,scheduleModel.mode)
+        cv.put(SCHEDULE,scheduleModel.schedule.toString())
 
-        val _success = db.update(TABLE_NAME, cv, "$ID = ?", arrayOf(taskModel.id.toString()))
+        val _success = db.update(TABLE_NAME, cv, "$ID = ?", arrayOf(scheduleModel.id.toString()))
         db.close()
         return (_success)
     }
 
-    fun setTime(taskModel: TaskModel): Int {
+    fun setTime(scheduleModel: ScheduleModel): Int {
         val db = this.writableDatabase
         val cv = ContentValues();
-        if(taskModel.time == null){
+        if(scheduleModel.time == null){
             return 0;
         }
-        cv.put(TIME,taskModel.getTxtTime())
-        cv.put(MODE,taskModel.mode)
-        cv.put(SCHEDULE,taskModel.schedule.toString())
-        cv.put(REMOTE_ID,taskModel.getRemoteId())
+        cv.put(TIME,scheduleModel.getTxtTime())
+        cv.put(MODE,scheduleModel.mode)
+        cv.put(SCHEDULE,scheduleModel.schedule.toString())
+        cv.put(REMOTE_ID,scheduleModel.getRemoteId())
 
-        val _success = db.update(TABLE_NAME, cv, "$ID = ?", arrayOf(taskModel.id.toString()))
+        val _success = db.update(TABLE_NAME, cv, "$ID = ?", arrayOf(scheduleModel.id.toString()))
         db.close()
         return (_success)
     }
-    fun getScheduleById(id: Int): TaskModel{
+    fun getScheduleById(id: Int): ScheduleModel{
         val db = readableDatabase
         val selectAll = "Select * from $TABLE_NAME WHERE id= $id";
         val cursor = db.rawQuery(selectAll, null);
-        var result: TaskModel? = null;
+        var result: ScheduleModel? = null;
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 val header = cursor.getString(cursor.getColumnIndex(HEADER))
@@ -140,7 +140,7 @@ class AddScheduleController(context: Context) :
                     s = "[]"
                 }
                 val arra = JSONArray(s)
-                val schedule = TaskModel(id, header, desc,completed,skipped,mode,arra)
+                val schedule = ScheduleModel(id, header, desc,completed,skipped,mode,arra)
                 schedule.setRemoteId(remoteId)
                 if(!time.isNullOrBlank()) {
                     try {
@@ -161,8 +161,8 @@ class AddScheduleController(context: Context) :
         db.close();
         return result!!
     }
-    fun getSchedule(): MutableList<TaskModel> {
-        val taskModels: MutableList<TaskModel> = mutableListOf()
+    fun getSchedule(): List<ScheduleModel> {
+        val scheduleModels: MutableList<ScheduleModel> = mutableListOf()
         val db = readableDatabase;
         val selectAll = "Select * from $TABLE_NAME ";
         val cursor = db.rawQuery(selectAll, null);
@@ -182,7 +182,7 @@ class AddScheduleController(context: Context) :
                     s = "[]"
                 }
                 val arra = JSONArray(s)
-                val schedule = TaskModel(id, header, desc,completed,skipped,mode,arra)
+                val schedule = ScheduleModel(id, header, desc,completed,skipped,mode,arra)
                 schedule.setRemoteId(remoteId)
                 if(!time.isNullOrBlank()) {
                     try {
@@ -195,12 +195,12 @@ class AddScheduleController(context: Context) :
 
                     }
                 }
-                taskModels.add(schedule)
+                scheduleModels.add(schedule)
             }
         }
         cursor.close();
         db.close();
-        return taskModels;
+        return scheduleModels;
     }
 
     fun delSchedule(id: Int) {

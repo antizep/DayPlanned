@@ -16,9 +16,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import ru.ccoders.clay.controller.AddScheduleController
 import ru.ccoders.clay.databinding.ActivitySetPeriodBinding
-import ru.ccoders.clay.model.TaskModel
+import ru.ccoders.clay.model.ScheduleModel
 import org.json.JSONArray
-import ru.antizep.russua_victory.dataprovider.rest.ProfileRest
+import ru.ccoders.clay.main_activity.MainActivity
 import ru.ccoders.clay.rest.TaskRest
 import java.sql.Time
 
@@ -50,7 +50,7 @@ class SetPeriodActivity : AppCompatActivity() {
         setPeriodBinding = ActivitySetPeriodBinding.inflate(layoutInflater)
         setContentView(setPeriodBinding.root)
         setPeriodBinding.setTimePicker.setIs24HourView(true)
-        if (!t.isNullOrBlank() && !t.equals(TaskModel.TIEME_NOT)) {
+        if (!t.isNullOrBlank() && !t.equals(ScheduleModel.TIEME_NOT)) {
             val time = Time.valueOf(t);
             setPeriodBinding.setTimePicker.hour = time.hours
             setPeriodBinding.setTimePicker.minute = time.minutes

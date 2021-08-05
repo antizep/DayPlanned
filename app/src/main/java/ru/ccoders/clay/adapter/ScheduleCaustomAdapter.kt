@@ -16,13 +16,13 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import ru.ccoders.clay.Detail
 import ru.ccoders.clay.R
-import ru.ccoders.clay.model.TaskModel
+import ru.ccoders.clay.model.ScheduleModel
 import ru.ccoders.clay.utills.ImageUtil
 import ru.ccoders.clay.utills.ScheduleUtils
 import java.io.File
 
 class ScheduleCaustomAdapter constructor(
-    private var dataSet: MutableList<TaskModel>,
+    private var dataSet: List<ScheduleModel>,
     private val context: Context,
     private val day: Calendar,
     private val isPublic: Boolean

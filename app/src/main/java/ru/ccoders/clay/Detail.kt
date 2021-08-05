@@ -6,16 +6,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
-import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import ru.ccoders.clay.controller.AddScheduleController
 import ru.ccoders.clay.databinding.ActivityDetailBinding
 import ru.ccoders.clay.databinding.SheduleLayoutBinding
+import ru.ccoders.clay.main_activity.MainActivity
 import ru.ccoders.clay.utills.ImageUtil
 import java.io.File
-import java.nio.file.Files
 
 class Detail : AppCompatActivity() {
     private lateinit var activityDetailBinding: ActivityDetailBinding

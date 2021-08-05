@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/mainMenuMenu"
         android:icon="@mipmap/my_profile_icon"
         android:title="" />
     <item
         android:icon="@mipmap/searching_icon"
-        android:iconTint="#FF5722"
         android:title="" />
     <item
-        android:id="@+id/addSchedule"
+        android:id="@+id/addScheduleMenu"
         android:icon="@mipmap/add_task_icon"
         android:title="" />
     <item
@@ -17,6 +17,5 @@
         android:title="" />
     <item
         android:icon="@mipmap/settings_icon"
-        android:iconTint="@color/base_black"
         android:title="" />
 </menu>

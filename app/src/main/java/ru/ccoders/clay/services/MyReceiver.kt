@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import ru.ccoders.clay.controller.AddScheduleController
-import ru.ccoders.clay.model.TaskModel
+import ru.ccoders.clay.model.ScheduleModel
 import ru.ccoders.clay.utills.ScheduleUtils
 
 
@@ -34,19 +34,19 @@ class MyReceiver : BroadcastReceiver() {
 
 
 
-    fun addAlarmManager(taskModel: TaskModel, context: Context) {
-        if(taskModel.time == null){
+    fun addAlarmManager(scheduleModel: ScheduleModel, context: Context) {
+        if(scheduleModel.time == null){
             return
         }
         val alarmManager: AlarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val myIntent = Intent(context, MyReceiver::class.java)
-        myIntent.putExtra(HEADER,taskModel.header)
-        myIntent.putExtra(TIME,taskModel.getTxtTime())
-        myIntent.putExtra(DESCRIPTION,taskModel.description)
-        myIntent.putExtra(ID,taskModel.id)
-        Log.d("MyReceiver","next schedule:"+taskModel.header+" date:"+taskModel.time!!.time.toString())
+        myIntent.putExtra(HEADER,scheduleModel.header)
+        myIntent.putExtra(TIME,scheduleModel.getTxtTime())
+        myIntent.putExtra(DESCRIPTION,scheduleModel.description)
+        myIntent.putExtra(ID,scheduleModel.id)
+        Log.d("MyReceiver","next schedule:"+scheduleModel.header+" date:"+scheduleModel.time!!.time.toString())
         val pendingIntentpi = PendingIntent.getBroadcast(context, 0, myIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, taskModel.time!!.timeInMillis, pendingIntentpi)
+        alarmManager.set(AlarmManager.RTC_WAKEUP, scheduleModel.time!!.timeInMillis, pendingIntentpi)
     }
 }
 

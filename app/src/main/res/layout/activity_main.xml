@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/base_white"
     android:scrollbarThumbHorizontal="@color/base_black"
-    tools:context=".MainActivity">
+    tools:context=".main_activity.MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -276,16 +276,17 @@
             android:text="Доступные Всем" />
     </com.google.android.material.tabs.TabLayout>
 
+
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/pager"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/navigationBar"
+        app:layout_constraintBottom_toTopOf="@+id/navigationBar"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scseduleListSwiper" />
-
-
+        app:layout_constraintTop_toBottomOf="@+id/scseduleListSwiper"
+        app:layout_constraintVertical_bias="1.0" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigationBar"
@@ -300,7 +301,7 @@
         app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/nav_menu" />
 

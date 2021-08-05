@@ -1,7 +1,7 @@
 package ru.ccoders.clay.rest
 
-import ru.ccoders.clay.model.TaskModel
+import ru.ccoders.clay.model.ScheduleModel
 
 interface TaskRestInterface {
-    fun uploadTask(taskModel: TaskModel):Int
+    fun uploadTask(scheduleModel: ScheduleModel):Int
 }

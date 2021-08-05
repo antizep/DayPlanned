@@ -3,26 +3,22 @@ package ru.ccoders.clay
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
+import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment.DIRECTORY_PICTURES
+import android.provider.MediaStore
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
-import ru.ccoders.clay.controller.AddScheduleController
-import ru.ccoders.clay.databinding.ActivityAddScheduleBinding
-import ru.ccoders.clay.model.TaskModel
 import com.yalantis.ucrop.UCrop
 import org.json.JSONArray
+import ru.ccoders.clay.controller.AddScheduleController
+import ru.ccoders.clay.databinding.ActivityAddScheduleBinding
+import ru.ccoders.clay.model.ScheduleModel
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -36,9 +32,9 @@ class AddScheduleActivity : AppCompatActivity() {
     val REQUEST_CODE = 200
     val PIC_CROP = 69
     val cont = this;
-    var mode:Int? = null;
-    var schedule:String? = null;
-    var imageUri: Uri? = null;
+    var mode: Int? = null;
+    var schedule: String? = null;
+    var imageUris = mutableListOf<Uri>()
     override fun onCreate(savedInstanceState: Bundle?) {
 
         scheduleController = AddScheduleController(this)
@@ -47,6 +43,10 @@ class AddScheduleActivity : AppCompatActivity() {
 
         addScheduleBinding = ActivityAddScheduleBinding.inflate(layoutInflater)
         setContentView(addScheduleBinding.root)
+
+
+
+
         val id = intent.getIntExtra("id", 0);
         val header = intent.getStringExtra("header")
         val descr = intent.getStringExtra("description")
@@ -56,22 +56,36 @@ class AddScheduleActivity : AppCompatActivity() {
 
         val appGallery = getExternalFilesDir(DIRECTORY_PICTURES);
         val file = File(appGallery!!.absolutePath + "/$id/0.JPG")
-        if(file.exists()){
+        if (file.exists()) {
 
-            Glide.with(cont).load(file).apply(RequestOptions().signature(ObjectKey(file.length()))).into(
-                addScheduleBinding.scheduleImage
-            )
+            Glide.with(cont).load(file).apply(RequestOptions().signature(ObjectKey(file.length())))
+                .into(
+                    addScheduleBinding.scheduleImage
+                )
             addScheduleBinding.scheduleImage.setOnClickListener {
                 openGalleryForImages()
             }
             addScheduleBinding.addImagesButton.hide()
-        }else {
+        } else {
             addScheduleBinding.addImagesButton.setOnClickListener {
                 openGalleryForImages()
             }
 
         }
-
+        addScheduleBinding.navigationBar.setOnNavigationItemSelectedListener {
+            when(it.itemId){
+                R.id.mainMenuMenu -> {
+                    startActivity(
+                        Intent(
+                            this,
+                            AddScheduleActivity::class.java
+                        )
+                    )
+                }
+                R.id.addScheduleMenu -> it.isChecked = true
+            }
+            false
+        }
         addSchedule(id, header, descr, t)
     }
 
@@ -80,57 +94,52 @@ class AddScheduleActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == RESULT_OK ) {
-            if(requestCode == PIC_CROP){
-                imageUri = Uri.fromFile(File(cacheDir, imageUri.hashCode().toString()))
+        if (resultCode == RESULT_OK) {
+            if (requestCode == UCrop.REQUEST_CROP) {
 
-                Glide.with(cont).load(imageUri).addListener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        return false
+                scheduleImages.clear()
+                var imageUri: Uri? = null
+                imageUris.forEach {
+                    imageUri = Uri.fromFile(File(cacheDir, it.hashCode().toString()))
+                    var bitmap: Bitmap? = null
+                    if (Build.VERSION.SDK_INT < 28) {
+                        bitmap = MediaStore.Images.Media.getBitmap(
+                            this.contentResolver,
+                            imageUri
+                        )
+                    } else {
+                        val source = ImageDecoder.createSource(this.contentResolver, imageUri!!)
+                        bitmap = ImageDecoder.decodeBitmap(source)
                     }
-
-                    override fun onResourceReady(
-                        resource: Drawable?,
-                        model: Any?,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        scheduleImages.clear()
-                        scheduleImages.add((resource as BitmapDrawable).bitmap)
-                        addScheduleBinding.scheduleImage.setImageBitmap((resource as BitmapDrawable).bitmap);
-                        //Log.d("AHTUNG",(resource as BitmapDrawable).bitmap.toString())
-                        return true
+                    if(bitmap!=null) {
+                        scheduleImages.add(bitmap)
                     }
-                }).into(addScheduleBinding.scheduleImage)
+                }
+                addScheduleBinding.scheduleImage.setImageBitmap(scheduleImages[0]);
             }
-            if(requestCode == REQUEST_CODE) {
+
+            if (requestCode == REQUEST_CODE) {
                 // if multiple images are selected
                 Log.d("AddScheduleActivity", "getImage")
-
+                imageUris.clear()
                 if (data?.getClipData() != null) {
                     var count = data.clipData?.itemCount
 
                     for (i in 0..count!! - 1) {
-                        imageUri = data.clipData!!.getItemAt(i).uri
+                        val uri = data.clipData!!.getItemAt(i).uri
+                        imageUris.add(uri)
                         //     iv_image.setImageURI(imageUri) Here you can assign your Image URI to the ImageViews
-                        Log.d("AddScheduleActivity", imageUri.toString())
+                        Log.d("AddScheduleActivity", uri.toString())
 
                     }
                     openEditor()
                 } else if (data?.getData() != null) {
-                    // if single image is selected
-
-                    imageUri = data.data!!
+                    val uri = data.data!!
+                    imageUris.add(uri)
 
                     openEditor()
                     //   iv_image.setImageURI(imageUri) Here you can assign the picked image uri to your imageview
-                    Log.d("AddScheduleActivity", imageUri.toString())
+                    Log.d("AddScheduleActivity", uri.toString())
                 }
             }
 
@@ -140,8 +149,6 @@ class AddScheduleActivity : AppCompatActivity() {
             addScheduleBinding.addImagesButton.hide()
         }
     }
-
-
 
 
     private fun saveImageToStorage(image: Bitmap, indexUri: Int, indexSchedule: Int) {
@@ -171,31 +178,24 @@ class AddScheduleActivity : AppCompatActivity() {
 
     private fun openGalleryForImages() {
 
-        if (Build.VERSION.SDK_INT < 19) {
-            val intent = Intent()
-            intent.type = "image/*"
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            intent.action = Intent.ACTION_GET_CONTENT
-            intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
-            startActivityForResult(
-                Intent.createChooser(intent, "Choose Pictures"), REQUEST_CODE
-            )
-        } else { // For latest versions API LEVEL 19+
-            var intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
-            intent.addCategory(Intent.CATEGORY_OPENABLE)
-            intent.type = "image/*"
-            startActivityForResult(intent, REQUEST_CODE);
-        }
+        var intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        intent.addCategory(Intent.CATEGORY_OPENABLE)
+        intent.type = "image/*"
+        startActivityForResult(intent, REQUEST_CODE);
 
     }
 
     private fun openEditor() {
-        val u = UCrop.of(imageUri!!, Uri.fromFile(File(cacheDir, imageUri.hashCode().toString())))
-            .withAspectRatio(16F, 9F)
-            .withMaxResultSize(640, 360)
-            .start(this);
-        Log.d("AddScheduleActivity",imageUri.toString())
+        imageUris.forEach {
+
+            UCrop.of(it, Uri.fromFile(File(cacheDir, it.hashCode().toString())))
+                .withAspectRatio(16F, 9F)
+                .withMaxResultSize(640, 360)
+                .start(this);
+
+            Log.d("AddScheduleActivity", it.toString())
+        }
     }
 
     fun addSchedule(id: Int, head: String?, discr: String?, t: String?) {
@@ -213,7 +213,7 @@ class AddScheduleActivity : AppCompatActivity() {
         }
         addScheduleBinding.addScheduleButton.setOnClickListener {
             Log.d("AddScheduleActivity", "H:" + header + " D:" + descript);
-            val schedule = TaskModel(
+            val schedule = ScheduleModel(
                 id,
                 header.toString(),
                 descript.toString(),
@@ -240,7 +240,7 @@ class AddScheduleActivity : AppCompatActivity() {
                 val intent = Intent(this, SetPeriodActivity::class.java)
                 intent.putExtra("id", index)
                 intent.putExtra("time", t)
-                intent.putExtra("isPublic",isPublic)
+                intent.putExtra("isPublic", isPublic)
                 intent.putExtra(AddScheduleController.MODE, this.mode)
                 intent.putExtra(AddScheduleController.SCHEDULE, this.schedule)
                 startActivity(intent)

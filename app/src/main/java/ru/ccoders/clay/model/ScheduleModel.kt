@@ -3,11 +3,11 @@ package ru.ccoders.clay.model
 import android.icu.util.Calendar
 import org.json.JSONArray
 import org.json.JSONObject
-import ru.ccoders.clay.MainActivity
+import ru.ccoders.clay.main_activity.MainActivity
 import ru.ccoders.clay.controller.AddScheduleController
 
 
-data class TaskModel constructor(
+data class ScheduleModel constructor(
     val id: Int,
     val header: String?,
     val description: String?,

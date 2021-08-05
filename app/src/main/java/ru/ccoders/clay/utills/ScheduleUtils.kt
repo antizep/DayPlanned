@@ -4,20 +4,20 @@ import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.util.Log
 import ru.ccoders.clay.controller.AddScheduleController
-import ru.ccoders.clay.model.TaskModel
+import ru.ccoders.clay.model.ScheduleModel
 import org.json.JSONArray
 
 class ScheduleUtils {
     companion object {
-        fun excludeNotToday(unsorted: MutableList<TaskModel>): MutableList<TaskModel> {
+        fun excludeNotToday(unsorted: MutableList<ScheduleModel>): MutableList<ScheduleModel> {
             return excludeNotDay(unsorted, Calendar.getInstance())
         }
 
         fun excludeNotDay(
-            unsorted: MutableList<TaskModel>,
+            unsorted: List<ScheduleModel>,
             calendar: Calendar
-        ): MutableList<TaskModel> {
-            val mutableList: MutableList<TaskModel> = mutableListOf();
+        ): MutableList<ScheduleModel> {
+            val mutableList: MutableList<ScheduleModel> = mutableListOf();
 
             unsorted.forEach {
 
@@ -44,36 +44,36 @@ class ScheduleUtils {
             return mutableList
         }
 
-        fun minSchedule(unsorted: MutableList<TaskModel>): TaskModel? {
+        fun minSchedule(unsorted: MutableList<ScheduleModel>): ScheduleModel? {
             return minScheduleByTime(unsorted, -1, -1)
         }
 
-        fun minScheduleByTime(unsorted: MutableList<TaskModel>, hour: Int, minute: Int): TaskModel? {
+        fun minScheduleByTime(unsorted: MutableList<ScheduleModel>, hour: Int, minute: Int): ScheduleModel? {
 
-            var taskModel: TaskModel?
+            var scheduleModel: ScheduleModel?
             var ph = hour
             var pm = minute
-            taskModel = null;
+            scheduleModel = null;
             unsorted.forEach {
                 Log.d("ScheduleUtils","minScheduleByTime"+it.getTxtTime())
                 if (it.getHour() > ph || (it.getHour() == ph && it.getMinute() > pm)){
-                    if (taskModel == null) {
-                        taskModel = it;
+                    if (scheduleModel == null) {
+                        scheduleModel = it;
 
-                    } else if (it.getHour() < taskModel!!.getHour()) {
-                        taskModel = it;
-                    } else if (it.getHour() == taskModel!!.getHour() && it.getMinute() < taskModel!!.getMinute()) {
-                        taskModel = it;
+                    } else if (it.getHour() < scheduleModel!!.getHour()) {
+                        scheduleModel = it;
+                    } else if (it.getHour() == scheduleModel!!.getHour() && it.getMinute() < scheduleModel!!.getMinute()) {
+                        scheduleModel = it;
                     }
                 }
-                Log.d("ScheduleUtils","minScheduleByTime"+taskModel)
+                Log.d("ScheduleUtils","minScheduleByTime"+scheduleModel)
 
             }
-            return taskModel;
+            return scheduleModel;
         }
 
-        fun sort(unsorted: MutableList<TaskModel>, day:Calendar,isPublic:Boolean):MutableList<TaskModel>{
-            val ret = mutableListOf<TaskModel>()
+        fun sort(unsorted: List<ScheduleModel>, day:Calendar, isPublic:Boolean):MutableList<ScheduleModel>{
+            val ret = mutableListOf<ScheduleModel>()
             unsorted.forEach {
                 if (isPublic) {
                     if (it.getRemoteId() > 0) {
@@ -87,24 +87,24 @@ class ScheduleUtils {
             }
             return sortByDay(ret,day)
         }
-        fun sortByDay(unsorted: MutableList<TaskModel>, day:Calendar): MutableList<TaskModel> {
+        fun sortByDay(unsorted: MutableList<ScheduleModel>, day:Calendar): MutableList<ScheduleModel> {
             val unsortedC = ArrayList(unsorted.toList())
-            val positive: MutableList<TaskModel> = excludeNotDay(unsortedC,day);
+            val positive: MutableList<ScheduleModel> = excludeNotDay(unsortedC,day);
             unsortedC.removeAll(positive);
-            val sorted = mutableListOf<TaskModel>()
+            val sorted = mutableListOf<ScheduleModel>()
             while (positive.size > 0) {
-                val min: TaskModel? = minSchedule(positive);
+                val min: ScheduleModel? = minSchedule(positive);
                 sorted.add(min!!)
                 positive.remove(min)
             }
             return sorted
         }
 
-        fun nextTask(unsorted: MutableList<TaskModel>): TaskModel? {
+        fun nextTask(unsorted: List<ScheduleModel>): ScheduleModel? {
             return nextTaskByDay(unsorted, Calendar.getInstance())
         }
 
-        fun nextTaskByDay(unsorted: MutableList<TaskModel>, calendar: Calendar): TaskModel? {
+        fun nextTaskByDay(unsorted: List<ScheduleModel>, calendar: Calendar): ScheduleModel? {
             if (unsorted.size == 0) {
                 return null;
             }

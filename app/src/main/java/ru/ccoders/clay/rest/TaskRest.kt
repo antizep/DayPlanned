@@ -7,16 +7,16 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import ru.antizep.russua_victory.dataprovider.rest.AbstractRest
-import ru.ccoders.clay.model.TaskModel
+import ru.ccoders.clay.model.ScheduleModel
 
 class TaskRest: AbstractRest(),TaskRestInterface {
     val urlCreate = "$DOMAIN/api/task/create/"
     val TAG = "TaskRest"
-    override fun uploadTask(taskModel: TaskModel): Int {
+    override fun uploadTask(scheduleModel: ScheduleModel): Int {
         val client = OkHttpClient()
         val JSON =  "application/json; charset=utf-8".toMediaType()
-        val reqBody =  taskModel.toJSONObject().toString().toRequestBody(JSON)
-        Log.d(TAG,"response: ${taskModel.toJSONObject()}")
+        val reqBody =  scheduleModel.toJSONObject().toString().toRequestBody(JSON)
+        Log.d(TAG,"response: ${scheduleModel.toJSONObject()}")
         val request = Request.Builder()
             .url(urlCreate)
             .post(reqBody)

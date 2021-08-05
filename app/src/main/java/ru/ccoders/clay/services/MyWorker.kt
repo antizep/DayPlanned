@@ -2,27 +2,21 @@ package ru.ccoders.clay.services
 
 import NotificationUtils.Companion.CHANNEL_ID
 import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
-import android.net.Uri
+import android.graphics.Color
 import android.os.Build
-import android.os.Environment
-import android.provider.MediaStore
+import android.util.Log
 import android.widget.RemoteViews
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.work.*
-import ru.ccoders.clay.MainActivity
+import ru.ccoders.clay.main_activity.MainActivity
 import ru.ccoders.clay.R
 import ru.ccoders.clay.controller.AddScheduleController
-import ru.ccoders.clay.model.TaskModel
+import ru.ccoders.clay.model.ScheduleModel
 import ru.ccoders.clay.utills.ScheduleUtils
-import java.io.File
 import java.time.Duration
 import java.util.*
 
@@ -32,9 +26,10 @@ class MyWorker(private val context:Context,private val workerParameters: WorkerP
 
     private val CANCELL_BUTTON_CODE = 100;
     private val COMPLETE_BUTTON_CODE = 101;
+    private lateinit var notificationManager:NotificationManager
 
     override fun doWork(): Result {
-
+        Log.d("MyWorker","doWork()")
         val notificationIntent = Intent(context, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
             context,
@@ -81,37 +76,73 @@ class MyWorker(private val context:Context,private val workerParameters: WorkerP
                 )
             )
 
-
             setCustomContentView(remoteViews)
             setCustomBigContentView(remoteViews)
             setChannelId(CHANNEL_ID)
-            setContentTitle(inputData.getString(MyReceiver.HEADER))
+            setContentTitle(inputData.getString(MyReceiver.HEADER+":"+inputData.getString(MyReceiver.TIME)))
 
         }.build()
 
 
-        val notificationManager = NotificationManagerCompat.from(context)
+
+
+        val notificationManager = createNotificationManager()
         notificationManager.notify(100, mNotification)
         nextWork()
         return Result.success()
     }
-    fun nextWork(){
-        val schedules = scheduleController!!.getSchedule();
-        addAlarmManager(ScheduleUtils.nextTask(schedules)!!)
+
+    fun createNotificationManager(): NotificationManager{
+
+        notificationManager = (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?)!!
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                CHANNEL_ID, "Clay tasks channel",
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            channel.description = "Кнанал для уведомлений о задаче"
+            channel.enableLights(true)
+            channel.lightColor = Color.RED
+            channel.enableVibration(true)
+            notificationManager.createNotificationChannel(channel)
+        }
+        return notificationManager
     }
 
-    fun addAlarmManager(taskModel: TaskModel) {
-        WorkManager.getInstance().cancelAllWorkByTag("natWorker");
-        val data  = Data.Builder().putInt(MyReceiver.ID,taskModel.id)
-            .putString(MyReceiver.HEADER,taskModel.header)
-            .build()
-        val onTimeWorkRequest =    OneTimeWorkRequest.Builder(MyWorker::class.java)
-            .setInitialDelay(Duration.ofMillis(taskModel.time!!.timeInMillis - Date().time))
-            .addTag("natWorker")
-            .setInputData(data)
-            .build()
-        val workManager = WorkManager.getInstance()
-        workManager.enqueue(onTimeWorkRequest)
+    fun nextWork(){
+        val schedules = scheduleController.getSchedule();
+        addAlarmManager(ScheduleUtils.nextTask(schedules)!!,context)
+    }
+    companion object {
+        fun addAlarmManager(scheduleModel: ScheduleModel, context: Context) {
+            WorkManager.getInstance(context).cancelAllWorkByTag("natWorker");
+            val constraints = Constraints.Builder()
+                .setRequiresCharging(false)
+                .setRequiresBatteryNotLow(false)
+                .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+                .setRequiresDeviceIdle(false)
+                .setRequiresStorageNotLow(false)
+                .build()
+
+            val data = Data.Builder().putInt(MyReceiver.ID, scheduleModel.id)
+                .putString(MyReceiver.HEADER, scheduleModel.header)
+                .putString(MyReceiver.TIME,scheduleModel.getTxtTime())
+                .build()
+            val time = scheduleModel.time!!.timeInMillis - Date().time
+            val t = Duration.ofMillis(scheduleModel.time!!.timeInMillis).minusMillis(System.currentTimeMillis())
+
+            Log.d("MyWorker", "next task timer calculate:${t.toMinutes()}")
+            Log.d("MyWorker", "task time in schedule:${scheduleModel.getTxtTime()}")
+            val onTimeWorkRequest = OneTimeWorkRequest.Builder(MyWorker::class.java)
+                .setInitialDelay(t)
+                .addTag("natWorker")
+                .setInputData(data)
+                .setConstraints(constraints)
+                .build()
+            val workManager = WorkManager.getInstance()
+            workManager.enqueue(onTimeWorkRequest)
+        }
     }
 
 }

@@ -10,6 +10,8 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
+import ru.ccoders.clay.main_activity.MainActivity;
+
 class CheckRecentRun extends Service {
 
     private final static String TAG = "CheckRecentPlay";
