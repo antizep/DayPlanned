@@ -1,6 +1,7 @@
 package ru.ccoders.clay.services
 
 import NotificationUtils.Companion.CHANNEL_ID
+import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -115,6 +116,7 @@ class MyWorker(private val context:Context,private val workerParameters: WorkerP
         addAlarmManager(ScheduleUtils.nextTask(schedules)!!,context)
     }
     companion object {
+        @SuppressLint("UnsafeOptInUsageError")
         fun addAlarmManager(scheduleModel: ScheduleModel, context: Context) {
             WorkManager.getInstance(context).cancelAllWorkByTag("natWorker");
             val constraints = Constraints.Builder()
@@ -137,10 +139,11 @@ class MyWorker(private val context:Context,private val workerParameters: WorkerP
             val onTimeWorkRequest = OneTimeWorkRequest.Builder(MyWorker::class.java)
                 .setInitialDelay(t)
                 .addTag("natWorker")
+                //.setExpedited(OutOfQuotaPolicy.DROP_WORK_REQUEST)
                 .setInputData(data)
                 .setConstraints(constraints)
                 .build()
-            val workManager = WorkManager.getInstance()
+            val workManager = WorkManager.getInstance(context)
             workManager.enqueue(onTimeWorkRequest)
         }
     }

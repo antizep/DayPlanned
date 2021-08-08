@@ -51,7 +51,9 @@ dependencies {
     implementation 'com.github.yalantis:ucrop:2.2.6'
     implementation 'com.github.yalantis:ucrop:2.2.6'
 
-    implementation group: 'androidx.work', name: 'work-runtime', version: '2.6.0-rc01'
+    implementation "androidx.work:work-runtime-ktx:2.6.0-rc01"
+    implementation "androidx.work:work-multiprocess:2.6.0-rc01"
+
 
     implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"

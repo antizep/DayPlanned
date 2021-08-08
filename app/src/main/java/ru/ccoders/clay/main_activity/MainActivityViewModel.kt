@@ -12,6 +12,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import ru.antizep.russua_victory.dataprovider.rest.ProfileRest
 import ru.ccoders.clay.controller.AddScheduleController
+import ru.ccoders.clay.services.MyWorker
+import ru.ccoders.clay.utills.ScheduleUtils
 import java.io.File
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
@@ -55,6 +57,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                 }
             }
         }
+        MyWorker.addAlarmManager(ScheduleUtils.nextTask(scheduleAll)!!,context)
         scheduleListLiveData.value = scheduleAll
     }
 
