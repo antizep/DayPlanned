@@ -16,10 +16,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayoutMediator
-import ru.ccoders.clay.AddScheduleActivity
+import ru.ccoders.clay.add_schedule.AddScheduleActivity
 import ru.ccoders.clay.R
 import ru.ccoders.clay.databinding.ActivityMainBinding
-import ru.ccoders.clay.model.ScheduleModel
 
 
 class MainActivity : AppCompatActivity() {

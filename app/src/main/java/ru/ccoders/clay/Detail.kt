@@ -9,7 +9,8 @@ import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
-import ru.ccoders.clay.controller.AddScheduleController
+import ru.ccoders.clay.add_schedule.AddScheduleActivity
+import ru.ccoders.clay.controller.SQLScheduleController
 import ru.ccoders.clay.databinding.ActivityDetailBinding
 import ru.ccoders.clay.databinding.SheduleLayoutBinding
 import ru.ccoders.clay.main_activity.MainActivity
@@ -19,7 +20,7 @@ import java.io.File
 class Detail : AppCompatActivity() {
     private lateinit var activityDetailBinding: ActivityDetailBinding
     private lateinit var scheduleLayoutPane: SheduleLayoutBinding;
-    var scheduleController: AddScheduleController? = null
+    var scheduleController: SQLScheduleController? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +28,7 @@ class Detail : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         activityDetailBinding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(activityDetailBinding.root)
-        scheduleController = AddScheduleController(this)
+        scheduleController = SQLScheduleController(this)
         val id =  intent.getIntExtra("id",0)
         val schedule = scheduleController!!.getScheduleById(id)
         val appGallery = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -73,8 +74,8 @@ class Detail : AppCompatActivity() {
             intent.putExtra("id", schedule.id)
             intent.putExtra("header", schedule.header)
 
-            intent.putExtra(AddScheduleController.MODE, schedule.mode)
-            intent.putExtra(AddScheduleController.SCHEDULE, schedule.schedule.toString())
+            intent.putExtra(SQLScheduleController.MODE, schedule.mode)
+            intent.putExtra(SQLScheduleController.SCHEDULE, schedule.schedule.toString())
 
             intent.putExtra("description", schedule.description)
             intent.putExtra("time", schedule.getTxtTime())

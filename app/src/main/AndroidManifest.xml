@@ -15,26 +15,18 @@
 
     <application
         android:allowBackup="true"
-        android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-
         android:icon="@mipmap/icon_apolo"
         android:label="@string/app_name"
+
         android:roundIcon="@mipmap/icon_apolo_round"
-        android:theme="@style/Theme.DayPlanned">
+        android:supportsRtl="true"
+        android:theme="@style/Theme.DayPlanned"
+        android:usesCleartextTraffic="true">
 
 
         <activity android:name=".Detail" />
 
-        <service
-            android:name=".services.NotificationService"
-            android:enabled="true"
-
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="com.example.app.START_BACKGROUND" />
-            </intent-filter>
-        </service>
+        <service android:name=".services.NotificationService" android:enabled="true"  />
 
         <activity android:name=".SetPeriodActivity" />
         <activity
@@ -43,8 +35,9 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <receiver android:name=".services.MyReceiver">
+
             <intent-filter>
-                <action android:name="android.intent.action.xxx" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
@@ -55,7 +48,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddScheduleActivity" />
+        <activity android:name=".add_schedule.AddScheduleActivity" />
 
     </application>
 

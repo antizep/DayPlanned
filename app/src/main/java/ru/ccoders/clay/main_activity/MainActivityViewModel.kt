@@ -7,12 +7,12 @@ import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import ru.ccoders.clay.services.MyReceiver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import ru.antizep.russua_victory.dataprovider.rest.ProfileRest
-import ru.ccoders.clay.controller.AddScheduleController
-import ru.ccoders.clay.services.MyWorker
+import ru.ccoders.clay.controller.SQLScheduleController
 import ru.ccoders.clay.utills.ScheduleUtils
 import java.io.File
 
@@ -22,7 +22,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     val profileLiveData = MutableLiveData<ProfileModel>()
     val scheduleListLiveData = ScheduleLiveData()
 
-    private var scheduleController: AddScheduleController = AddScheduleController(application)
+    private var scheduleController: SQLScheduleController = SQLScheduleController(application)
 
     @SuppressLint("StaticFieldLeak")
     private var context:Application = application
@@ -57,7 +57,9 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                 }
             }
         }
-        MyWorker.addAlarmManager(ScheduleUtils.nextTask(scheduleAll)!!,context)
+        //context.startForegroundService(Intent(context,MyReceiver::class.java))
+        MyReceiver().addAlarmManager(ScheduleUtils.nextTask(scheduleAll)!!,context)
+        //MyWorker.addAlarmManager(ScheduleUtils.nextTask(scheduleAll)!!,context)
         scheduleListLiveData.value = scheduleAll
     }
 

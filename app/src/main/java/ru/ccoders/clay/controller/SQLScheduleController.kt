@@ -11,7 +11,7 @@ import org.json.JSONArray
 import java.lang.Exception
 import java.sql.Time
 
-class AddScheduleController(context: Context) :
+class SQLScheduleController(context: Context) :
     SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
     companion object {
         private val DB_NAME = "plannedTime";

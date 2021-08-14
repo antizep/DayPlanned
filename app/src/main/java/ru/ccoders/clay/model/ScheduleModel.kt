@@ -4,7 +4,7 @@ import android.icu.util.Calendar
 import org.json.JSONArray
 import org.json.JSONObject
 import ru.ccoders.clay.main_activity.MainActivity
-import ru.ccoders.clay.controller.AddScheduleController
+import ru.ccoders.clay.controller.SQLScheduleController
 
 
 data class ScheduleModel constructor(
@@ -95,7 +95,7 @@ data class ScheduleModel constructor(
     fun toJSONObject(): JSONObject {
         return JSONObject().put(HEADER, header)
             .put(DESCRIPTION, description)
-            .put(DAILY, mode == AddScheduleController.VEEKLY_MODE)
+            .put(DAILY, mode == SQLScheduleController.VEEKLY_MODE)
             .put(DAY_OF_WEEK, schedule.toString())
             .put(TIME, getTxtTime())
             .put(DONE, complete)

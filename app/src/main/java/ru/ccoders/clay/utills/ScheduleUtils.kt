@@ -3,7 +3,7 @@ package ru.ccoders.clay.utills
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.util.Log
-import ru.ccoders.clay.controller.AddScheduleController
+import ru.ccoders.clay.controller.SQLScheduleController
 import ru.ccoders.clay.model.ScheduleModel
 import org.json.JSONArray
 
@@ -22,7 +22,7 @@ class ScheduleUtils {
             unsorted.forEach {
 
                 var i = it.getHour();
-                if (it.mode == AddScheduleController.VEEKLY_MODE) {
+                if (it.mode == SQLScheduleController.VEEKLY_MODE) {
                     val sch = it.schedule!!
                     val schUSA = JSONArray()
                     schUSA.put(sch[6])

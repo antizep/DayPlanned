@@ -14,7 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
-import ru.ccoders.clay.controller.AddScheduleController
+import ru.ccoders.clay.controller.SQLScheduleController
 import ru.ccoders.clay.databinding.ActivitySetPeriodBinding
 import ru.ccoders.clay.model.ScheduleModel
 import org.json.JSONArray
@@ -23,7 +23,7 @@ import ru.ccoders.clay.rest.TaskRest
 import java.sql.Time
 
 class SetPeriodActivity : AppCompatActivity() {
-    var scheduleController: AddScheduleController? = null
+    var scheduleController: SQLScheduleController? = null
 
     companion object {
         var shedle = JSONArray("[true,true,true,true,true,false,false]")
@@ -34,12 +34,12 @@ class SetPeriodActivity : AppCompatActivity() {
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        scheduleController = AddScheduleController(this)
+        scheduleController = SQLScheduleController(this)
         val id = intent.getIntExtra("id", 0);
         val t = intent.getStringExtra("time")
         val isPublic = intent.getBooleanExtra("isPublic",false)
-        var mode = intent.getIntExtra(AddScheduleController.MODE, AddScheduleController.VEEKLY_MODE)
-        val scheduleS = intent.getStringExtra(AddScheduleController.SCHEDULE)
+        var mode = intent.getIntExtra(SQLScheduleController.MODE, SQLScheduleController.VEEKLY_MODE)
+        val scheduleS = intent.getStringExtra(SQLScheduleController.SCHEDULE)
 
         if (scheduleS != null) {
             val s = JSONArray(scheduleS)
@@ -72,11 +72,11 @@ class SetPeriodActivity : AppCompatActivity() {
             when (buttonView.checkedRadioButtonId) {
                 setPeriodBinding.radioButtonDaily.id -> {
                     chipGroupWeekly.visibility = View.GONE
-                    mode = AddScheduleController.DAILY_MODE
+                    mode = SQLScheduleController.DAILY_MODE
                 }
                 setPeriodBinding.radioButtonWeekly.id -> {
                     chipGroupWeekly.visibility = View.VISIBLE
-                    mode = AddScheduleController.VEEKLY_MODE
+                    mode = SQLScheduleController.VEEKLY_MODE
                 }
             }
             Log.d("SetPeriodActivity", "checked mon:" + buttonView.checkedRadioButtonId)
