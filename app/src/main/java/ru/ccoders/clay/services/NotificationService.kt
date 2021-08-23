@@ -21,6 +21,7 @@ class NotificationService : Service() {
 
     override fun onCreate() {
         Log.d(TAG,"onCreate()")
+        nManager = MyReceiver.createNotificationManager(this)
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {

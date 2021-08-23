@@ -3,12 +3,12 @@ package ru.ccoders.clay.model
 import android.icu.util.Calendar
 import org.json.JSONArray
 import org.json.JSONObject
-import ru.ccoders.clay.main_activity.MainActivity
+import ru.ccoders.clay.main_activity.MainFragment
 import ru.ccoders.clay.controller.SQLScheduleController
 
 
 data class ScheduleModel constructor(
-    val id: Int,
+    var id: Int,
     val header: String?,
     val description: String?,
     val complete: Int?,
@@ -100,6 +100,6 @@ data class ScheduleModel constructor(
             .put(TIME, getTxtTime())
             .put(DONE, complete)
             .put(REJECTED, skipped)
-            .put(PROFILE, MainActivity.ID_PROFILE)
+            .put(PROFILE, MainFragment.ID_PROFILE)
     }
 }

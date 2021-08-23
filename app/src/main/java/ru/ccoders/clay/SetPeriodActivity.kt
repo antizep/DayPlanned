@@ -3,24 +3,25 @@ package ru.ccoders.clay
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.icu.util.Calendar
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
 import ru.ccoders.clay.controller.SQLScheduleController
 import ru.ccoders.clay.databinding.ActivitySetPeriodBinding
+import ru.ccoders.clay.main_activity.MainFragment
 import ru.ccoders.clay.model.ScheduleModel
-import org.json.JSONArray
-import ru.ccoders.clay.main_activity.MainActivity
 import ru.ccoders.clay.rest.TaskRest
 import java.sql.Time
+
 
 class SetPeriodActivity : AppCompatActivity() {
     var scheduleController: SQLScheduleController? = null
@@ -119,7 +120,7 @@ class SetPeriodActivity : AppCompatActivity() {
 
 
             val scope = CoroutineScope(Dispatchers.IO)
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, RunActivity::class.java)
             val ctx= this
             if(isPublic) {
                 scope.async {

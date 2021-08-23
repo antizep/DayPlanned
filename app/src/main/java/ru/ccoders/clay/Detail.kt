@@ -9,11 +9,11 @@ import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
-import ru.ccoders.clay.add_schedule.AddScheduleActivity
+import ru.ccoders.clay.add_schedule.AddScheduleFragment
 import ru.ccoders.clay.controller.SQLScheduleController
 import ru.ccoders.clay.databinding.ActivityDetailBinding
 import ru.ccoders.clay.databinding.SheduleLayoutBinding
-import ru.ccoders.clay.main_activity.MainActivity
+import ru.ccoders.clay.main_activity.MainFragment
 import ru.ccoders.clay.utills.ImageUtil
 import java.io.File
 
@@ -39,7 +39,8 @@ class Detail : AppCompatActivity() {
             if(file.exists()) {
                 file.deleteRecursively()
             }
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, RunActivity::class.java)
+
             startActivity(intent)
         }
         scheduleLayoutPane.timeScheduleLayout.setText(schedule.getTxtTimeNotSecond())
@@ -70,8 +71,8 @@ class Detail : AppCompatActivity() {
 
         activityDetailBinding.editScheduleButton.setOnClickListener {
             Log.d("Detail","click edit:"+schedule.header)
-            val intent = Intent(this, AddScheduleActivity::class.java)
-            intent.putExtra("id", schedule.id)
+            val intent = Intent(this, RunActivity::class.java)
+            intent.putExtra("idEdit", schedule.id)
             intent.putExtra("header", schedule.header)
 
             intent.putExtra(SQLScheduleController.MODE, schedule.mode)

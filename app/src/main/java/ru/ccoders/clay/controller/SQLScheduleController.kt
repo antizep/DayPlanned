@@ -88,6 +88,7 @@ class SQLScheduleController(context: Context) :
         values.put("description", scheduleModel.description)
         val _success = db.insert(TABLE_NAME, null, values);
         db.close();
+        scheduleModel.id = _success.toInt()
         Log.v("InsertedID", "$_success")
         return Integer.parseInt("$_success")
     }

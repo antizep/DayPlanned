@@ -30,7 +30,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     fun loadProfile() {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.async {
-            val profile = ProfileRest().loadProfile(MainActivity.ID_PROFILE)
+            val profile = ProfileRest().loadProfile(MainFragment.ID_PROFILE)
 
             if (profile != null) {
 
@@ -57,6 +57,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                 }
             }
         }
+        if (scheduleAll.isEmpty()) return
         //context.startForegroundService(Intent(context,MyReceiver::class.java))
         MyReceiver().addAlarmManager(ScheduleUtils.nextTask(scheduleAll)!!,context)
         //MyWorker.addAlarmManager(ScheduleUtils.nextTask(scheduleAll)!!,context)

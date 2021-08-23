@@ -43,6 +43,7 @@ class AddScheduleViewModel(application: Application) :AndroidViewModel(applicati
     }
 
     fun saveSchedule(scheduleModel: ScheduleModel){
+
         if(scheduleModel.id==0){
             scheduleController!!.addSchedule(scheduleModel)
         }else{

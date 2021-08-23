@@ -11,7 +11,7 @@ import android.util.Log
 import android.widget.RemoteViews
 import ru.ccoders.clay.R
 import ru.ccoders.clay.controller.SQLScheduleController
-import ru.ccoders.clay.main_activity.MainActivity
+import ru.ccoders.clay.main_activity.MainFragment
 import ru.ccoders.clay.model.ScheduleModel
 import ru.ccoders.clay.utills.ScheduleUtils
 
@@ -19,14 +19,36 @@ import ru.ccoders.clay.utills.ScheduleUtils
 class MyReceiver : BroadcastReceiver() {
     var scheduleController: SQLScheduleController? = null
 
+
     companion object {
         var HEADER = "header"
         var DESCRIPTION = "description"
         var TIME = "time"
         var ID = "ID"
-
+        var notificationManager:NotificationManager? = null
         private val CANCELL_BUTTON_CODE = 100;
         private val COMPLETE_BUTTON_CODE = 101;
+        fun createNotificationManager(context: Context): NotificationManager {
+            if (notificationManager == null) {
+                notificationManager =
+                    (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?)!!
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val channel = NotificationChannel(
+                        CHANNEL_ID, "Clay tasks channel",
+                        NotificationManager.IMPORTANCE_HIGH
+                    )
+                    channel.description = "Кнанал для уведомлений о задаче"
+                    channel.enableLights(true)
+                    channel.lightColor = Color.RED
+                    channel.enableVibration(true)
+                    notificationManager!!.createNotificationChannel(channel)
+                }
+            }
+
+            return notificationManager as NotificationManager
+        }
+
     }
 
     override fun onReceive(context: Context, intent: Intent) {
@@ -35,7 +57,7 @@ class MyReceiver : BroadcastReceiver() {
 
 
 
-        val notificationIntent = Intent(context, MainActivity::class.java)
+        val notificationIntent = Intent(context, MainFragment::class.java)
         val pendingIntent = PendingIntent.getActivity(
             context,
             0, notificationIntent,
@@ -101,23 +123,6 @@ class MyReceiver : BroadcastReceiver() {
     }
 
 
-    fun createNotificationManager(context: Context): NotificationManager{
-
-        val notificationManager = (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?)!!
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID, "Clay tasks channel",
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            channel.description = "Кнанал для уведомлений о задаче"
-            channel.enableLights(true)
-            channel.lightColor = Color.RED
-            channel.enableVibration(true)
-            notificationManager.createNotificationChannel(channel)
-        }
-        return notificationManager
-    }
 
     fun addAlarmManager(schedule: ScheduleModel,context: Context) {
         if(schedule.time == null){

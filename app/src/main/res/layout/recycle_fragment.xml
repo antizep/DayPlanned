@@ -11,8 +11,7 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:accessibilityLiveRegion="assertive"
-        android:accessibilityTraversalAfter="@id/scseduleListSwiper"
-        android:accessibilityTraversalBefore="@id/navigationBar">
+        android:accessibilityTraversalAfter="@id/scseduleListSwiper">
 
     </androidx.recyclerview.widget.RecyclerView>
 </FrameLayout>

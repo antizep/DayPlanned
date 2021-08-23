@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/base_white"
     android:scrollbarThumbHorizontal="@color/base_black"
-    tools:context=".main_activity.MainActivity">
+    tools:context=".main_activity.MainFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -164,45 +164,45 @@
         app:srcCompat="@mipmap/icon_apolo" />
 
     <ImageView
-        android:id="@+id/frieendIco"
+        android:id="@+id/followerIco"
         android:layout_width="20dp"
         android:layout_height="20dp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="@+id/likedIco"
+        app:layout_constraintStart_toStartOf="@+id/subscriberIco"
         app:layout_constraintTop_toTopOf="@+id/imageView"
         app:layout_constraintVertical_bias="0.32"
         app:srcCompat="@mipmap/my_profile_icon" />
 
     <TextView
-        android:id="@+id/friendCount"
+        android:id="@+id/followerCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:text="900"
-        app:layout_constraintBottom_toBottomOf="@+id/frieendIco"
-        app:layout_constraintStart_toEndOf="@+id/frieendIco"
-        app:layout_constraintTop_toTopOf="@+id/frieendIco" />
+        app:layout_constraintBottom_toBottomOf="@+id/followerIco"
+        app:layout_constraintStart_toEndOf="@+id/followerIco"
+        app:layout_constraintTop_toTopOf="@+id/followerIco" />
 
     <ImageView
-        android:id="@+id/likedIco"
+        android:id="@+id/subscriberIco"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_marginTop="4dp"
         app:layout_constraintBottom_toBottomOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="@+id/imageButton"
-        app:layout_constraintTop_toBottomOf="@+id/frieendIco"
+        app:layout_constraintStart_toStartOf="@+id/messagerIco"
+        app:layout_constraintTop_toBottomOf="@+id/followerIco"
         app:layout_constraintVertical_bias="0.033"
         app:srcCompat="@mipmap/i_following_icon" />
 
     <TextView
-        android:id="@+id/likedCount"
+        android:id="@+id/subscriberCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:text="90"
-        app:layout_constraintBottom_toBottomOf="@+id/likedIco"
-        app:layout_constraintStart_toEndOf="@+id/likedIco"
-        app:layout_constraintTop_toTopOf="@+id/likedIco" />
+        app:layout_constraintBottom_toBottomOf="@+id/subscriberIco"
+        app:layout_constraintStart_toEndOf="@+id/subscriberIco"
+        app:layout_constraintTop_toTopOf="@+id/subscriberIco" />
 
     <TextView
         android:id="@+id/nameField"
@@ -243,7 +243,7 @@
         app:layout_constraintTop_toBottomOf="@+id/altNameField" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/messagerIco"
         android:layout_width="35dp"
         android:layout_height="25dp"
         android:background="#00FFFFFF"
@@ -281,29 +281,13 @@
         android:id="@+id/pager"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/navigationBar"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/scseduleListSwiper"
-        app:layout_constraintVertical_bias="1.0" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navigationBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:animateLayoutChanges="false"
-        android:animationCache="false"
-        android:background="@color/base_white"
-        android:contextClickable="false"
-        app:itemHorizontalTranslationEnabled="false"
-        app:itemIconTint="@drawable/selector"
-        app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/nav_menu" />
+        app:layout_constraintTop_toBottomOf="@+id/scseduleListSwiper" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

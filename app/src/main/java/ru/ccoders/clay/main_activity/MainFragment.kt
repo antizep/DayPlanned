@@ -4,26 +4,27 @@ import PagerAdapterSchedule
 import ProfileModel
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
-import ru.ccoders.clay.add_schedule.AddScheduleActivity
 import ru.ccoders.clay.R
-import ru.ccoders.clay.databinding.ActivityMainBinding
+import ru.ccoders.clay.databinding.FragmentMainBinding
 
 
-class MainActivity : AppCompatActivity() {
+class MainFragment : Fragment() {
 
-    private lateinit var activityMainBinding: ActivityMainBinding
+    private lateinit var activityMainBinding: FragmentMainBinding
     lateinit var ctx: Context
 
     lateinit var  scheduleListLiveData:ScheduleLiveData
@@ -40,11 +41,11 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ctx = this
-        activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
+        ctx = requireContext()
+        activityMainBinding = FragmentMainBinding.inflate(layoutInflater)
 
 
-        setContentView(activityMainBinding.root)
+
 
         val provider: MainActivityViewModel by lazy {
             ViewModelProvider(this).get(MainActivityViewModel::class.java)
@@ -54,34 +55,41 @@ class MainActivity : AppCompatActivity() {
         provider.loadSchedules()
 
         profileLiveData.observe(this, Observer {
-            activityMainBinding.friendCount.text = it.followed.toString()
-            activityMainBinding.likedCount.text = it.followers.toString()
+            activityMainBinding.followerCount.text = it.followed.toString()
+            activityMainBinding.subscriberCount.text = it.followers.toString()
             activityMainBinding.nameField.text = it.username
             activityMainBinding.altNameField.text = "@${it.altName}"
             activityMainBinding.bioField.text = it.bio
 
         })
 
+        val followerListener:View.OnClickListener= View.OnClickListener {
+            it.findNavController().navigate(R.id.myFollowerFragment)
+        }
+        activityMainBinding.followerIco.setOnClickListener(followerListener)
+        activityMainBinding.followerCount.setOnClickListener(followerListener)
+        activityMainBinding.subscriberCount.setOnClickListener(followerListener)
+        activityMainBinding.subscriberIco.setOnClickListener(followerListener)
 
+        activityMainBinding.messagerIco.setOnClickListener {
+            it.findNavController().navigate(R.id.messageFragment)
+        }
 
         printSchedule()
         createDayBtn()
 
-        activityMainBinding.navigationBar.setOnNavigationItemSelectedListener {
-            when (it.itemId) {
-                R.id.addScheduleMenu -> startActivity(
-                    Intent(
-                        this,
-                        AddScheduleActivity::class.java
-                    )
-                );
-            }
-            false
-        }
+
 
     }
 
     val profileLiveData = MutableLiveData<ProfileModel>()
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        return activityMainBinding.root
+    }
 
 
     fun printSchedule() {
@@ -92,7 +100,7 @@ class MainActivity : AppCompatActivity() {
 
             val words = arrayListOf("Личные", "Доступные Всем")
 
-            val adapter = PagerAdapterSchedule(this, it, focusCalendar, isPublic)
+            val adapter = PagerAdapterSchedule(ctx, it, focusCalendar, isPublic)
             val pager = activityMainBinding.pager
             val tab = activityMainBinding.scseduleListSwiper
             pager.adapter = adapter
@@ -129,14 +137,14 @@ class MainActivity : AppCompatActivity() {
         }
         //todo сделать с обводкой
         todayBatton!!.background = AppCompatResources.getDrawable(
-            this,
+            ctx,
             R.drawable.calendar_yellow_button
         )
         val onClickListener = View.OnClickListener {
             vineButton(todayBatton)
             if (today != it) {
                 it.background = AppCompatResources.getDrawable(
-                    this,
+                    ctx,
                     R.drawable.calendar_shady_button
                 )
                 if (it == mondayBtn) {
@@ -172,34 +180,34 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("ResourceType")
     fun vineButton(today: Button) {
         activityMainBinding.mondayBtn.background = AppCompatResources.getDrawable(
-            this,
+            ctx,
             R.drawable.calendar_inactive_button
         )
         activityMainBinding.tuesdayBtn.background = AppCompatResources.getDrawable(
-            this,
+            ctx,
             R.drawable.calendar_inactive_button
         )
         activityMainBinding.wednesdayBth.background = AppCompatResources.getDrawable(
-            this,
+            ctx,
             R.drawable.calendar_inactive_button
         )
         activityMainBinding.thursdayBtn.background = AppCompatResources.getDrawable(
-            this,
+            ctx,
             R.drawable.calendar_inactive_button
         )
         activityMainBinding.fridayBtn.background = AppCompatResources.getDrawable(
-            this,
+            ctx,
             R.drawable.calendar_inactive_button
         )
         activityMainBinding.saturdayBtn.background = AppCompatResources.getDrawable(
-            this,
+            ctx,
             R.drawable.calendar_inactive_button
         )
         activityMainBinding.sundayBtn.background = AppCompatResources.getDrawable(
-            this,
+            ctx,
             R.drawable.calendar_inactive_button
         )
-        today.background = AppCompatResources.getDrawable(this, R.drawable.calendar_yellow_button)
+        today.background = AppCompatResources.getDrawable(ctx, R.drawable.calendar_yellow_button)
     }
 
     override fun onResume() {
