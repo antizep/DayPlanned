@@ -5,6 +5,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import ru.ccoders.clay.main_activity.MainFragment
 import ru.ccoders.clay.controller.SQLScheduleController
+import java.sql.Time
 
 
 data class ScheduleModel constructor(
@@ -46,6 +47,29 @@ data class ScheduleModel constructor(
         val REJECTED = "rejected"
         val PROFILE = "profile"
         val REMOTE_ID= "remote_id"
+        val EDIT_TIME = "edit_time"
+        val ID= "id"
+        fun parseJson(jsonObject: JSONObject):ScheduleModel{
+
+            val mode = if (jsonObject.getBoolean(DAILY)) SQLScheduleController.DAILY_MODE else SQLScheduleController.VEEKLY_MODE
+            val schedule = ScheduleModel(0,
+                jsonObject.getString(HEADER),
+                jsonObject.optString(DESCRIPTION),
+                jsonObject.getInt(DONE),
+                jsonObject.getInt(REJECTED),
+                mode,
+                JSONArray(jsonObject.getString(DAY_OF_WEEK)),
+                jsonObject.getInt(ID),
+                jsonObject.getBoolean(EDIT_TIME)
+            )
+
+            val time = Time.valueOf(jsonObject.optString(TIME))
+            schedule.time = Calendar.getInstance();
+            schedule.time!!.set(Calendar.HOUR_OF_DAY,time.hours)
+            schedule.time!!.set(Calendar.MINUTE,time.minutes)
+            schedule.time!!.set(Calendar.SECOND,0)
+            return schedule
+        }
     }
     fun getRemoteId():Int{
         return remoteId
@@ -92,14 +116,17 @@ data class ScheduleModel constructor(
         }
     }
 
+
+
     fun toJSONObject(): JSONObject {
         return JSONObject().put(HEADER, header)
             .put(DESCRIPTION, description)
-            .put(DAILY, mode == SQLScheduleController.VEEKLY_MODE)
+            .put(DAILY, mode == SQLScheduleController.DAILY_MODE)
             .put(DAY_OF_WEEK, schedule.toString())
             .put(TIME, getTxtTime())
             .put(DONE, complete)
             .put(REJECTED, skipped)
+            .put(REMOTE_ID,remoteId)
             .put(PROFILE, MainFragment.ID_PROFILE)
     }
 }

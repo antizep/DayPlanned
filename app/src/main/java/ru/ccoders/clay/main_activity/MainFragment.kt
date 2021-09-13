@@ -28,6 +28,7 @@ class MainFragment : Fragment() {
     lateinit var ctx: Context
 
     lateinit var  scheduleListLiveData:ScheduleLiveData
+    lateinit var  profileLiveData:MutableLiveData<ProfileModel>
     companion object {
         private var calAlert: String? = null;
         public val ID_PROFILE = 1;
@@ -50,6 +51,7 @@ class MainFragment : Fragment() {
         val provider: MainActivityViewModel by lazy {
             ViewModelProvider(this).get(MainActivityViewModel::class.java)
         }
+        profileLiveData = provider.profileLiveData
         scheduleListLiveData = provider.scheduleListLiveData
         provider.loadProfile()
         provider.loadSchedules()
@@ -82,7 +84,7 @@ class MainFragment : Fragment() {
 
     }
 
-    val profileLiveData = MutableLiveData<ProfileModel>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -99,7 +101,7 @@ class MainFragment : Fragment() {
 
 
             val words = arrayListOf("Личные", "Доступные Всем")
-
+            Log.d(tag,"refresh schedules")
             val adapter = PagerAdapterSchedule(ctx, it, focusCalendar, isPublic)
             val pager = activityMainBinding.pager
             val tab = activityMainBinding.scseduleListSwiper

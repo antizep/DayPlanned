@@ -84,8 +84,14 @@ class SQLScheduleController(context: Context) :
     fun addSchedule(scheduleModel: ScheduleModel): Int {
         val db = this.writableDatabase
         val values = ContentValues()
-        values.put("header", scheduleModel.header)
-        values.put("description", scheduleModel.description)
+        values.put(HEADER, scheduleModel.header)
+        values.put(DESCRIPTION, scheduleModel.description)
+        values.put(REMOTE_ID,scheduleModel.getRemoteId())
+        values.put(COMPLETED,scheduleModel.complete)
+        values.put(SKIPPED,scheduleModel.skipped)
+        values.put(MODE,scheduleModel.mode)
+        values.put(SCHEDULE,scheduleModel.schedule.toString())
+        values.put(TIME,scheduleModel.getTxtTime())
         val _success = db.insert(TABLE_NAME, null, values);
         db.close();
         scheduleModel.id = _success.toInt()
@@ -121,6 +127,7 @@ class SQLScheduleController(context: Context) :
         db.close()
         return (_success)
     }
+
     fun getScheduleById(id: Int): ScheduleModel{
         val db = readableDatabase
         val selectAll = "Select * from $TABLE_NAME WHERE id= $id";
@@ -161,6 +168,39 @@ class SQLScheduleController(context: Context) :
         cursor.close();
         db.close();
         return result!!
+    }
+    fun upgradeInRemoteSchedule(remoteSchedules:List<ScheduleModel>):List<ScheduleModel>{
+        val dbSchedules = getSchedule();
+        val mlRemote = mutableListOf<ScheduleModel>()
+        mlRemote.addAll(remoteSchedules)
+        dbSchedules.forEach {
+
+            val remoteId = it.getRemoteId()
+            if (remoteId>0){
+
+                var rem:ScheduleModel? = null
+                mlRemote.forEach {
+                    if(it.getRemoteId()==remoteId){
+                        rem = it
+                    }
+                }
+                if (rem != null){
+                    rem!!.id = it.id
+                    mlRemote.remove(rem)
+                    updateSchedule(rem!!)
+                }else{
+                    delSchedule(it.id)
+                }
+
+            }
+        }
+        if (mlRemote.isNotEmpty()){
+            mlRemote.forEach {
+                it.id = addSchedule(it)
+            }
+        }
+        return mlRemote
+
     }
     fun getSchedule(): List<ScheduleModel> {
         val scheduleModels: MutableList<ScheduleModel> = mutableListOf()

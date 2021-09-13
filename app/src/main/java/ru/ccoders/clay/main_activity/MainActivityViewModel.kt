@@ -13,6 +13,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import ru.antizep.russua_victory.dataprovider.rest.ProfileRest
 import ru.ccoders.clay.controller.SQLScheduleController
+import ru.ccoders.clay.model.ScheduleModel
+import ru.ccoders.clay.rest.TaskRest
 import ru.ccoders.clay.utills.ScheduleUtils
 import java.io.File
 
@@ -21,6 +23,8 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     private val TAG = "MainActivityViewModel"
     val profileLiveData = MutableLiveData<ProfileModel>()
     val scheduleListLiveData = ScheduleLiveData()
+    val scheduleRemoteLiveData = ScheduleLiveData()
+    private val scheduleRest:TaskRest = TaskRest()
 
     private var scheduleController: SQLScheduleController = SQLScheduleController(application)
 
@@ -60,8 +64,25 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         if (scheduleAll.isEmpty()) return
         //context.startForegroundService(Intent(context,MyReceiver::class.java))
         MyReceiver().addAlarmManager(ScheduleUtils.nextTask(scheduleAll)!!,context)
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.async {
+            val scsheduleRemote = scheduleRest.loadTask(MainFragment.ID_PROFILE)
+
+            if (scsheduleRemote.isNotEmpty()) {
+                val s = mutableListOf<ScheduleModel>()
+                s.addAll(scheduleController.upgradeInRemoteSchedule(scsheduleRemote))
+                s.addAll(scheduleAll)
+                scheduleListLiveData.postValue(s)
+                scheduleListLiveData.value=s
+
+            } else {
+                Log.d("MainActivity_CoroutineScope", "profile is null")
+            }
+
+        }
         //MyWorker.addAlarmManager(ScheduleUtils.nextTask(scheduleAll)!!,context)
         scheduleListLiveData.value = scheduleAll
+
     }
 
 }
