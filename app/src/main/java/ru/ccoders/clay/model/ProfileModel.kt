@@ -14,10 +14,10 @@ data class ProfileModel(
             return ProfileModel(
                 jsonObject.getInt("id"),
                 jsonObject.getString("username"),
-                jsonObject.getString("alternative_name"),
-                jsonObject.getString("bio"),
-                jsonObject.getInt("followers"),
-                jsonObject.getInt("followed"),
+                jsonObject.optString("alternative_name"),
+                jsonObject.optString("bio"),
+                jsonObject.optInt("followers"),
+                jsonObject.optInt("followed"),
             )
         }
     }
