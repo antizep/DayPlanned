@@ -6,12 +6,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.ccoders.clay.R
-import ru.ccoders.clay.adapter.ScheduleCaustomAdapter
+import ru.ccoders.clay.adapter.ScheduleCastomAdapter
+import ru.ccoders.clay.model.ScheduleAndProfile
 import ru.ccoders.clay.model.ScheduleModel
 
 class PagerAdapterSchedule(
     private val context: Context,
-    private val scheduleModels: List<ScheduleModel>,
+    private val scheduleModels: List<ScheduleAndProfile>,
     private val day: Calendar,
     private val isPublic:Boolean
 ) :
@@ -35,7 +36,7 @@ class PagerAdapterSchedule(
     override fun onBindViewHolder(holder: PageHolder, position: Int) {
 
 
-        val adapter = ScheduleCaustomAdapter(scheduleModels, context,day,position==1)
+        val adapter = ScheduleCastomAdapter(scheduleModels, context,day,position==1)
         holder.scheduleLayout.adapter = adapter
 
     }

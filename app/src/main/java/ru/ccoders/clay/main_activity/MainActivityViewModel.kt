@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import ru.antizep.russua_victory.dataprovider.rest.ProfileRest
 import ru.ccoders.clay.controller.SQLScheduleController
+import ru.ccoders.clay.model.ScheduleAndProfile
 import ru.ccoders.clay.model.ScheduleModel
 import ru.ccoders.clay.rest.TaskRest
 import ru.ccoders.clay.utills.ScheduleUtils
@@ -23,7 +24,6 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     private val TAG = "MainActivityViewModel"
     val profileLiveData = MutableLiveData<ProfileModel>()
     val scheduleListLiveData = ScheduleLiveData()
-    val scheduleRemoteLiveData = ScheduleLiveData()
     private val scheduleRest:TaskRest = TaskRest()
 
     private var scheduleController: SQLScheduleController = SQLScheduleController(application)
@@ -50,6 +50,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
     fun loadSchedules(){
         val scheduleAll = scheduleController.getSchedule();
+        val scheduleAndProfileList = mutableListOf<ScheduleAndProfile>()
 
         scheduleAll.forEach {
             if (it.time == null || it.mode == null) {
@@ -60,18 +61,23 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                     file.deleteRecursively()
                 }
             }
+            if (it.getRemoteId() == 0){
+                scheduleAndProfileList.add(ScheduleAndProfile(it,null))
+            }
         }
         if (scheduleAll.isEmpty()) return
         //context.startForegroundService(Intent(context,MyReceiver::class.java))
         MyReceiver().addAlarmManager(ScheduleUtils.nextTask(scheduleAll)!!,context)
         val scope = CoroutineScope(Dispatchers.IO)
         scope.async {
-            val scsheduleRemote = scheduleRest.loadTask(MainFragment.ID_PROFILE)
+            val scheduleRemote = scheduleRest.loadTask(MainFragment.ID_PROFILE)
+            val scheduleAndProfiles = scheduleRemote.scheduleAndProfile
 
-            if (scsheduleRemote.isNotEmpty()) {
-                val s = mutableListOf<ScheduleModel>()
-                s.addAll(scheduleController.upgradeInRemoteSchedule(scsheduleRemote))
-                s.addAll(scheduleAll)
+            if (scheduleAndProfiles.isNotEmpty()) {
+                val s = mutableListOf<ScheduleAndProfile>()
+//                val sched = scheduleController.upgradeInRemoteSchedule(scheduleAndProfiles)
+                s.addAll(scheduleAndProfileList)
+                s.addAll(scheduleAndProfiles)
                 scheduleListLiveData.postValue(s)
                 scheduleListLiveData.value=s
 
@@ -81,7 +87,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
         }
         //MyWorker.addAlarmManager(ScheduleUtils.nextTask(scheduleAll)!!,context)
-        scheduleListLiveData.value = scheduleAll
+        scheduleListLiveData.value = scheduleAndProfileList
 
     }
 

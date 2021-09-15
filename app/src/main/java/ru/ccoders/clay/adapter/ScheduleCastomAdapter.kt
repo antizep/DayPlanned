@@ -1,5 +1,6 @@
 package ru.ccoders.clay.adapter
 
+import ProfileModel
 import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
@@ -16,22 +17,37 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import ru.ccoders.clay.Detail
 import ru.ccoders.clay.R
+import ru.ccoders.clay.main_activity.MainFragment
+import ru.ccoders.clay.model.ScheduleAndProfile
 import ru.ccoders.clay.model.ScheduleModel
 import ru.ccoders.clay.utills.ImageUtil
 import ru.ccoders.clay.utills.ScheduleUtils
 import java.io.File
+import kotlin.system.exitProcess
 
-class ScheduleCaustomAdapter constructor(
-    private var dataSet: List<ScheduleModel>,
+class ScheduleCastomAdapter constructor(
+    private var dataSet: List<ScheduleAndProfile>,
     private val context: Context,
     private val day: Calendar,
     private val isPublic: Boolean
 ) :
-RecyclerView.Adapter<ScheduleCaustomAdapter.ViewHolder>() {
+    RecyclerView.Adapter<ScheduleCastomAdapter.ViewHolder>() {
+    var profileByScheduleMap: HashMap<ScheduleModel, ProfileModel>
+    var sortedSet:List<ScheduleModel>
+    init {
 
-init {
-    dataSet = ScheduleUtils.sort(dataSet, day,isPublic);
-}
+        profileByScheduleMap = hashMapOf()
+        sortedSet = mutableListOf<ScheduleModel>()
+        dataSet.forEach {
+            if (it.profileModel != null) {
+                profileByScheduleMap.put(it.scheduleModel, it.profileModel)
+            }
+            (sortedSet as MutableList<ScheduleModel>).add(it.scheduleModel)
+        }
+
+        sortedSet = ScheduleUtils.sort(sortedSet, day, isPublic);
+    }
+
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
@@ -40,12 +56,15 @@ init {
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         val panel = view
-        val scheduleHeader:TextView
-        val completeCounter:TextView
-        val canceledCounter:TextView
-        val timeScheduleLayout:TextView
-        val ImageSchedule:ImageView
-        val info:View
+        val scheduleHeader: TextView
+        val completeCounter: TextView
+        val canceledCounter: TextView
+        val timeScheduleLayout: TextView
+        val ImageSchedule: ImageView
+        val profileAuthorName: TextView
+        val profileAuthorIcon: ImageView
+        val info: View
+
         init {
             // Define click listener for the ViewHolder's View.
 
@@ -54,6 +73,8 @@ init {
             canceledCounter = view.findViewById(R.id.canceledCounter)
             timeScheduleLayout = view.findViewById(R.id.timeScheduleLayout)
             ImageSchedule = view.findViewById(R.id.ImageSchedule)
+            profileAuthorName = view.findViewById(R.id.profileAuthorName)
+            profileAuthorIcon = view.findViewById(R.id.profileAuthorIco)
             info = view.findViewById(R.id.info)
 
         }
@@ -69,18 +90,29 @@ init {
         return ViewHolder(view)
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
+
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
 
 
-        if(dataSet.isEmpty()) return
-        val schedule = dataSet[position]
+        if (sortedSet.isEmpty()) return
+        val schedule = sortedSet[position]
         viewHolder.panel.setOnClickListener {
             Log.d("MainActivity", "click task name:" + schedule.header)
             val intent = Intent(context, Detail::class.java)
             intent.putExtra("id", schedule.id)
             context.startActivity(intent)
         }
+        val profileModel = profileByScheduleMap[schedule]
+        if (schedule.getRemoteId() == 0 || (profileModel != null && profileModel.id == MainFragment.ID_PROFILE)) {
+            viewHolder.profileAuthorIcon.visibility = View.GONE
+            viewHolder.profileAuthorName.visibility = View.GONE
+        }else{
+            if (profileModel!=null) {
+                viewHolder.profileAuthorName.text = profileModel.username
+                //todo урла на картинку профиля
+            }
+        }
+
         viewHolder.scheduleHeader.setText(schedule.header);
         viewHolder.completeCounter.setText(schedule.complete.toString())
         viewHolder.canceledCounter.setText(schedule.skipped.toString())
@@ -102,12 +134,16 @@ init {
             }
         }
 
-        ImageUtil().resizeImage(viewHolder.info,viewHolder.ImageSchedule,context.getResources().getDisplayMetrics().widthPixels)
+        ImageUtil().resizeImage(
+            viewHolder.info,
+            viewHolder.ImageSchedule,
+            context.getResources().getDisplayMetrics().widthPixels
+        )
 
     }
 
     // Return the size of your dataset (invoked by the layout manager)
-    override fun getItemCount(): Int = dataSet.size
+    override fun getItemCount(): Int = sortedSet.size
 
     fun onItemDismiss(position: Int) {
         //mItems.remove(position)

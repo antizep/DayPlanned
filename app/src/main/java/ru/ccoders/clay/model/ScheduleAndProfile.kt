@@ -4,7 +4,7 @@ import ProfileModel
 
 data class ScheduleAndProfile constructor(
     val scheduleModel: ScheduleModel,
-    val profileModel: ProfileModel
+    val profileModel: ProfileModel?
 ) {
 
 }

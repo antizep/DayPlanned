@@ -1,11 +1,11 @@
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import ru.ccoders.clay.adapter.ScheduleCaustomAdapter
+import ru.ccoders.clay.adapter.ScheduleCastomAdapter
 
 
-class SimpleItemTouchHelperCallback(adapter: ScheduleCaustomAdapter) :
+class SimpleItemTouchHelperCallback(adapter: ScheduleCastomAdapter) :
     ItemTouchHelper.Callback() {
-    private val mAdapter: ScheduleCaustomAdapter
+    private val mAdapter: ScheduleCastomAdapter
     override fun getMovementFlags(
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder

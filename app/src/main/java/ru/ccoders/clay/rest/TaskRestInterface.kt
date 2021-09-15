@@ -5,6 +5,6 @@ import ru.ccoders.clay.model.SearchModel
 
 interface TaskRestInterface {
     fun uploadTask(scheduleModel: ScheduleModel):Int
-    fun loadTask(profile:Int):List<ScheduleModel>
+    fun loadTask(profile:Int):SearchModel
     fun loadPage(next:String?): SearchModel
 }

@@ -39,7 +39,7 @@ class TaskRest : AbstractRest(), TaskRestInterface {
         }
     }
 
-    override fun loadTask(profileId: Int): List<ScheduleModel> {
+    override fun loadTask(profileId: Int): SearchModel {
         val client = OkHttpClient()
         val result = mutableListOf<ScheduleModel>()
         val url = urlLoadByProfile + profileId
@@ -47,24 +47,20 @@ class TaskRest : AbstractRest(), TaskRestInterface {
         val request = Request.Builder()
             .url(url)
             .build()
-        try {
-            val response = client.newCall(request).execute()
-            val respStr = response.body?.string()
-            val resp = JSONObject(respStr).getJSONArray("results")
-            for (i in 0 until resp.length()) {
-                result.add(ScheduleModel.parseJson(resp.getJSONObject(i)))
-            }
-            Log.d(tag, "resp:$respStr")
+        val response = client.newCall(request).execute()
+        val respStr = response.body?.string()
 
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return result
+        val resp = JSONObject(respStr)
+
+        Log.d(tag, "resp:$respStr")
+
+
+        return SearchModel.parseJSON(resp)
     }
 
     override fun loadPage(next: String?): SearchModel {
         val client = OkHttpClient()
-        val result = mutableListOf<ScheduleAndProfile>()
+
         var url: String?
         if (next == null) {
             url = urlList;
@@ -78,17 +74,10 @@ class TaskRest : AbstractRest(), TaskRestInterface {
             .build()
         val response = client.newCall(request).execute()
         val respStr = response.body?.string()
-        val responseJ =  JSONObject(respStr);
-        val resp = responseJ.getJSONArray("results")
-        val next = responseJ.getString("next")
-        val previous = responseJ.getString("previous")
-        for (i in 0 until resp.length()) {
-            val schedule = resp.getJSONObject(i)
-            val profileJ = schedule.getJSONObject("profile")
-            result.add(ScheduleAndProfile(ScheduleModel.parseJson(schedule),ProfileModel.parseJSON(profileJ)))
-        }
         Log.d(tag, "resp: $respStr")
-        return SearchModel(next,previous,result)
+        val responseJ = JSONObject(respStr);
+
+        return SearchModel.parseJSON(responseJ)
     }
 
 }
