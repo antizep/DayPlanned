@@ -28,10 +28,13 @@ import kotlin.system.exitProcess
 class ScheduleCastomAdapter constructor(
     private var dataSet: List<ScheduleAndProfile>,
     private val context: Context,
-    private val day: Calendar,
+    private val day: Calendar?,
     private val isPublic: Boolean
 ) :
     RecyclerView.Adapter<ScheduleCastomAdapter.ViewHolder>() {
+
+    constructor(dataSet: List<ScheduleAndProfile>, context: Context, isPublic: Boolean) : this(dataSet, context, null, isPublic)
+
     var profileByScheduleMap: HashMap<ScheduleModel, ProfileModel>
     var sortedSet:List<ScheduleModel>
     init {
@@ -44,8 +47,9 @@ class ScheduleCastomAdapter constructor(
             }
             (sortedSet as MutableList<ScheduleModel>).add(it.scheduleModel)
         }
-
-        sortedSet = ScheduleUtils.sort(sortedSet, day, isPublic);
+        if (day !=null) {
+            sortedSet = ScheduleUtils.sort(sortedSet, day, isPublic);
+        }
     }
 
     /**
@@ -103,7 +107,7 @@ class ScheduleCastomAdapter constructor(
             context.startActivity(intent)
         }
         val profileModel = profileByScheduleMap[schedule]
-        if (schedule.getRemoteId() == 0 || (profileModel != null && profileModel.id == MainFragment.ID_PROFILE)) {
+        if (day != null && (schedule.getRemoteId() == 0 || (profileModel != null && profileModel.id == MainFragment.ID_PROFILE))) {
             viewHolder.profileAuthorIcon.visibility = View.GONE
             viewHolder.profileAuthorName.visibility = View.GONE
         }else{

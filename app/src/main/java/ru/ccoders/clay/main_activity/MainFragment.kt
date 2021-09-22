@@ -20,6 +20,7 @@ import androidx.navigation.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import ru.ccoders.clay.R
 import ru.ccoders.clay.databinding.FragmentMainBinding
+import ru.ccoders.clay.model.SearchModel
 
 
 class MainFragment : Fragment() {
@@ -29,6 +30,7 @@ class MainFragment : Fragment() {
 
     lateinit var  scheduleListLiveData:ScheduleLiveData
     lateinit var  profileLiveData:MutableLiveData<ProfileModel>
+
     companion object {
         private var calAlert: String? = null;
         public val ID_PROFILE = 1;
