@@ -139,7 +139,6 @@ class MainFragment : Fragment() {
             Calendar.SATURDAY -> todayBatton = saturdayBtn
             Calendar.SUNDAY -> todayBatton = sundayBtn
         }
-        //todo сделать с обводкой
         todayBatton!!.background = AppCompatResources.getDrawable(
             ctx,
             R.drawable.calendar_yellow_button

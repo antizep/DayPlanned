@@ -30,6 +30,9 @@ class Detail : AppCompatActivity() {
         setContentView(activityDetailBinding.root)
         scheduleController = SQLScheduleController(this)
         val id =  intent.getIntExtra("id",0)
+        if(id==0){
+            return;
+        }
         val schedule = scheduleController!!.getScheduleById(id)
         val appGallery = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         var file = File(appGallery!!.absolutePath + "/$id/")

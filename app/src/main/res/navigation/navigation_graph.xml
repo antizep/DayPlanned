@@ -33,7 +33,11 @@
         android:id="@+id/settingsFragment"
         android:name="ru.ccoders.clay.SettingsFragment"
         android:label="fragment_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_personalInfo"
+            app:destination="@id/personalInfo" />
+    </fragment>
     <fragment
         android:id="@+id/myFollowerFragment"
         android:name="ru.ccoders.clay.MyFallowerFragment"
@@ -44,5 +48,10 @@
         android:name="ru.ccoders.clay.MessageFragment"
         android:label="fragment_message"
         tools:layout="@layout/fragment_message" />
+    <fragment
+        android:id="@+id/personalInfo"
+        android:name="ru.ccoders.clay.PersonalInfo"
+        android:label="fragment_personal_info"
+        tools:layout="@layout/fragment_personal_info" />
 
 </navigation>
