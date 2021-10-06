@@ -21,7 +21,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DayPlanned"
         android:usesCleartextTraffic="true">
-        <activity android:name=".RunActivity">
+        <activity android:name=".RunActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,7 +36,8 @@
         <activity android:name=".SetPeriodActivity" />
 
 
-        <receiver android:name=".services.MyReceiver">
+        <receiver android:name=".services.MyReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>

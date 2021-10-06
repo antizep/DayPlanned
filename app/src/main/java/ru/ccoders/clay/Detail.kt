@@ -9,11 +9,15 @@ import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import ru.ccoders.clay.add_schedule.AddScheduleFragment
 import ru.ccoders.clay.controller.SQLScheduleController
 import ru.ccoders.clay.databinding.ActivityDetailBinding
 import ru.ccoders.clay.databinding.SheduleLayoutBinding
 import ru.ccoders.clay.main_activity.MainFragment
+import ru.ccoders.clay.rest.TaskRest
 import ru.ccoders.clay.utills.ImageUtil
 import java.io.File
 
@@ -33,12 +37,22 @@ class Detail : AppCompatActivity() {
         if(id==0){
             return;
         }
+
         val schedule = scheduleController!!.getScheduleById(id)
         val appGallery = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         var file = File(appGallery!!.absolutePath + "/$id/")
 
         activityDetailBinding.deleteScheduleButton.setOnClickListener {
             scheduleController!!.delSchedule(schedule.id)
+
+            if(schedule.getRemoteId()>0){
+                val scheduleRest = TaskRest()
+                val scope = CoroutineScope(Dispatchers.IO)
+                scope.async {
+                    scheduleRest.taskDelete(schedule.getRemoteId())
+                }
+            }
+
             if(file.exists()) {
                 file.deleteRecursively()
             }

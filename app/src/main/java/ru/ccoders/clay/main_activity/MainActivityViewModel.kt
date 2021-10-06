@@ -66,16 +66,18 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
             }
         }
         if (scheduleAll.isEmpty()) return
-        //context.startForegroundService(Intent(context,MyReceiver::class.java))
         MyReceiver().addAlarmManager(ScheduleUtils.nextTask(scheduleAll)!!,context)
         val scope = CoroutineScope(Dispatchers.IO)
         scope.async {
             val scheduleRemote = scheduleRest.loadTask(MainFragment.ID_PROFILE)
             val scheduleAndProfiles = scheduleRemote.scheduleAndProfile
-
+            val schedulesRemote= mutableListOf<ScheduleModel>()
+            scheduleRemote.scheduleAndProfile.forEach {
+                schedulesRemote.add(it.scheduleModel)
+            }
             if (scheduleAndProfiles.isNotEmpty()) {
                 val s = mutableListOf<ScheduleAndProfile>()
-//                val sched = scheduleController.upgradeInRemoteSchedule(scheduleAndProfiles)
+                val sched = scheduleController.upgradeInRemoteSchedule(schedulesRemote)
                 s.addAll(scheduleAndProfileList)
                 s.addAll(scheduleAndProfiles)
                 scheduleListLiveData.postValue(s)

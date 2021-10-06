@@ -5,7 +5,11 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import ru.ccoders.clay.controller.SQLScheduleController
+import ru.ccoders.clay.rest.TaskRest
 import ru.ccoders.clay.services.MyReceiver.Companion.ID
 
 
@@ -20,29 +24,41 @@ class NotificationService : Service() {
 
 
     override fun onCreate() {
-        Log.d(TAG,"onCreate()")
+        Log.d(TAG, "onCreate()")
         nManager = MyReceiver.createNotificationManager(this)
     }
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        Log.d(TAG,"onStartCommand()")
+        Log.d(TAG, "onStartCommand()")
 
         val runId = intent.getIntExtra("final_id", 0);
 
         if (runId != 0) {
             Log.d("AHTUNG", "final Schedule")
+            val scheduleRestController = TaskRest()
+            if (scheduleController == null) {
+                scheduleController = SQLScheduleController(this)
+            }
+            val id = intent.getIntExtra(ID, 0);
+            val schedule = scheduleController!!.getScheduleById(id)
+            val isRemote = schedule.getRemoteId() > 0
+            val scope = CoroutineScope(Dispatchers.IO)
             if (runId == COMPLETE_BUTTON_CODE) {
                 nManager.cancelAll()
-                if (scheduleController == null) {
-                    scheduleController = SQLScheduleController(this)
+                scheduleController!!.complete(id)
+                if (isRemote) {
+                    scope.async {
+                        scheduleRestController.taskDone(schedule.getRemoteId())
+                    }
                 }
-                scheduleController!!.complete(intent.getIntExtra(ID, 0))
             } else if (runId == CANCELL_BUTTON_CODE) {
                 nManager.cancelAll()
-                if (scheduleController == null) {
-                    scheduleController = SQLScheduleController(this)
+                scheduleController!!.cancel(id)
+                if (isRemote) {
+                    scope.async {
+                        scheduleRestController.taskReject(schedule.getRemoteId())
+                    }
                 }
-                scheduleController!!.cancel(intent.getIntExtra(ID, 0))
             }
 
         }

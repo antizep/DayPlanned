@@ -2,20 +2,28 @@ package ru.ccoders.clay.rest
 
 import ProfileModel
 import android.util.Log
+import com.bumptech.glide.RequestBuilder
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.internal.EMPTY_REQUEST
 import org.json.JSONObject
 import ru.antizep.russua_victory.dataprovider.rest.AbstractRest
 import ru.ccoders.clay.model.ScheduleAndProfile
 import ru.ccoders.clay.model.ScheduleModel
 import ru.ccoders.clay.model.SearchModel
+import java.security.DomainCombiner
 
 class TaskRest : AbstractRest(), TaskRestInterface {
     val urlCreate = "$DOMAIN/api/task/create/"
+    val urlDelete = "$DOMAIN/api/task/delete/"
     val urlLoadByProfile = "$DOMAIN/api/task/get-with-username/"
     val urlList = "$DOMAIN/api/task/list/"
+
+    val urlDone = "$DOMAIN/api/task/done/"
+    val urlReject = "$DOMAIN/api/task/rejected/"
+
     val tag = "TaskRest"
     override fun uploadTask(scheduleModel: ScheduleModel): Int {
         val client = OkHttpClient()
@@ -78,6 +86,40 @@ class TaskRest : AbstractRest(), TaskRestInterface {
         val responseJ = JSONObject(respStr);
 
         return SearchModel.parseJSON(responseJ)
+    }
+
+    override fun taskDone(id: Int) {
+        val client = OkHttpClient()
+        val url = "$urlDone$id/";
+        val request = Request.Builder()
+            .url(url)
+            .post(EMPTY_REQUEST)
+            .build()
+        val response = client.newCall(request).execute()
+        Log.d(tag, "taskDone response:$response")
+    }
+
+    override fun taskReject(id: Int) {
+        val client = OkHttpClient()
+        val url = "$urlReject$id/";
+        val request = Request.Builder()
+            .url(url)
+            .post(EMPTY_REQUEST)
+            .build()
+        val response = client.newCall(request).execute()
+        Log.d(tag, "taskReject response:$response")
+    }
+
+    override fun taskDelete(id: Int) {
+        val client = OkHttpClient()
+        val url = "$urlDelete$id/";
+        val request = Request.Builder()
+            .url(url)
+            .delete()
+            .build()
+        val response = client.newCall(request).execute()
+        Log.d(tag, "taskDelete     response:${response.body!!.string()}")
+
     }
 
 }
