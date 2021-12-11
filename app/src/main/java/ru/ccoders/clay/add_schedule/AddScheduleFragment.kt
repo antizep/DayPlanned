@@ -18,12 +18,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.yalantis.ucrop.UCrop
 import org.json.JSONArray
+import ru.ccoders.clay.R
 import ru.ccoders.clay.SetPeriodActivity
 import ru.ccoders.clay.adapter.ImageScheduleAdapter
 import ru.ccoders.clay.controller.SQLScheduleController
 import ru.ccoders.clay.databinding.FragmentAddScheduleBinding
 import ru.ccoders.clay.model.ScheduleModel
 import java.io.File
+import kotlin.math.log
 
 
 class AddScheduleFragment : Fragment() {
@@ -102,6 +104,7 @@ class AddScheduleFragment : Fragment() {
 
                 scheduleImages.clear()
                 var imageUri: Uri? = null
+                Log.d("IMAGE URLS:",imageUris.toString())
                 imageUris.forEach {
                     imageUri = Uri.fromFile(File(requireContext().cacheDir, it.hashCode().toString()))
                     uriToBitmap(imageUri!!)

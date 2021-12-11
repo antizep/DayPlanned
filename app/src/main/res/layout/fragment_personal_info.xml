@@ -130,6 +130,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/photoEditImage"
                 style="@style/ButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

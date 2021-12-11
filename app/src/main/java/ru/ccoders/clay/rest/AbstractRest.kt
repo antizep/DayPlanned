@@ -5,7 +5,7 @@ abstract class AbstractRest {
     companion object {
 
         //val domain = "https://antizep.ru:1443"
-        val DOMAIN = "http://192.168.1.137:8003"
+        val DOMAIN = "http://192.168.0.11:8003"
 
     }
 }

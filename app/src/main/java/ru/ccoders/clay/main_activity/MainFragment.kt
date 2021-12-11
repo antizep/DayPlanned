@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.icu.util.Calendar
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,10 +18,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.signature.ObjectKey
 import com.google.android.material.tabs.TabLayoutMediator
 import ru.ccoders.clay.R
 import ru.ccoders.clay.databinding.FragmentMainBinding
 import ru.ccoders.clay.model.SearchModel
+import java.io.File
+import java.io.FileInputStream
+import java.security.MessageDigest
 
 
 class MainFragment : Fragment() {
@@ -28,8 +35,8 @@ class MainFragment : Fragment() {
     private lateinit var activityMainBinding: FragmentMainBinding
     lateinit var ctx: Context
 
-    lateinit var  scheduleListLiveData:ScheduleLiveData
-    lateinit var  profileLiveData:MutableLiveData<ProfileModel>
+    lateinit var scheduleListLiveData: ScheduleLiveData
+    lateinit var profileLiveData: MutableLiveData<ProfileModel>
 
     companion object {
         private var calAlert: String? = null;
@@ -48,8 +55,6 @@ class MainFragment : Fragment() {
         activityMainBinding = FragmentMainBinding.inflate(layoutInflater)
 
 
-
-
         val provider: MainActivityViewModel by lazy {
             ViewModelProvider(this).get(MainActivityViewModel::class.java)
         }
@@ -65,9 +70,24 @@ class MainFragment : Fragment() {
             activityMainBinding.altNameField.text = "@${it.altName}"
             activityMainBinding.bioField.text = it.bio
 
+
+            val appGallery = ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            val file = File(appGallery!!.absolutePath + "/$ID_PROFILE")
+            Log.d("IMAGE URL:", file.absolutePath)
+
+            if (file.exists()) {
+
+                Glide.with(this).load(file).apply(
+                    RequestOptions().signature(
+                        ObjectKey(
+                            file.lastModified()
+                        )
+                    )
+                ).into(activityMainBinding.imageView)
+            }
         })
 
-        val followerListener:View.OnClickListener= View.OnClickListener {
+        val followerListener: View.OnClickListener = View.OnClickListener {
             it.findNavController().navigate(R.id.myFollowerFragment)
         }
         activityMainBinding.followerIco.setOnClickListener(followerListener)
@@ -81,7 +101,6 @@ class MainFragment : Fragment() {
 
         printSchedule()
         createDayBtn()
-
 
 
     }
@@ -103,7 +122,7 @@ class MainFragment : Fragment() {
 
 
             val words = arrayListOf("Личные", "Доступные Всем")
-            Log.d(tag,"refresh schedules")
+            Log.d(tag, "refresh schedules")
             val adapter = PagerAdapterSchedule(ctx, it, focusCalendar, isPublic)
             val pager = activityMainBinding.pager
             val tab = activityMainBinding.scseduleListSwiper

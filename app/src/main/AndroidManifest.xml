@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28"
@@ -21,7 +22,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DayPlanned"
         android:usesCleartextTraffic="true">
-        <activity android:name=".RunActivity"
+        <activity
+            android:name=".ProfileIconActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RunActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,12 +36,14 @@
         </activity>
         <activity android:name=".Detail" />
 
-        <service android:name=".services.NotificationService" android:enabled="true"  />
+        <service
+            android:name=".services.NotificationService"
+            android:enabled="true" />
 
         <activity android:name=".SetPeriodActivity" />
 
-
-        <receiver android:name=".services.MyReceiver"
+        <receiver
+            android:name=".services.MyReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
