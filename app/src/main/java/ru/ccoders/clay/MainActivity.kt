@@ -1,6 +1,5 @@
 package ru.ccoders.clay
 
-import android.R.attr.*
 import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.PendingIntent
@@ -11,20 +10,17 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.get
-import androidx.core.view.updateLayoutParams
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import ru.ccoders.clay.controller.AddScheduleController
 import ru.ccoders.clay.databinding.ActivityMainBinding
 import ru.ccoders.clay.databinding.SheduleLayoutBinding
-import ru.ccoders.clay.model.Schedule
+import ru.ccoders.clay.model.ScheduleModel
 import ru.ccoders.clay.services.MyReceiver
 import ru.ccoders.clay.services.MyReceiver.Companion.DESCRIPTION
 import ru.ccoders.clay.services.MyReceiver.Companion.HEADER
@@ -68,22 +64,22 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun addAlarmManager(schedule: Schedule) {
-        if (schedule.time == null) {
+    fun addAlarmManager(scheduleModel: ScheduleModel) {
+        if (scheduleModel.time == null) {
             return
         }
-        if (calAlert != null && schedule.getTxtTime().equals(calAlert)) {
+        if (calAlert != null && scheduleModel.getTxtTime().equals(calAlert)) {
             return
         }
-        calAlert = schedule.getTxtTime()
-        Log.d("MyReceiver", "old:" + calAlert + ",new:" + schedule.time!!.time.toString())
+        calAlert = scheduleModel.getTxtTime()
+        Log.d("MyReceiver", "old:" + calAlert + ",new:" + scheduleModel.time!!.time.toString())
         val alarmManager: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val myIntent = Intent(applicationContext, MyReceiver::class.java)
         //myIntent.action = "restartservice"
-        myIntent.putExtra(HEADER, schedule.header)
-        myIntent.putExtra(DESCRIPTION, schedule.description)
-        myIntent.putExtra(TIME, schedule.getTxtTime())
-        myIntent.putExtra(ID, schedule.id)
+        myIntent.putExtra(HEADER, scheduleModel.header)
+        myIntent.putExtra(DESCRIPTION, scheduleModel.description)
+        myIntent.putExtra(TIME, scheduleModel.getTxtTime())
+        myIntent.putExtra(ID, scheduleModel.id)
         val pendingIntentpi = PendingIntent.getBroadcast(
             applicationContext,
             0,
@@ -91,7 +87,7 @@ class MainActivity : AppCompatActivity() {
             PendingIntent.FLAG_CANCEL_CURRENT
         );
 
-        alarmManager.set(AlarmManager.RTC_WAKEUP, schedule.time!!.timeInMillis, pendingIntentpi)
+        alarmManager.set(AlarmManager.RTC_WAKEUP, scheduleModel.time!!.timeInMillis, pendingIntentpi)
     }
 
     @SuppressLint("SetTextI18n")

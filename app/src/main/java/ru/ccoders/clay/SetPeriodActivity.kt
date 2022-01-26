@@ -2,7 +2,6 @@ package ru.ccoders.clay
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color.green
 import android.icu.util.Calendar
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,8 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import ru.ccoders.clay.controller.AddScheduleController
 import ru.ccoders.clay.databinding.ActivitySetPeriodBinding
-import ru.ccoders.clay.model.Schedule
-import com.google.android.material.chip.Chip
+import ru.ccoders.clay.model.ScheduleModel
 import org.json.JSONArray
 import java.sql.Time
 
@@ -45,7 +43,7 @@ class SetPeriodActivity : AppCompatActivity() {
         setPeriodBinding = ActivitySetPeriodBinding.inflate(layoutInflater)
         setContentView(setPeriodBinding.root)
         setPeriodBinding.setTimePicker.setIs24HourView(true)
-        if (!t.isNullOrBlank() && !t.equals(Schedule.TIEME_NOT)) {
+        if (!t.isNullOrBlank() && !t.equals(ScheduleModel.TIEME_NOT)) {
             val time = Time.valueOf(t);
             setPeriodBinding.setTimePicker.hour = time.hours
             setPeriodBinding.setTimePicker.minute = time.minutes
@@ -102,7 +100,7 @@ class SetPeriodActivity : AppCompatActivity() {
             calendar.set(Calendar.HOUR_OF_DAY, setPeriodBinding.setTimePicker.hour)
             calendar.set(Calendar.MINUTE, setPeriodBinding.setTimePicker.minute)
             calendar.set(Calendar.SECOND, 0)
-            val schedule = Schedule(id, null, null, 0, 0, mode, shedle)
+            val schedule = ScheduleModel(id, null, null, 0, 0, mode, shedle)
             schedule.time = calendar;
             scheduleController!!.setTime(schedule)
             Log.d(SetPeriodActivity::class.java.name, "s:" + schedule)

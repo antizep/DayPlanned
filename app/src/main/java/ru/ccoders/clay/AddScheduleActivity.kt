@@ -20,7 +20,7 @@ import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import ru.ccoders.clay.controller.AddScheduleController
 import ru.ccoders.clay.databinding.ActivityAddScheduleBinding
-import ru.ccoders.clay.model.Schedule
+import ru.ccoders.clay.model.ScheduleModel
 import com.yalantis.ucrop.UCrop
 import org.json.JSONArray
 import java.io.File
@@ -207,7 +207,7 @@ class AddScheduleActivity : AppCompatActivity() {
         }
         addScheduleBinding.addScheduleButton.setOnClickListener {
             Log.d("AddScheduleActivity", "H:" + header + " D:" + descript);
-            val schedule = Schedule(
+            val schedule = ScheduleModel(
                 id,
                 header.toString(),
                 descript.toString(),

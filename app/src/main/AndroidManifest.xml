@@ -33,13 +33,15 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <receiver android:name=".services.MyReceiver">
+        <receiver android:name=".services.MyReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.xxx" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
