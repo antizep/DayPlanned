@@ -28,33 +28,29 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:src="@android:drawable/ic_menu_gallery"
-                app:layout_constraintBottom_toBottomOf="@+id/imageViewPager2"
+                app:layout_constraintBottom_toBottomOf="@+id/scheduleImage"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.49"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/imageViewPager2"
-                tools:srcCompat="@android:drawable/ic_menu_crop" />
+                app:layout_constraintTop_toTopOf="@+id/scheduleImage"
+                tools:srcCompat="@android:drawable/ic_menu_crop"
+                android:contentDescription="@string/add_image_button" />
 
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/imageViewPager2"
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/scheduleImage"
+                android:layout_width="0dp"
                 android:layout_height="213dp"
                 android:layout_marginStart="15dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="43dp"
                 android:layout_marginEnd="15dp"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.58"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible"
+                android:contentDescription="@string/image_task" />
 
-            <View
-                android:id="@+id/divider2"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="16dp"
-                android:background="@color/base_shady3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageViewPager2" />
 
             <EditText
                 android:id="@+id/textChedule"
@@ -83,7 +79,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider2" />
+                app:layout_constraintTop_toBottomOf="@+id/scheduleImage"
+                android:importantForAutofill="no" />
 
             <View
                 android:id="@+id/divider3"
@@ -121,9 +118,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider3" />
+                app:layout_constraintTop_toBottomOf="@+id/divider3"
+                android:importantForAutofill="no" />
 
-            <View
+<!--            <View
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -131,7 +129,8 @@
                 android:background="@color/base_shady3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/descriptionSchedule" />
+                app:layout_constraintTop_toBottomOf="@+id/descriptionSchedule"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/textView"
@@ -143,7 +142,8 @@
                 android:textColor="@color/base_black"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/descriptionSchedule"
-                app:layout_constraintTop_toBottomOf="@+id/divider" />
+                app:layout_constraintTop_toBottomOf="@+id/divider"
+                tools:visibility="visible" />
 
             <Switch
                 android:id="@+id/publicSwich"
@@ -156,7 +156,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/textView"
                 app:layout_constraintEnd_toEndOf="@+id/descriptionSchedule"
                 app:layout_constraintTop_toTopOf="@+id/textView"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
+                tools:ignore="UseSwitchCompatOrMaterialXml"
+                tools:visibility="visible" />
 
             <Switch
                 android:id="@+id/switch2"
@@ -168,7 +169,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/textView7"
                 app:layout_constraintEnd_toEndOf="@+id/descriptionSchedule"
                 app:layout_constraintTop_toTopOf="@+id/textView7"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
+                tools:ignore="UseSwitchCompatOrMaterialXml"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/textView6"
@@ -179,7 +181,8 @@
                 android:text="Люди смогут делиться вашей задачей и сохранять её себе в профиль. "
                 android:textSize="10sp"
                 app:layout_constraintStart_toStartOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                app:layout_constraintTop_toBottomOf="@+id/textView"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/textView8"
@@ -190,7 +193,8 @@
                 android:text="Те, кто сохранят задачу себе в профиль, смогут изменять время и дату выполнения, но только для себя"
                 android:textSize="10sp"
                 app:layout_constraintStart_toStartOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/textView7" />
+                app:layout_constraintTop_toBottomOf="@+id/textView7"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/textView7"
@@ -202,13 +206,14 @@
                 android:textColor="@color/base_black"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/textView6"
-                app:layout_constraintTop_toBottomOf="@+id/textView6" />
+                app:layout_constraintTop_toBottomOf="@+id/textView6"
+                tools:visibility="visible" />-->
 
             <Button
                 android:id="@+id/addScheduleButton"
                 android:layout_width="154dp"
                 android:layout_height="38dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="150dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/button_text_shape"
                 android:fontFamily="@font/inter_regular"
@@ -220,7 +225,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView8" />
+                app:layout_constraintTop_toBottomOf="@+id/descriptionSchedule" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
