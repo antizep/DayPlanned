@@ -184,7 +184,7 @@ class MainActivity : AppCompatActivity() {
             Calendar.SATURDAY -> todayBatton = saturdayBtn
             Calendar.SUNDAY -> todayBatton = sundayBtn
         }
-        //todo сделать с обводкой
+
         todayBatton!!.background= AppCompatResources.getDrawable(
             this,
             R.drawable.calendar_yellow_button

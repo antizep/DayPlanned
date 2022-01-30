@@ -19,4 +19,5 @@
     <string name="make_natification">    Accept</string>
     <string name="cancel_natification">Skip    </string>
     <string name="title">Clay - Task Manager, reminder</string>
+    <string name="clayapp">ClayApp</string>
 </resources>

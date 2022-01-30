@@ -19,4 +19,5 @@
     <string name="make_natification">    Выполнить</string>
     <string name="cancel_natification">Отменить    </string>
     <string name="title">Clay-Планировщик задач, напоминания</string>
+    <string name="clayapp">ClayApp</string>
 </resources>

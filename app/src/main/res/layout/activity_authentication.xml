@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AuthenticationActivity">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="55dp"
+        android:text="@string/clayapp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/textChedule"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="143dp"
+        android:layout_marginEnd="20dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:fontFamily="@font/inter_regular"
+        android:gravity="start|top"
+        android:hint="@string/the_goal_title"
+        android:inputType="textPersonName"
+        android:maxLength="48"
+        android:minHeight="48dp"
+        android:textColor="@color/base_black"
+        android:textColorHighlight="@color/base_shady2"
+        android:textColorHint="@color/base_shady2"
+        android:textColorLink="@color/base_yellow"
+        android:textCursorDrawable="@drawable/yellow_cursor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/textChedule2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="20dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:fontFamily="@font/inter_regular"
+        android:gravity="start|top"
+        android:hint="@string/the_goal_title"
+        android:inputType="textPersonName"
+        android:maxLength="48"
+        android:minHeight="48dp"
+        android:textColor="@color/base_black"
+        android:textColorHighlight="@color/base_shady2"
+        android:textColorHint="@color/base_shady2"
+        android:textColorLink="@color/base_yellow"
+        android:textCursorDrawable="@drawable/yellow_cursor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
