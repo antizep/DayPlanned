@@ -59,7 +59,7 @@ class AddScheduleActivity : AppCompatActivity() {
         if(file.exists()){
 
             Glide.with(cont).load(file).apply(RequestOptions().signature(ObjectKey(file.length()))).into(
-                addScheduleBinding.scheduleImage
+                addScheduleBinding. scheduleImage
             )
             addScheduleBinding.scheduleImage.setOnClickListener {
                 openGalleryForImages()

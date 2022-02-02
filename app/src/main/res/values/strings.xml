@@ -22,4 +22,13 @@
     <string name="clayapp">ClayApp</string>
     <string name="add_image_button">add image button</string>
     <string name="image_task">image task</string>
+
+    <string name="user_name">username</string>
+    <string name="password">password</string>
+
+    <string name="forgot_your_password"><u>Forgot your password?</u></string>
+    <string name="dont_nave_an_account_yet">Don\'t have an account yet?</string>
+
+    <string name="sign_app">Sign Up</string>
+
 </resources>

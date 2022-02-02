@@ -1,5 +1,6 @@
 package ru.ccoders.clay
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
@@ -17,7 +18,7 @@ import ru.ccoders.clay.utills.ImageUtil
 import java.io.File
 import java.nio.file.Files
 
-class Detail : AppCompatActivity() {
+class DetailActivity : AppCompatActivity() {
     private lateinit var activityDetailBinding: ActivityDetailBinding
     private lateinit var scheduleLayoutPane: SheduleLayoutBinding;
     var scheduleController: AddScheduleController? = null
@@ -67,6 +68,16 @@ class Detail : AppCompatActivity() {
 
         ImageUtil().resizeImage(scheduleLayoutPane,getResources().getDisplayMetrics().widthPixels)
 
+        activityDetailBinding.uploadScheduleButton.setOnClickListener {
+            val preferences = getSharedPreferences("authentication",Context.MODE_PRIVATE);
+            val username = preferences.getString("login",null)
+            if(username == null && !preferences.contains("password")) {
+                val intent = Intent(this, AuthenticationActivity::class.java)
+                startActivity(intent);
+            }else{
+                Log.d(this.javaClass.name,"Save user: $username, schedule:"+schedule.toJSONObject().toString())
+            }
+        }
 
         activityDetailBinding.editScheduleButton.setOnClickListener {
             Log.d("Detail","click edit:"+schedule.header)

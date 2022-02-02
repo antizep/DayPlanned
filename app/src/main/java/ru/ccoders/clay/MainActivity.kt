@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
             val slp = scheduleLayoutPane.root
             slp.setOnClickListener {
                 Log.d("MainActivity", "click task name:" + schedule.header)
-                val intent = Intent(this, Detail::class.java)
+                val intent = Intent(this, DetailActivity::class.java)
                 intent.putExtra("id", schedule.id)
                 startActivity(intent)
             }

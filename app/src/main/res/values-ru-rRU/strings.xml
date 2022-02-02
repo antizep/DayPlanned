@@ -22,4 +22,11 @@
     <string name="clayapp">ClayApp</string>
     <string name="add_image_button">add image button</string>
     <string name="image_task">image task</string>
+
+    <string name="user_name">имя пользователя</string>
+    <string name="password">пароль</string>
+    <string name="forgot_your_password"><u>Забыли пароль</u></string>
+
+    <string name="dont_nave_an_account_yet"><u>У вас нет учетной записи?</u></string>
+    <string name="sign_app">Зарегистрироваться</string>
 </resources>
