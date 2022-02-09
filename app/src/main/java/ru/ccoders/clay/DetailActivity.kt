@@ -3,15 +3,21 @@ package ru.ccoders.clay
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
+import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
+import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import ru.ccoders.clay.controller.AddScheduleController
+import ru.ccoders.clay.controller.RestController
 import ru.ccoders.clay.databinding.ActivityDetailBinding
 import ru.ccoders.clay.databinding.SheduleLayoutBinding
 import ru.ccoders.clay.utills.ImageUtil
@@ -67,18 +73,33 @@ class DetailActivity : AppCompatActivity() {
         }
 
         ImageUtil().resizeImage(scheduleLayoutPane,getResources().getDisplayMetrics().widthPixels)
-
-        activityDetailBinding.uploadScheduleButton.setOnClickListener {
-            val preferences = getSharedPreferences("authentication",Context.MODE_PRIVATE);
-            val username = preferences.getString("login",null)
-            if(username == null && !preferences.contains("password")) {
-                val intent = Intent(this, AuthenticationActivity::class.java)
-                startActivity(intent);
-            }else{
-                Log.d(this.javaClass.name,"Save user: $username, schedule:"+schedule.toJSONObject().toString())
+        if (schedule.getRemoteId()>0){
+            activityDetailBinding.uploadScheduleButton.visibility = View.GONE
+        }else {
+            activityDetailBinding.uploadScheduleButton.setOnClickListener {
+                val preferences = getSharedPreferences("authentication", Context.MODE_PRIVATE);
+                val username = preferences.getString("login", null)
+                if (username == null && !preferences.contains("password")) {
+                    val intent = Intent(this, AuthenticationActivity::class.java)
+                    startActivity(intent);
+                } else {
+                    CoroutineScope(Dispatchers.IO).async {
+                        val remote_id = RestController(
+                            getSharedPreferences(
+                                "authentication",
+                                Context.MODE_PRIVATE
+                            )
+                        ).uploadToServer(schedule);
+                        schedule.setRemoteId(remote_id)
+                        scheduleController!!.updateSchedule(schedule)
+                        Log.d(
+                            this.javaClass.name,
+                            "Save user: $username, schedule:" + schedule.toJSONObject().toString()
+                        )
+                    }
+                }
             }
         }
-
         activityDetailBinding.editScheduleButton.setOnClickListener {
             Log.d("Detail","click edit:"+schedule.header)
             val intent = Intent(this, AddScheduleActivity::class.java)

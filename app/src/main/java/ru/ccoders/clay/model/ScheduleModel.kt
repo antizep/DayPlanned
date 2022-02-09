@@ -18,7 +18,7 @@ data class ScheduleModel constructor(
 
     ) {
     var time: Calendar? = null;
-    private var remoteId = 0
+    private var remoteId = 0L
     private var editableTime = true
     var DAILY_MODE = 1
     var VEEKLY_MODE = 2
@@ -30,7 +30,7 @@ data class ScheduleModel constructor(
         skipped: Int?,
         mode: Int?,
         schedule: JSONArray?,
-        remoteId: Int, editableTime: Boolean
+        remoteId: Long, editableTime: Boolean
     ) : this(id, header, description, complete, skipped, mode, schedule) {
         this.remoteId = remoteId
         this.editableTime = editableTime
@@ -59,7 +59,7 @@ data class ScheduleModel constructor(
                 jsonObject.getInt(REJECTED),
                 mode,
                 JSONArray(jsonObject.getString(DAY_OF_WEEK)),
-                jsonObject.getInt(ID),
+                jsonObject.getLong(ID),
                 jsonObject.getBoolean(EDIT_TIME)
             )
 
@@ -71,10 +71,10 @@ data class ScheduleModel constructor(
             return schedule
         }
     }
-    fun getRemoteId():Int{
+    fun getRemoteId():Long{
         return remoteId
     }
-    fun setRemoteId(remoteId: Int){
+    fun setRemoteId(remoteId: Long){
         this.remoteId = remoteId
     }
 

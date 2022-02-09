@@ -3,8 +3,11 @@ package ru.ccoders.clay.controller
 import android.content.SharedPreferences
 import android.util.Log
 import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
+import ru.ccoders.clay.model.ScheduleModel
 import java.io.IOException
 
 
@@ -12,6 +15,7 @@ class RestController(val sharedPreferences: SharedPreferences) {
 
     private val domain = "http://192.168.0.11";
     private val port = 8181;
+    val TAG = RestController::class.java.canonicalName
 
     fun authentication(login:String,password: String){
 
@@ -29,9 +33,9 @@ class RestController(val sharedPreferences: SharedPreferences) {
             Log.d("RestController","test:$url")
 
             val response = client.newCall(request).execute()
-            val body = response.body();
+            val body = response.body;
 
-            if(response.code()==200 && body != null) {
+            if(response.code ==200 && body != null) {
 
                 val resp = JSONObject(body.string ())
                 Log.d(this::class.java.name, resp.toString())
@@ -53,6 +57,34 @@ class RestController(val sharedPreferences: SharedPreferences) {
 
         }
 
+    }
+
+    fun uploadToServer(scheduleModel: ScheduleModel) : Long{
+        val login = sharedPreferences.getString("login",null)
+        val password = sharedPreferences.getString("password",null)
+        Log.d(TAG,"request: ${scheduleModel.toJSONObject()}")
+        if(login == null || password ==null){
+            return 0
+        }else {
+            val client = OkHttpClient.Builder()
+                .addInterceptor(BasicAuthInterceptor(login, password))
+                .build()
+            val url = "$domain:$port/lifequest/schedule/save/"
+
+            val JSON = "application/json; charset=utf-8".toMediaType()
+            val reqBody = scheduleModel.toJSONObject().toString().toRequestBody(JSON)
+
+            val request = Request.Builder()
+                .url(url)
+                .post(reqBody)
+                .build();
+            Log.d(TAG,"requestBody:"+reqBody.toString())
+            val response = client.newCall(request).execute()
+            val respStr = response.body?.string()
+            val resp = JSONObject(respStr)
+            Log.d(TAG, "response: $resp")
+            return resp.getLong("remoteId")
+        }
     }
 }
 
