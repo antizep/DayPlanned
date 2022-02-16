@@ -1,4 +1,4 @@
-package ru.ccoders.clay
+package ru.ccoders.clay.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -10,14 +10,15 @@ import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
-import ru.ccoders.clay.controller.AddScheduleController
+import ru.ccoders.clay.controller.SQLiteScheduleController
 import ru.ccoders.clay.databinding.ActivitySetPeriodBinding
-import ru.ccoders.clay.model.ScheduleModel
+import ru.ccoders.clay.dto.ScheduleModel
 import org.json.JSONArray
+import ru.ccoders.clay.R
 import java.sql.Time
 
 class SetPeriodActivity : AppCompatActivity() {
-    var scheduleController: AddScheduleController? = null
+    var SQLScheduleController: SQLiteScheduleController? = null
 
     companion object {
         var shedle = JSONArray("[true,true,true,true,true,false,false]")
@@ -28,11 +29,12 @@ class SetPeriodActivity : AppCompatActivity() {
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        scheduleController = AddScheduleController(this)
+        SQLScheduleController = SQLiteScheduleController(this)
         val id = intent.getIntExtra("id", 0);
         val t = intent.getStringExtra("time")
-        var mode = intent.getIntExtra(AddScheduleController.MODE, AddScheduleController.VEEKLY_MODE)
-        val scheduleS = intent.getStringExtra(AddScheduleController.SCHEDULE)
+
+        var mode = intent.getIntExtra(SQLiteScheduleController.MODE, SQLiteScheduleController.VEEKLY_MODE)
+        val scheduleS = intent.getStringExtra(SQLiteScheduleController.SCHEDULE)
 
         if (scheduleS != null) {
             val s = JSONArray(scheduleS)
@@ -65,11 +67,11 @@ class SetPeriodActivity : AppCompatActivity() {
             when (buttonView.checkedRadioButtonId) {
                 setPeriodBinding.radioButtonDaily.id -> {
                     chipGroupWeekly.visibility = View.GONE
-                    mode = AddScheduleController.DAILY_MODE
+                    mode = SQLiteScheduleController.DAILY_MODE
                 }
                 setPeriodBinding.radioButtonWeekly.id -> {
                     chipGroupWeekly.visibility = View.VISIBLE
-                    mode = AddScheduleController.VEEKLY_MODE
+                    mode = SQLiteScheduleController.VEEKLY_MODE
                 }
             }
             Log.d("SetPeriodActivity", "checked mon:" + buttonView.checkedRadioButtonId)
@@ -102,7 +104,7 @@ class SetPeriodActivity : AppCompatActivity() {
             calendar.set(Calendar.SECOND, 0)
             val schedule = ScheduleModel(id, null, null, 0, 0, mode, shedle)
             schedule.time = calendar;
-            scheduleController!!.setTime(schedule)
+            SQLScheduleController!!.setTime(schedule)
             Log.d(SetPeriodActivity::class.java.name, "s:" + schedule)
             Log.d(SetPeriodActivity::class.java.name, "t:" + schedule.time)
 
@@ -153,10 +155,14 @@ class SetPeriodActivity : AppCompatActivity() {
             }
             var isChecked = false;
             if(!shedle.getBoolean(id)) {
-                chip.background = AppCompatResources.getDrawable(this,R.drawable.calendar_yellow_button)
+                chip.background = AppCompatResources.getDrawable(this,
+                    R.drawable.calendar_yellow_button
+                )
                 isChecked = true
             }else{
-                chip.background =AppCompatResources.getDrawable(this,R.drawable.calendar_inactive_button)
+                chip.background =AppCompatResources.getDrawable(this,
+                    R.drawable.calendar_inactive_button
+                )
                 isChecked = false;
             }
             shedle.put(id,isChecked)

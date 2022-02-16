@@ -1,4 +1,4 @@
-package ru.ccoders.clay
+package ru.ccoders.clay.activities
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -18,9 +18,9 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
-import ru.ccoders.clay.controller.AddScheduleController
+import ru.ccoders.clay.controller.SQLiteScheduleController
 import ru.ccoders.clay.databinding.ActivityAddScheduleBinding
-import ru.ccoders.clay.model.ScheduleModel
+import ru.ccoders.clay.dto.ScheduleModel
 import com.yalantis.ucrop.UCrop
 import org.json.JSONArray
 import java.io.File
@@ -31,7 +31,7 @@ import java.io.OutputStream
 
 class AddScheduleActivity : AppCompatActivity() {
     private lateinit var addScheduleBinding: ActivityAddScheduleBinding
-    var scheduleController: AddScheduleController? = null
+    var SQLScheduleController: SQLiteScheduleController? = null
     var scheduleImages: MutableList<Bitmap> = mutableListOf()
     val REQUEST_CODE = 200
     val PIC_CROP = 69
@@ -41,7 +41,7 @@ class AddScheduleActivity : AppCompatActivity() {
     var imageUri: Uri? = null;
     override fun onCreate(savedInstanceState: Bundle?) {
 
-        scheduleController = AddScheduleController(this)
+        SQLScheduleController = SQLiteScheduleController(this)
         Log.d("AHTUNG", "RUNNER")
         super.onCreate(savedInstanceState)
 
@@ -51,8 +51,8 @@ class AddScheduleActivity : AppCompatActivity() {
         val header = intent.getStringExtra("header")
         val descr = intent.getStringExtra("description")
         val t = intent.getStringExtra("time")
-        mode = intent.getIntExtra(AddScheduleController.MODE, AddScheduleController.VEEKLY_MODE)
-        schedule = intent.getStringExtra(AddScheduleController.SCHEDULE)
+        mode = intent.getIntExtra(SQLiteScheduleController.MODE, SQLiteScheduleController.VEEKLY_MODE)
+        schedule = intent.getStringExtra(SQLiteScheduleController.SCHEDULE)
 
         val appGallery = getExternalFilesDir(DIRECTORY_PICTURES);
         val file = File(appGallery!!.absolutePath + "/$id/0.JPG")
@@ -219,11 +219,11 @@ class AddScheduleActivity : AppCompatActivity() {
             var index: Int = 0;
             if (id == 0) {
                 if (!header.isBlank()) {
-                    index = scheduleController!!.addSchedule(schedule)
+                    index = SQLScheduleController!!.addSchedule(schedule)
 
                 }
             } else {
-                scheduleController!!.updateSchedule(schedule)
+                SQLScheduleController!!.updateSchedule(schedule)
                 index = schedule.id
             }
             if (index > 0) {
@@ -234,8 +234,8 @@ class AddScheduleActivity : AppCompatActivity() {
                 val intent = Intent(this, SetPeriodActivity::class.java)
                 intent.putExtra("id", index)
                 intent.putExtra("time", t)
-                intent.putExtra(AddScheduleController.MODE, this.mode)
-                intent.putExtra(AddScheduleController.SCHEDULE, this.schedule)
+                intent.putExtra(SQLiteScheduleController.MODE, this.mode)
+                intent.putExtra(SQLiteScheduleController.SCHEDULE, this.schedule)
                 startActivity(intent)
             }
         }

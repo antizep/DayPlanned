@@ -22,16 +22,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DayPlanned">
         <activity
-            android:name=".AuthenticationActivity"
+            android:name=".activities.AuthenticationActivity"
             android:exported="false" />
-        <activity android:name=".DetailActivity" />
+        <activity android:name=".activities.DetailActivity" />
 
         <service
             android:name=".services.NotificationService"
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".SetPeriodActivity" />
+        <activity android:name=".activities.SetPeriodActivity" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
@@ -46,7 +46,7 @@
         </receiver>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,7 +54,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AddScheduleActivity" />
+        <activity android:name=".activities.AddScheduleActivity" />
     </application>
 
 </manifest>

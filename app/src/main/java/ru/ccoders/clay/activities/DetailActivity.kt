@@ -1,33 +1,31 @@
-package ru.ccoders.clay
+package ru.ccoders.clay.activities
 
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
-import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.View
-import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import ru.ccoders.clay.controller.AddScheduleController
+import ru.ccoders.clay.R
+import ru.ccoders.clay.controller.SQLiteScheduleController
 import ru.ccoders.clay.controller.RestController
 import ru.ccoders.clay.databinding.ActivityDetailBinding
 import ru.ccoders.clay.databinding.SheduleLayoutBinding
 import ru.ccoders.clay.utills.ImageUtil
 import java.io.File
-import java.nio.file.Files
 
 class DetailActivity : AppCompatActivity() {
     private lateinit var activityDetailBinding: ActivityDetailBinding
     private lateinit var scheduleLayoutPane: SheduleLayoutBinding;
-    var scheduleController: AddScheduleController? = null
+    public var SQLScheduleController: SQLiteScheduleController? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,14 +33,14 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         activityDetailBinding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(activityDetailBinding.root)
-        scheduleController = AddScheduleController(this)
+        SQLScheduleController = SQLiteScheduleController(this)
         val id =  intent.getIntExtra("id",0)
-        val schedule = scheduleController!!.getScheduleById(id)
+        val schedule = SQLScheduleController!!.getScheduleById(id)
         val appGallery = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         var file = File(appGallery!!.absolutePath + "/$id/")
 
         activityDetailBinding.deleteScheduleButton.setOnClickListener {
-            scheduleController!!.delSchedule(schedule.id)
+            SQLScheduleController!!.delSchedule(schedule.id)
             if(file.exists()) {
                 file.deleteRecursively()
             }
@@ -69,10 +67,12 @@ class DetailActivity : AppCompatActivity() {
                 ).into(scheduleLayoutPane.ImageSchedule)
             }
         }else{
-            scheduleLayoutPane.ImageSchedule.setImageBitmap(BitmapFactory.decodeResource(resources,R.mipmap.pic_dafault))
+            scheduleLayoutPane.ImageSchedule.setImageBitmap(BitmapFactory.decodeResource(resources,
+                R.mipmap.pic_dafault
+            ))
         }
 
-        ImageUtil().resizeImage(scheduleLayoutPane,getResources().getDisplayMetrics().widthPixels)
+        ImageUtil().resizeImage(scheduleLayoutPane.info,scheduleLayoutPane.ImageSchedule,getResources().getDisplayMetrics().widthPixels)
         if (schedule.getRemoteId()>0){
             activityDetailBinding.uploadScheduleButton.visibility = View.GONE
         }else {
@@ -91,7 +91,7 @@ class DetailActivity : AppCompatActivity() {
                             )
                         ).uploadToServer(schedule);
                         schedule.setRemoteId(remote_id)
-                        scheduleController!!.updateSchedule(schedule)
+                        SQLScheduleController!!.updateSchedule(schedule)
                         Log.d(
                             this.javaClass.name,
                             "Save user: $username, schedule:" + schedule.toJSONObject().toString()
@@ -106,8 +106,8 @@ class DetailActivity : AppCompatActivity() {
             intent.putExtra("id", schedule.id)
             intent.putExtra("header", schedule.header)
 
-            intent.putExtra(AddScheduleController.MODE, schedule.mode)
-            intent.putExtra(AddScheduleController.SCHEDULE, schedule.schedule.toString())
+            intent.putExtra(SQLiteScheduleController.MODE, schedule.mode)
+            intent.putExtra(SQLiteScheduleController.SCHEDULE, schedule.schedule.toString())
 
             intent.putExtra("description", schedule.description)
             intent.putExtra("time", schedule.getTxtTime())

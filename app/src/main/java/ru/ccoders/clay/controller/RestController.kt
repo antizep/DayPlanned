@@ -5,9 +5,8 @@ import android.util.Log
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONArray
 import org.json.JSONObject
-import ru.ccoders.clay.model.ScheduleModel
+import ru.ccoders.clay.dto.ScheduleModel
 import java.io.IOException
 
 

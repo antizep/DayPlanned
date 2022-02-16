@@ -9,15 +9,15 @@ import android.graphics.Color
 import android.os.Build
 import android.util.Log
 import android.widget.RemoteViews
-import ru.ccoders.clay.MainActivity
+import ru.ccoders.clay.activities.MainActivity
 import ru.ccoders.clay.R
-import ru.ccoders.clay.controller.AddScheduleController
-import ru.ccoders.clay.model.ScheduleModel
+import ru.ccoders.clay.controller.SQLiteScheduleController
+import ru.ccoders.clay.dto.ScheduleModel
 import ru.ccoders.clay.utills.ScheduleUtils
 
 
 class MyReceiver : BroadcastReceiver() {
-    var scheduleController: AddScheduleController? = null
+    var SQLiteScheduleController: SQLiteScheduleController? = null
 
     companion object {
         var HEADER = "header"
@@ -51,8 +51,8 @@ class MyReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        scheduleController = AddScheduleController(context)
-        val schedules = scheduleController!!.getSchedule();
+        SQLiteScheduleController = SQLiteScheduleController(context)
+        val schedules = SQLiteScheduleController!!.getSchedule();
 
 
 

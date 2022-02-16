@@ -3,8 +3,8 @@ package ru.ccoders.clay.utills
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.util.Log
-import ru.ccoders.clay.controller.AddScheduleController
-import ru.ccoders.clay.model.ScheduleModel
+import ru.ccoders.clay.controller.SQLiteScheduleController
+import ru.ccoders.clay.dto.ScheduleModel
 import org.json.JSONArray
 
 class ScheduleUtils {
@@ -22,7 +22,7 @@ class ScheduleUtils {
             unsorted.forEach {
 
                 var i = it.getHour();
-                if (it.mode == AddScheduleController.VEEKLY_MODE) {
+                if (it.mode == SQLiteScheduleController.VEEKLY_MODE) {
                     val sch = it.schedule!!
                     val schUSA = JSONArray()
                     schUSA.put(sch[6])
@@ -72,10 +72,10 @@ class ScheduleUtils {
             return scheduleModel;
         }
 
-        fun sortByDay(unsorted: MutableList<ScheduleModel>, day:Calendar): MutableList<ScheduleModel> {
-
-            val positive: MutableList<ScheduleModel> = excludeNotDay(unsorted,day);
-            unsorted.removeAll(positive);
+        fun sortByDay(unsorted: List<ScheduleModel>, day:Calendar): MutableList<ScheduleModel> {
+            val unsortedMutable = unsorted.toMutableList()
+            val positive: MutableList<ScheduleModel> = excludeNotDay(unsortedMutable,day);
+            unsortedMutable.removeAll(positive);
             val sorted = mutableListOf<ScheduleModel>()
             while (positive.size > 0) {
                 val min: ScheduleModel? = minSchedule(positive);

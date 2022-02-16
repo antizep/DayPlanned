@@ -1,9 +1,9 @@
-package ru.ccoders.clay.model
+package ru.ccoders.clay.dto
 
 import android.icu.util.Calendar
 import org.json.JSONArray
 import org.json.JSONObject
-import ru.ccoders.clay.controller.AddScheduleController
+import ru.ccoders.clay.controller.SQLiteScheduleController
 import java.sql.Time
 
 
@@ -51,7 +51,7 @@ data class ScheduleModel constructor(
         val ID= "id"
         fun parseJson(jsonObject: JSONObject):ScheduleModel{
 
-            val mode = if (jsonObject.getBoolean(DAILY)) AddScheduleController.DAILY_MODE else AddScheduleController.VEEKLY_MODE
+            val mode = if (jsonObject.getBoolean(DAILY)) SQLiteScheduleController.DAILY_MODE else SQLiteScheduleController.VEEKLY_MODE
             val schedule = ScheduleModel(0,
                 jsonObject.getString(HEADER),
                 jsonObject.optString(DESCRIPTION),
@@ -121,7 +121,7 @@ data class ScheduleModel constructor(
     fun toJSONObject(): JSONObject {
         return JSONObject().put(HEADER, header)
             .put(DESCRIPTION, description)
-            .put(DAILY, mode == AddScheduleController.DAILY_MODE)
+            .put(DAILY, mode == SQLiteScheduleController.DAILY_MODE)
             .put(DAY_OF_WEEK, schedule.toString())
             .put(TIME, getTxtTime())
             .put(DONE, complete)

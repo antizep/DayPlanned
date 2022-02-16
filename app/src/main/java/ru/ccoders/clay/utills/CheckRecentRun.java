@@ -1,4 +1,4 @@
-package ru.ccoders.clay;
+package ru.ccoders.clay.utills;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -9,6 +9,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
+
+import ru.ccoders.clay.R;
+import ru.ccoders.clay.activities.MainActivity;
 
 class CheckRecentRun extends Service {
 

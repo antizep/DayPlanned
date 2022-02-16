@@ -7,14 +7,16 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.icu.util.Calendar
 import android.util.Log
-import ru.ccoders.clay.model.ScheduleModel
+import ru.ccoders.clay.dto.ScheduleModel
 import org.json.JSONArray
-import ru.ccoders.clay.model.ScheduleModel.Companion.REMOTE_ID
 import java.lang.Exception
 import java.sql.Time
 
-class AddScheduleController(context: Context) :
+class SQLiteScheduleController(context: Context) :
     SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
+
+
+
     companion object {
         private val DB_NAME = "plannedTime";
         private val TABLE_NAME = "schedule"
@@ -26,10 +28,10 @@ class AddScheduleController(context: Context) :
         private var COMPLETED = "completed"
         private var SKIPPED = "skipped"
         private val REMOTE_ID = "remote_id"
-        public var MODE = "mode"
-        public var DAILY_MODE = 1
-        public var VEEKLY_MODE = 2
-        public var SCHEDULE = "schedule"
+        val MODE = "mode"
+        val DAILY_MODE = 1
+        val VEEKLY_MODE = 2
+        val SCHEDULE = "schedule"
     }
 
 
@@ -50,33 +52,33 @@ class AddScheduleController(context: Context) :
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
 
-        if(oldVersion <= 12 ){
+        if (oldVersion <= 12) {
             db!!.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $MODE INTEGER")
             db.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $SCHEDULE String")
-        }else if(oldVersion <= 13){
+        } else if (oldVersion <= 13) {
             db!!.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $REMOTE_ID BIGINT")
         }
     }
 
     @SuppressLint("Range")
-    fun complete(id:Int){
-        val  db = this.writableDatabase
-        val cursor = db.rawQuery("Select $COMPLETED From $TABLE_NAME Where id = $id",null);
-        var c  = 0;
+    fun complete(id: Int) {
+        val db = this.writableDatabase
+        val cursor = db.rawQuery("Select $COMPLETED From $TABLE_NAME Where id = $id", null);
+        var c = 0;
         if (cursor != null && cursor.moveToNext()) {
-            c  = cursor.getInt(cursor.getColumnIndex(COMPLETED));
+            c = cursor.getInt(cursor.getColumnIndex(COMPLETED));
         }
         c++
         db.execSQL("UPDATE $TABLE_NAME SET $COMPLETED = $c WHERE id = $id");
     }
 
     @SuppressLint("Range")
-    fun cancel(id:Int){
-        val  db = this.writableDatabase
-        val cursor = db.rawQuery("Select $SKIPPED From $TABLE_NAME Where id = $id",null);
-        var c  = 0;
+    fun cancel(id: Int) {
+        val db = this.writableDatabase
+        val cursor = db.rawQuery("Select $SKIPPED From $TABLE_NAME Where id = $id", null);
+        var c = 0;
         if (cursor != null && cursor.moveToNext()) {
-            c  = cursor.getInt(cursor.getColumnIndex(SKIPPED));
+            c = cursor.getInt(cursor.getColumnIndex(SKIPPED));
         }
         c++
         db.execSQL("UPDATE $TABLE_NAME SET $SKIPPED = $c WHERE id = $id");
@@ -98,9 +100,9 @@ class AddScheduleController(context: Context) :
         val cv = ContentValues();
         cv.put(HEADER, scheduleModel.header)
         cv.put(DESCRIPTION, scheduleModel.description)
-        cv.put(MODE,scheduleModel.mode)
-        cv.put(SCHEDULE,scheduleModel.schedule.toString())
-        cv.put(REMOTE_ID,scheduleModel.getRemoteId())
+        cv.put(MODE, scheduleModel.mode)
+        cv.put(SCHEDULE, scheduleModel.schedule.toString())
+        cv.put(REMOTE_ID, scheduleModel.getRemoteId())
         val _success = db.update(TABLE_NAME, cv, "$ID = ?", arrayOf(scheduleModel.id.toString()))
         db.close()
         return (_success)
@@ -109,19 +111,20 @@ class AddScheduleController(context: Context) :
     fun setTime(scheduleModel: ScheduleModel): Int {
         val db = this.writableDatabase
         val cv = ContentValues();
-        if(scheduleModel.time == null){
+        if (scheduleModel.time == null) {
             return 0;
         }
-        cv.put(TIME,scheduleModel.getTxtTime())
-        cv.put(MODE,scheduleModel.mode)
-        cv.put(SCHEDULE,scheduleModel.schedule.toString())
+        cv.put(TIME, scheduleModel.getTxtTime())
+        cv.put(MODE, scheduleModel.mode)
+        cv.put(SCHEDULE, scheduleModel.schedule.toString())
 
         val _success = db.update(TABLE_NAME, cv, "$ID = ?", arrayOf(scheduleModel.id.toString()))
         db.close()
         return (_success)
     }
+
     @SuppressLint("Range")
-    fun getScheduleById(id: Int): ScheduleModel{
+    fun getScheduleById(id: Int): ScheduleModel {
         val db = readableDatabase
         val selectAll = "Select * from $TABLE_NAME WHERE id= $id";
         val cursor = db.rawQuery(selectAll, null);
@@ -133,24 +136,24 @@ class AddScheduleController(context: Context) :
                 val time = cursor.getString(cursor.getColumnIndex(TIME));
                 val completed = cursor.getInt(cursor.getColumnIndex(COMPLETED))
                 val skipped = cursor.getInt(cursor.getColumnIndex(SKIPPED))
-                Log.d("AddScheduleController","gs"+cursor.getColumnIndex(MODE))
+                Log.d("AddScheduleController", "gs" + cursor.getColumnIndex(MODE))
                 val mode = cursor.getInt(cursor.getColumnIndex(MODE))
                 var s = cursor.getString(cursor.getColumnIndex(SCHEDULE))
-                if(s == null){
+                if (s == null) {
                     s = "[]"
                 }
-                val  remoteId = cursor.getLong(cursor.getColumnIndex(REMOTE_ID))
+                val remoteId = cursor.getLong(cursor.getColumnIndex(REMOTE_ID))
                 val arra = JSONArray(s)
-                val schedule = ScheduleModel(id, header, desc,completed,skipped,mode,arra)
+                val schedule = ScheduleModel(id, header, desc, completed, skipped, mode, arra)
                 schedule.setRemoteId(remoteId)
-                if(!time.isNullOrBlank()) {
+                if (!time.isNullOrBlank()) {
                     try {
                         val time = Time.valueOf(time)
                         schedule.time = Calendar.getInstance();
-                        schedule.time!!.set(Calendar.HOUR_OF_DAY,time.hours)
-                        schedule.time!!.set(Calendar.MINUTE,time.minutes)
-                        schedule.time!!.set(Calendar.SECOND,0)
-                    }catch (e:Exception){
+                        schedule.time!!.set(Calendar.HOUR_OF_DAY, time.hours)
+                        schedule.time!!.set(Calendar.MINUTE, time.minutes)
+                        schedule.time!!.set(Calendar.SECOND, 0)
+                    } catch (e: Exception) {
 
                     }
                 }
@@ -162,6 +165,7 @@ class AddScheduleController(context: Context) :
         db.close();
         return result!!
     }
+
     @SuppressLint("Range")
     fun getSchedule(): MutableList<ScheduleModel> {
         val scheduleModels: MutableList<ScheduleModel> = mutableListOf()
@@ -177,23 +181,23 @@ class AddScheduleController(context: Context) :
                 val completed = cursor.getInt(cursor.getColumnIndex(COMPLETED))
                 val skipped = cursor.getInt(cursor.getColumnIndex(SKIPPED))
                 val remoteId = cursor.getLong(cursor.getColumnIndex(REMOTE_ID))
-                Log.d("AddScheduleController","gs"+cursor.getColumnIndex(MODE))
+                Log.d("AddScheduleController", "gs" + cursor.getColumnIndex(MODE))
                 val mode = cursor.getInt(cursor.getColumnIndex(MODE))
                 var s = cursor.getString(cursor.getColumnIndex(SCHEDULE))
-                if(s == null){
+                if (s == null) {
                     s = "[]"
                 }
                 val arra = JSONArray(s)
-                val schedule = ScheduleModel(id, header, desc,completed,skipped,mode,arra)
+                val schedule = ScheduleModel(id, header, desc, completed, skipped, mode, arra)
                 schedule.setRemoteId(remoteId)
-                if(!time.isNullOrBlank()) {
+                if (!time.isNullOrBlank()) {
                     try {
                         val time = Time.valueOf(time)
                         schedule.time = Calendar.getInstance();
-                        schedule.time!!.set(Calendar.HOUR_OF_DAY,time.hours)
-                        schedule.time!!.set(Calendar.MINUTE,time.minutes)
-                        schedule.time!!.set(Calendar.SECOND,0)
-                    }catch (e:Exception){
+                        schedule.time!!.set(Calendar.HOUR_OF_DAY, time.hours)
+                        schedule.time!!.set(Calendar.MINUTE, time.minutes)
+                        schedule.time!!.set(Calendar.SECOND, 0)
+                    } catch (e: Exception) {
 
                     }
                 }

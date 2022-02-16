@@ -1,16 +1,14 @@
-package ru.ccoders.clay
+package ru.ccoders.clay.activities
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import ru.ccoders.clay.controller.RestController
 import ru.ccoders.clay.databinding.ActivityAuthenticationBinding
-import ru.ccoders.clay.databinding.SheduleLayoutBinding
 
 class AuthenticationActivity : AppCompatActivity() {
     private lateinit var authenticationActivityBinding: ActivityAuthenticationBinding
