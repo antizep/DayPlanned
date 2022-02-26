@@ -8,6 +8,9 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import ru.ccoders.clay.dto.ScheduleModel
 import java.io.IOException
+import java.lang.Exception
+import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 
 class RestController(val sharedPreferences: SharedPreferences) {
@@ -67,6 +70,11 @@ class RestController(val sharedPreferences: SharedPreferences) {
         }else {
             val client = OkHttpClient.Builder()
                 .addInterceptor(BasicAuthInterceptor(login, password))
+                .connectTimeout(10,TimeUnit.SECONDS)
+                .writeTimeout(10,TimeUnit.SECONDS)
+                .readTimeout(10,TimeUnit.SECONDS)
+                .retryOnConnectionFailure(false)
+
                 .build()
             val url = "$domain:$port/lifequest/schedule/save/"
 
@@ -77,14 +85,21 @@ class RestController(val sharedPreferences: SharedPreferences) {
                 .url(url)
                 .post(reqBody)
                 .build();
-            Log.d(TAG,"requestBody:"+reqBody.toString())
-            val response = client.newCall(request).execute()
-            val respStr = response.body?.string()
-            val resp = JSONObject(respStr)
-            Log.d(TAG, "response: $resp")
-            return resp.getLong("remoteId")
+            try {
+
+                val response = client.newCall(request).execute()
+                val respStr = response.body?.string()
+                Log.d(TAG, "response: $respStr")
+                val resp = JSONObject(respStr)
+                return resp.getLong("remoteId")
+            }catch (ex:Exception){
+                ex.printStackTrace()
+                Log.d(TAG,"connection $url failed")
+                return -1
+            }
         }
     }
+
 }
 
 class BasicAuthInterceptor(user: String, password: String) :

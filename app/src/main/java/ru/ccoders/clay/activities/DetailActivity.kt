@@ -3,11 +3,13 @@ package ru.ccoders.clay.activities
 import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
@@ -15,35 +17,57 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import ru.ccoders.clay.R
-import ru.ccoders.clay.controller.SQLiteScheduleController
 import ru.ccoders.clay.controller.RestController
+import ru.ccoders.clay.controller.SQLiteScheduleController
 import ru.ccoders.clay.databinding.ActivityDetailBinding
 import ru.ccoders.clay.databinding.SheduleLayoutBinding
+import ru.ccoders.clay.dto.ScheduleModel
 import ru.ccoders.clay.utills.ImageUtil
+import ru.ccoders.clay.viewModel.DetailViewModel
 import java.io.File
+
 
 class DetailActivity : AppCompatActivity() {
     private lateinit var activityDetailBinding: ActivityDetailBinding
     private lateinit var scheduleLayoutPane: SheduleLayoutBinding;
-    public var SQLScheduleController: SQLiteScheduleController? = null
+    private lateinit var detailViewModel: DetailViewModel
+    private lateinit var detailObserver: Observer<ScheduleModel>
+    private var idSchedule:Int = 0
 
+    override fun onStart() {
+        super.onStart()
+        detailViewModel.scheduleDeatailLiveData.observe(this,detailObserver)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        detailViewModel.scheduleDeatailLiveData.removeObserver(detailObserver)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        scheduleLayoutPane = SheduleLayoutBinding.inflate(layoutInflater);
         super.onCreate(savedInstanceState)
         activityDetailBinding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(activityDetailBinding.root)
-        SQLScheduleController = SQLiteScheduleController(this)
-        val id =  intent.getIntExtra("id",0)
-        val schedule = SQLScheduleController!!.getScheduleById(id)
+
+        detailViewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
+
+        detailObserver = Observer {
+            printActivity(it)
+        }
+        idSchedule =  intent.getIntExtra("id",0)
+
+        detailViewModel.loadSchedule(idSchedule)
+
+    }
+
+    private fun printActivity(schedule:ScheduleModel){
+        activityDetailBinding.ImageLayout.removeAllViews()
+        scheduleLayoutPane = SheduleLayoutBinding.inflate(layoutInflater)
         val appGallery = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        var file = File(appGallery!!.absolutePath + "/$id/")
+        var file = File(appGallery!!.absolutePath + "/${schedule.id}/")
 
         activityDetailBinding.deleteScheduleButton.setOnClickListener {
-            SQLScheduleController!!.delSchedule(schedule.id)
-            if(file.exists()) {
-                file.deleteRecursively()
-            }
+            detailViewModel.delete(schedule.id)
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
@@ -82,20 +106,9 @@ class DetailActivity : AppCompatActivity() {
                 if (username == null && !preferences.contains("password")) {
                     val intent = Intent(this, AuthenticationActivity::class.java)
                     startActivity(intent);
-                } else {
+                }else{
                     CoroutineScope(Dispatchers.IO).async {
-                        val remote_id = RestController(
-                            getSharedPreferences(
-                                "authentication",
-                                Context.MODE_PRIVATE
-                            )
-                        ).uploadToServer(schedule);
-                        schedule.setRemoteId(remote_id)
-                        SQLScheduleController!!.updateSchedule(schedule)
-                        Log.d(
-                            this.javaClass.name,
-                            "Save user: $username, schedule:" + schedule.toJSONObject().toString()
-                        )
+                        detailViewModel.uploadToServer(schedule)
                     }
                 }
             }

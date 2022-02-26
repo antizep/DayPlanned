@@ -1,14 +1,9 @@
 package ru.ccoders.clay.activities
 
 import android.annotation.SuppressLint
-import android.app.AlarmManager
-import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
 import android.os.Bundle
-import android.os.Environment
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
@@ -18,34 +13,28 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.signature.ObjectKey
 import ru.ccoders.clay.R
 import ru.ccoders.clay.adapters.ScheduleRecyclerViewAdapter
 import ru.ccoders.clay.databinding.ActivityMainBinding
-import ru.ccoders.clay.databinding.SheduleLayoutBinding
 import ru.ccoders.clay.dto.ScheduleModel
-import ru.ccoders.clay.services.MyReceiver
-import ru.ccoders.clay.services.MyReceiver.Companion.DESCRIPTION
-import ru.ccoders.clay.services.MyReceiver.Companion.HEADER
-import ru.ccoders.clay.services.MyReceiver.Companion.ID
-import ru.ccoders.clay.services.MyReceiver.Companion.TIME
-import ru.ccoders.clay.utills.ImageUtil
 import ru.ccoders.clay.utills.ScheduleUtils
 import ru.ccoders.clay.viewModel.MainViewModel
-import java.io.File
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var activityMainBinding: ActivityMainBinding
-    private lateinit var scheduleLayoutPane: SheduleLayoutBinding;
     private lateinit var scheduleLiveData: MutableLiveData<List<ScheduleModel>>;
+    private lateinit var scheduleObserver: Observer<List<ScheduleModel>>
 
-    companion object {
-        private var calAlert: String? = null;
+    override fun onStart() {
+        super.onStart()
+        scheduleLiveData.observe(this,scheduleObserver)
     }
 
+    override fun onStop() {
+        super.onStop()
+        scheduleLiveData.removeObserver(scheduleObserver)
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,11 +47,11 @@ class MainActivity : AppCompatActivity() {
         val provider = ViewModelProvider(this).get(MainViewModel::class.java)
         provider.loadSchedule();
         scheduleLiveData = provider.scheduleLiveData;
+        scheduleObserver = Observer {
+            loadSchedule(it);
+        }
 
         createDayBtn()
-        scheduleLiveData.observe(this, Observer {
-            loadSchedule(it);
-        })
 
         activityMainBinding.createNewButton.setOnClickListener {
             startActivity(Intent(this, AddScheduleActivity::class.java));
@@ -71,34 +60,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun addAlarmManager(scheduleModel: ScheduleModel) {
-        if (scheduleModel.time == null) {
-            return
-        }
-        if (calAlert != null && scheduleModel.getTxtTime().equals(calAlert)) {
-            return
-        }
-        calAlert = scheduleModel.getTxtTime()
-        Log.d("MyReceiver", "old:" + calAlert + ",new:" + scheduleModel.time!!.time.toString())
-        val alarmManager: AlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val myIntent = Intent(applicationContext, MyReceiver::class.java)
-        myIntent.putExtra(HEADER, scheduleModel.header)
-        myIntent.putExtra(DESCRIPTION, scheduleModel.description)
-        myIntent.putExtra(TIME, scheduleModel.getTxtTime())
-        myIntent.putExtra(ID, scheduleModel.id)
-        val pendingIntentpi = PendingIntent.getBroadcast(
-            applicationContext,
-            0,
-            myIntent,
-            PendingIntent.FLAG_CANCEL_CURRENT
-        );
 
-        alarmManager.set(
-            AlarmManager.RTC_WAKEUP,
-            scheduleModel.time!!.timeInMillis,
-            pendingIntentpi
-        )
-    }
 
     @SuppressLint("SetTextI18n")
     fun loadSchedule(scheduleAll: List<ScheduleModel>) {
