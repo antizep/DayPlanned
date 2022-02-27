@@ -1,9 +1,11 @@
 package ru.ccoders.clay.activities
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
@@ -19,16 +21,18 @@ import ru.ccoders.clay.databinding.ActivityMainBinding
 import ru.ccoders.clay.dto.ScheduleModel
 import ru.ccoders.clay.utills.ScheduleUtils
 import ru.ccoders.clay.viewModel.MainViewModel
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var activityMainBinding: ActivityMainBinding
     private lateinit var scheduleLiveData: MutableLiveData<List<ScheduleModel>>;
     private lateinit var scheduleObserver: Observer<List<ScheduleModel>>
+    private val TAG = MainActivity::class.java.name
 
     override fun onStart() {
         super.onStart()
-        scheduleLiveData.observe(this,scheduleObserver)
+        scheduleLiveData.observe(this, scheduleObserver)
     }
 
     override fun onStop() {
@@ -56,10 +60,28 @@ class MainActivity : AppCompatActivity() {
         activityMainBinding.createNewButton.setOnClickListener {
             startActivity(Intent(this, AddScheduleActivity::class.java));
         }
+        val preferences = getSharedPreferences("authentication", MODE_PRIVATE)
 
+        if (!preferences.contains("login") || !preferences.contains("password")) {
+
+            activityMainBinding.authButton.setOnClickListener {
+                val intent = Intent(this, AuthenticationActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                startActivity(intent)
+            }
+        }
     }
 
+    override fun onResume() {
+        super.onResume()
+        val preferences = getSharedPreferences("authentication", MODE_PRIVATE)
+        Log.d(TAG, "onResume")
+        if (preferences.contains("login") && preferences.contains("password")) {
+            activityMainBinding.authButton.visibility = View.INVISIBLE
+        }
 
+    }
 
 
     @SuppressLint("SetTextI18n")
@@ -72,28 +94,27 @@ class MainActivity : AppCompatActivity() {
             return
         }
         val sorted = ScheduleUtils.sortByDay(scheduleAll, focusCalendar)
-        if (sorted.size == 0) {
-            return
-        }
+//        if (sorted.size == 0) {
+//            return
+//        }
         val nextTask = ScheduleUtils.nextTask(sorted)
 
-        val indexTask: Int
-        if (nextTask!!.time!!.get(Calendar.DAY_OF_YEAR) <= Calendar.getInstance()
-                .get(Calendar.DAY_OF_YEAR)
-        ) {
-            indexTask = sorted.indexOf(nextTask);
-        } else {
-            indexTask = sorted.size - 1;
-        }
+        var indexTask = 0
         scheduleLayout.layoutManager = LinearLayoutManager(this)
         scheduleLayout.adapter = ScheduleRecyclerViewAdapter(sorted)
-
-        scheduleLayout.post {
-            activityMainBinding.SV.scrollTo(0, scheduleLayout[indexTask].top)
-            activityMainBinding.SV.computeScroll()
+        if (Objects.nonNull(nextTask)) {
+            if (nextTask!!.time!!.get(Calendar.DAY_OF_YEAR) <= Calendar.getInstance()
+                    .get(Calendar.DAY_OF_YEAR)
+            ) {
+                indexTask = sorted.indexOf(nextTask);
+            } else {
+                indexTask = sorted.size - 1;
+            }
+            scheduleLayout.post {
+                activityMainBinding.SV.scrollTo(0, scheduleLayout[indexTask].top)
+                activityMainBinding.SV.computeScroll()
+            }
         }
-
-
     }
 
     var focusCalendar = Calendar.getInstance();

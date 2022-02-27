@@ -23,12 +23,19 @@
     <string name="add_image_button">add image button</string>
     <string name="image_task">image task</string>
 
-    <string name="user_name">username</string>
+    <string name="user_name">email address</string>
     <string name="password">password</string>
+    <string name="repeat_password">repeat password</string>
+    <string name="i_agree_to_the">I agree to the </string>
+    <string name="privacy_policy" translatable="false"><u> Privacy Policy</u></string>
 
     <string name="forgot_your_password"><u>Forgot your password?</u></string>
     <string name="dont_nave_an_account_yet">Don\'t have an account yet?</string>
-
-    <string name="sign_app">Sign Up</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="sign_app"><u>Sign Up</u></string>
+    <string name="sign_in"><u>Sign In</u></string>
+    <string name="email_code">We just sent a confirmation code to your email</string>
+    <string name="enter_code">enter code</string>
+    <string name="resend_code"><u>Resend code</u></string>
 
 </resources>

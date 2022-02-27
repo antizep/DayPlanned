@@ -109,6 +109,7 @@ class SetPeriodActivity : AppCompatActivity() {
             Log.d(SetPeriodActivity::class.java.name, "t:" + schedule.time)
 
             val intent = Intent(this, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
             Toast.makeText(this, "Saved Successfully", Toast.LENGTH_LONG).show()
             finish()

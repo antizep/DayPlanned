@@ -3,9 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="ru.ccoders.clay">
 
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28"
@@ -17,10 +16,13 @@
     <application
         android:icon="@mipmap/icon_apolo"
         android:label="@string/app_name"
-        android:usesCleartextTraffic="true"
         android:roundIcon="@mipmap/icon_apolo_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.DayPlanned">
+        android:theme="@style/Theme.DayPlanned"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".activities.RegistrationActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.AuthenticationActivity"
             android:exported="false" />

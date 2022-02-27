@@ -42,8 +42,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
         }
         scheduleLiveData.postValue(scheduleAll)
-        MyReceiver().addAlarmManager(ScheduleUtils.nextTask(scheduleAll)!!, context)
-
+        if (scheduleAll.isNotEmpty()) {
+            MyReceiver().addAlarmManager(ScheduleUtils.nextTask(scheduleAll)!!, context)
+        }
     }
 
 }

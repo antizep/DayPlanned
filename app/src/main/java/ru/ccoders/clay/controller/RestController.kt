@@ -19,7 +19,7 @@ class RestController(val sharedPreferences: SharedPreferences) {
     private val port = 8181;
     val TAG = RestController::class.java.canonicalName
 
-    fun authentication(login:String,password: String){
+    fun authentication(login:String,password: String):Boolean{
 
         val client = OkHttpClient.Builder()
             .addInterceptor(BasicAuthInterceptor(login,password))
@@ -48,16 +48,16 @@ class RestController(val sharedPreferences: SharedPreferences) {
                         .apply();
                 }
             }else{
-
                 Log.d(this::class.java.name,"authentication null")
-
+                return false
             }
 
         }catch (e: IOException){
-
             e.printStackTrace()
+            return false
 
         }
+        return true
 
     }
 

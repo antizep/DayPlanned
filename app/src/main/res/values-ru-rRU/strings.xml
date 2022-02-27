@@ -23,10 +23,19 @@
     <string name="add_image_button">add image button</string>
     <string name="image_task">image task</string>
 
-    <string name="user_name">имя пользователя</string>
+    <string name="user_name">email  адрес</string>
     <string name="password">пароль</string>
+    <string name="repeat_password">повторите пароль</string>
+    <string name="i_agree_to_the">Я ознакомлен с </string>
+
     <string name="forgot_your_password"><u>Забыли пароль</u></string>
+    <string name="already_have_an_account">Уже есть аккаунт</string>
 
     <string name="dont_nave_an_account_yet"><u>У вас нет учетной записи?</u></string>
     <string name="sign_app">Зарегистрироваться</string>
+    <string name="sign_in"><u>Войти</u></string>
+    <string name="email_code">Мы только что отправили код подтверждения на ваш электронный адрес</string>
+    <string name="enter_code">введите код</string>
+    <string name="resend_code"><u>Повторить отправку</u></string>
+
 </resources>
