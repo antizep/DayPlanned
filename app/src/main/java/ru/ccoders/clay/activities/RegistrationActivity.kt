@@ -5,8 +5,11 @@ import android.text.Editable
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import ru.ccoders.clay.R
 import ru.ccoders.clay.databinding.ActivityRegistrationBinding
+import ru.ccoders.clay.viewModel.RegistrationViewModel
 import java.util.regex.Pattern
 
 
@@ -26,6 +29,10 @@ class RegistrationActivity : AppCompatActivity() {
     private val ENTER_CODE = 1
     private val PASSWORD = 2
     private var mode = 0
+    private lateinit var registrationViewModel: RegistrationViewModel
+
+    private lateinit var checkMailObserver: Observer<Boolean>
+    private lateinit var checkMailCodeObserver:Observer<Boolean>
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -33,7 +40,40 @@ class RegistrationActivity : AppCompatActivity() {
         registrationBinding = ActivityRegistrationBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(registrationBinding.root)
+        registrationViewModel = ViewModelProvider(this).get(RegistrationViewModel::class.java)
 
+        checkMailObserver = Observer { it ->
+            if (it){
+                registrationBinding.textEmailRegistration.isEnabled= false
+                mode = ENTER_CODE
+                onResume()
+            }else{
+                Toast.makeText(this,"Не далось проверить ваш адресс", Toast.LENGTH_LONG).show()
+            }
+        }
+
+        checkMailCodeObserver = Observer {
+            if (it){
+                mode = PASSWORD
+                onResume()
+            }else{
+                Toast.makeText(this,"Не удалось проверить проверочный код",Toast.LENGTH_LONG).show()
+            }
+        }
+
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        registrationViewModel.regLiveData.observe(this,checkMailObserver)
+        registrationViewModel.checkMailCodeLiveData.observe(this,checkMailCodeObserver)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        registrationViewModel.regLiveData.removeObserver(checkMailObserver)
+        registrationViewModel.checkMailCodeLiveData.removeObserver(checkMailCodeObserver)
     }
 
     override fun onResume() {
@@ -50,10 +90,9 @@ class RegistrationActivity : AppCompatActivity() {
                 registrationBinding.resendCodeTimer.visibility = View.GONE
                 registrationBinding.resendCodeBtn.visibility = View.GONE
                 registrationBinding.addScheduleButtonRegistration.setOnClickListener {
-                    if(validateEmail(registrationBinding.textEmailRegistration.text.toString())) {
-                        mode = ENTER_CODE
-                        registrationBinding.textEmailRegistration.isEnabled= false
-                        onResume()
+                    val mailAddress = registrationBinding.textEmailRegistration.text.toString()
+                    if(validateEmail(mailAddress)) {
+                        registrationViewModel.checkMailAddress(mailAddress)
                     }else{
                         Toast.makeText(this,"Не корректный email",Toast.LENGTH_LONG).show()
                     }
@@ -71,8 +110,11 @@ class RegistrationActivity : AppCompatActivity() {
                 registrationBinding.resendCodeTimer.visibility = View.VISIBLE
                 registrationBinding.resendCodeBtn.visibility = View.VISIBLE
                 registrationBinding.addScheduleButtonRegistration.setOnClickListener {
-                    mode = PASSWORD
-                    onResume()
+
+                    val mailAddress = registrationBinding.textEmailRegistration.text.toString()
+                    val code = registrationBinding.enterCode.text.toString()
+                    registrationViewModel.enterMailCode(mailAddress,code)
+
                 }
             }
 

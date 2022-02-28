@@ -11,6 +11,7 @@ import java.io.IOException
 import java.lang.Exception
 import java.time.Duration
 import java.util.concurrent.TimeUnit
+import kotlin.math.log
 
 
 class RestController(val sharedPreferences: SharedPreferences) {
@@ -19,10 +20,10 @@ class RestController(val sharedPreferences: SharedPreferences) {
     private val port = 8181;
     val TAG = RestController::class.java.canonicalName
 
-    fun authentication(login:String,password: String):Boolean{
+    fun authentication(login: String, password: String): Boolean {
 
         val client = OkHttpClient.Builder()
-            .addInterceptor(BasicAuthInterceptor(login,password))
+            .addInterceptor(BasicAuthInterceptor(login, password))
             .build()
 
         val url = "$domain:$port/lifequest/profile/"
@@ -32,27 +33,27 @@ class RestController(val sharedPreferences: SharedPreferences) {
 
         try {
 
-            Log.d("RestController","test:$url")
+            Log.d("RestController", "test:$url")
 
             val response = client.newCall(request).execute()
             val body = response.body;
 
-            if(response.code ==200 && body != null) {
+            if (response.code == 200 && body != null) {
 
-                val resp = JSONObject(body.string ())
+                val resp = JSONObject(body.string())
                 Log.d(this::class.java.name, resp.toString())
-                if(resp.getBoolean("enabled")) {
+                if (resp.getBoolean("enabled")) {
                     sharedPreferences.edit()
                         .putString("login", login)
                         .putString("password", password)
                         .apply();
                 }
-            }else{
-                Log.d(this::class.java.name,"authentication null")
+            } else {
+                Log.d(this::class.java.name, "authentication null")
                 return false
             }
 
-        }catch (e: IOException){
+        } catch (e: IOException) {
             e.printStackTrace()
             return false
 
@@ -61,20 +62,15 @@ class RestController(val sharedPreferences: SharedPreferences) {
 
     }
 
-    fun uploadToServer(scheduleModel: ScheduleModel) : Long{
-        val login = sharedPreferences.getString("login",null)
-        val password = sharedPreferences.getString("password",null)
-        Log.d(TAG,"request: ${scheduleModel.toJSONObject()}")
-        if(login == null || password ==null){
+    fun uploadToServer(scheduleModel: ScheduleModel): Long {
+        val login = sharedPreferences.getString("login", null)
+        val password = sharedPreferences.getString("password", null)
+        Log.d(TAG, "request: ${scheduleModel.toJSONObject()}")
+        if (login == null || password == null) {
             return 0
-        }else {
+        } else {
             val client = OkHttpClient.Builder()
                 .addInterceptor(BasicAuthInterceptor(login, password))
-                .connectTimeout(10,TimeUnit.SECONDS)
-                .writeTimeout(10,TimeUnit.SECONDS)
-                .readTimeout(10,TimeUnit.SECONDS)
-                .retryOnConnectionFailure(false)
-
                 .build()
             val url = "$domain:$port/lifequest/schedule/save/"
 
@@ -92,20 +88,59 @@ class RestController(val sharedPreferences: SharedPreferences) {
                 Log.d(TAG, "response: $respStr")
                 val resp = JSONObject(respStr)
                 return resp.getLong("remoteId")
-            }catch (ex:Exception){
+            } catch (ex: Exception) {
                 ex.printStackTrace()
-                Log.d(TAG,"connection $url failed")
+                Log.d(TAG, "connection $url failed")
                 return -1
             }
         }
     }
 
+    fun checkMailAddress(mailAddress: String): Boolean {
+        val client = OkHttpClient.Builder()
+            .build()
+        val url = "$domain:$port/lifequest/profile/registration/sendMail"
+        val requestBody = FormBody.Builder()
+            .add("mailAddress", mailAddress)
+            .build()
+        val request = Request.Builder()
+            .url(url)
+            .post(requestBody)
+            .build()
+        return try {
+            val response = client.newCall(request).execute()
+            return response.code == 200
+        } catch (ex: Exception) {
+            Log.d(TAG, "Не удалось проверить адрес", ex)
+            false
+        }
+    }
+
+    fun checkMailCode(mailAddress: String, mailCode: String): Boolean {
+
+        val client = OkHttpClient.Builder()
+            .build()
+        val url =
+            "$domain:$port/lifequest/profile/registration/verifyMail?code=$mailCode&mailAddress=$mailAddress"
+        val request = Request.Builder()
+            .url(url)
+            .get()
+            .build()
+        return try {
+            val response = client.newCall(request).execute()
+            return response.code == 200
+
+        } catch (ex: Exception) {
+            Log.d(TAG, "Не удалось проверить mailCode", ex)
+            false
+        }
+    }
 }
 
 class BasicAuthInterceptor(user: String, password: String) :
     Interceptor {
 
-    private val credentials = Credentials.basic(user,password);
+    private val credentials = Credentials.basic(user, password);
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val request: Request = chain.request()
