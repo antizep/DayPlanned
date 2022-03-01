@@ -37,5 +37,8 @@
     <string name="email_code">We just sent a confirmation code to your email</string>
     <string name="enter_code">enter code</string>
     <string name="resend_code"><u>Resend code</u></string>
-
+    <string name="password_dont_math">Passwords don\'t match!</string>
+    <string name="consent_policy">Consent to the privacy policy is required</string>
+    <string name="mail_incorrect">Mail is incorrect</string>
+    <string name="password_incorrect">The password must consist of at least eight characters, at least one letter and one digit</string>
 </resources>

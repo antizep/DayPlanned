@@ -37,5 +37,9 @@
     <string name="email_code">Мы только что отправили код подтверждения на ваш электронный адрес</string>
     <string name="enter_code">введите код</string>
     <string name="resend_code"><u>Повторить отправку</u></string>
+    <string name="password_dont_math">Пароли не совпадают!</string>
+    <string name="consent_policy">Требуется согласие с Privacy Policy!</string>
+    <string name="mail_incorrect">Адрес почты не корректен!</string>
+    <string name="password_incorrect">Пароль должен состоять не менее чем из восьми символов, по крайней мере одной буквы и одной цифры</string>
 
 </resources>

@@ -2,6 +2,8 @@ package ru.ccoders.clay.controller
 
 import android.content.SharedPreferences
 import android.util.Log
+import android.widget.Toast
+import com.bumptech.glide.RequestBuilder
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -13,7 +15,7 @@ import java.time.Duration
 import java.util.concurrent.TimeUnit
 import kotlin.math.log
 
-
+//todo наличие записи в преференсы здесь сомнительно
 class RestController(val sharedPreferences: SharedPreferences) {
 
     private val domain = "http://192.168.0.11";
@@ -21,7 +23,7 @@ class RestController(val sharedPreferences: SharedPreferences) {
     val TAG = RestController::class.java.canonicalName
 
     fun authentication(login: String, password: String): Boolean {
-
+        //todo добавить синхронизацию задач
         val client = OkHttpClient.Builder()
             .addInterceptor(BasicAuthInterceptor(login, password))
             .build()
@@ -128,10 +130,42 @@ class RestController(val sharedPreferences: SharedPreferences) {
             .build()
         return try {
             val response = client.newCall(request).execute()
+
             return response.code == 200
 
         } catch (ex: Exception) {
             Log.d(TAG, "Не удалось проверить mailCode", ex)
+            false
+        }
+    }
+
+    fun register(mailAddress: String, password: String): Boolean {
+        val client = OkHttpClient.Builder()
+            .build()
+        val url =
+            "$domain:$port/lifequest/profile/registration"
+        val requestBody = FormBody.Builder()
+            .add("username", mailAddress)
+            .add("password", password)
+            .build()
+        val request = Request.Builder()
+            .url(url)
+            .post(requestBody)
+            .build()
+        return try {
+            val response = client.newCall(request).execute()
+            if(response.code == 200){
+                //todo наличие записи в преференсы здесь сомнительно
+                sharedPreferences.edit()
+                    .putString("login", mailAddress)
+                    .putString("password", password)
+                    .apply()
+                true
+            }else{
+                false
+            }
+        } catch (ex: Exception) {
+            Log.d(TAG, "Не удалось отправить запрос")
             false
         }
     }

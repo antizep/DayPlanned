@@ -17,6 +17,8 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
 
     val regLiveData = MutableLiveData<Boolean>()
     val checkMailCodeLiveData = MutableLiveData<Boolean>()
+    val registerLiveData = MutableLiveData<Boolean>()
+
     val restController =
         RestController(context.getSharedPreferences("authentication", Context.MODE_PRIVATE));
 
@@ -27,9 +29,15 @@ class RegistrationViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
-    fun enterMailCode(mailAddress: String, mailCode: String){
+    fun enterMailCode(mailAddress: String, mailCode: String) {
         CoroutineScope(Dispatchers.IO).async {
             checkMailCodeLiveData.postValue(restController.checkMailCode(mailAddress, mailCode))
+        }
+    }
+
+    fun registration(mailAddress: String, password: String) {
+        CoroutineScope(Dispatchers.IO).async {
+            registerLiveData.postValue(restController.register(mailAddress, password))
         }
     }
 
