@@ -16,7 +16,6 @@ class SQLiteScheduleController(context: Context) :
     SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
 
 
-
     companion object {
         private val DB_NAME = "plannedTime";
         private val TABLE_NAME = "schedule"
@@ -108,6 +107,33 @@ class SQLiteScheduleController(context: Context) :
         return (_success)
     }
 
+    fun updateScheduleByRemoteId(scheduleModel: ScheduleModel): Int {
+        val d = getScheduleById(scheduleModel.getRemoteId(), true)
+        if (d != null) {
+            scheduleModel.id = d.id
+        } else {
+            scheduleModel.id = addSchedule(scheduleModel)
+        }
+
+        val db = this.writableDatabase
+        val cv = ContentValues();
+        cv.put(HEADER, scheduleModel.header)
+        cv.put(DESCRIPTION, scheduleModel.description)
+        cv.put(MODE, scheduleModel.mode)
+        cv.put(SCHEDULE, scheduleModel.schedule.toString())
+        cv.put(REMOTE_ID, scheduleModel.getRemoteId())
+        cv.put(TIME,scheduleModel.getTxtTime())
+        val _success = db.update(
+            TABLE_NAME,
+            cv,
+            "$ID = ?",
+            arrayOf(scheduleModel.id.toString())
+        )
+        db.close()
+        Log.d("schedules - ",getSchedule().toString())
+        return (_success)
+    }
+
     fun setTime(scheduleModel: ScheduleModel): Int {
         val db = this.writableDatabase
         val cv = ContentValues();
@@ -123,10 +149,18 @@ class SQLiteScheduleController(context: Context) :
         return (_success)
     }
 
-    @SuppressLint("Range")
     fun getScheduleById(id: Int): ScheduleModel {
+        return getScheduleById(id.toLong(), false)!!
+    }
+
+    @SuppressLint("Range")
+    fun getScheduleById(id: Long, isRemote: Boolean): ScheduleModel? {
         val db = readableDatabase
-        val selectAll = "Select * from $TABLE_NAME WHERE id= $id";
+        val selectAll = if (isRemote) {
+            "Select * from $TABLE_NAME WHERE $REMOTE_ID= $id";
+        } else {
+            "Select * from $TABLE_NAME WHERE $ID= $id";
+        }
         val cursor = db.rawQuery(selectAll, null);
         var result: ScheduleModel? = null;
         if (cursor != null) {
@@ -142,9 +176,12 @@ class SQLiteScheduleController(context: Context) :
                 if (s == null) {
                     s = "[]"
                 }
+                val idInt = cursor.getInt(cursor.getColumnIndex(ID))
+
                 val remoteId = cursor.getLong(cursor.getColumnIndex(REMOTE_ID))
                 val arra = JSONArray(s)
-                val schedule = ScheduleModel(id, header, desc, completed, skipped, mode, arra)
+                val schedule = ScheduleModel(idInt, header, desc, completed, skipped, mode, arra)
+
                 schedule.setRemoteId(remoteId)
                 if (!time.isNullOrBlank()) {
                     try {
@@ -163,7 +200,7 @@ class SQLiteScheduleController(context: Context) :
         }
         cursor.close();
         db.close();
-        return result!!
+        return result
     }
 
     @SuppressLint("Range")

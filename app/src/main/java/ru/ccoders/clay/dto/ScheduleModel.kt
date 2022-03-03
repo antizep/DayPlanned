@@ -59,12 +59,13 @@ data class ScheduleModel constructor(
                 jsonObject.getInt(REJECTED),
                 mode,
                 JSONArray(jsonObject.getString(DAY_OF_WEEK)),
-                jsonObject.getLong(ID),
-                jsonObject.getBoolean(EDIT_TIME)
+                jsonObject.optLong(ID,0),
+                jsonObject.optBoolean(EDIT_TIME,false)
             )
 
             val time = Time.valueOf(jsonObject.optString(TIME))
             schedule.time = Calendar.getInstance();
+            schedule.remoteId = jsonObject.optLong(REMOTE_ID)
             schedule.time!!.set(Calendar.HOUR_OF_DAY,time.hours)
             schedule.time!!.set(Calendar.MINUTE,time.minutes)
             schedule.time!!.set(Calendar.SECOND,0)

@@ -30,21 +30,27 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
         if (file.exists()) {
             file.deleteRecursively()
         }
+
         deleteLiveData.postValue(true)
         deleteLiveData.value = true
+
     }
+
     fun loadSchedule(scheduleId: Int){
         val  schedule = sqlScheduleController.getScheduleById(scheduleId)
         scheduleDeatailLiveData.postValue(schedule)
     }
 
     fun uploadToServer(schedule: ScheduleModel){
+        val appGallery = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        val file = File(appGallery!!.absolutePath + "/${schedule.id}/0.JPG")
         val remoteId = RestController(
             context.getSharedPreferences(
                 "authentication",
                 Context.MODE_PRIVATE
             )
-        ).uploadToServer(schedule);
+        ).uploadToServer(schedule,file)
+
         if(remoteId > 0L){
             schedule.setRemoteId(remoteId)
             sqlScheduleController.updateSchedule(schedule)

@@ -2,12 +2,14 @@ package ru.ccoders.clay.viewModel
 
 import android.annotation.SuppressLint
 import android.app.Application
+import android.content.Context
 import android.os.Environment
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import ru.ccoders.clay.controller.RestController
 import ru.ccoders.clay.controller.SQLiteScheduleController
 import ru.ccoders.clay.dto.ScheduleModel
 import ru.ccoders.clay.services.MyReceiver
@@ -22,6 +24,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val scheduleLiveData = MutableLiveData<List<ScheduleModel>>()
 
     private var scheduleController = SQLiteScheduleController(application)
+    private lateinit var restController: RestController
 
     @SuppressLint("StaticFieldLeak")
     private var context: Application = application
@@ -29,6 +32,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun loadSchedule() {
 
         val scheduleAll = scheduleController.getSchedule();
+        restController =
+            RestController(context.getSharedPreferences("authentication", Context.MODE_PRIVATE))
 
         scheduleAll.forEach {
             if (it.time == null || it.mode == null) {
@@ -39,8 +44,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                     file.deleteRecursively()
                 }
             }
-
         }
+
         scheduleLiveData.postValue(scheduleAll)
         if (scheduleAll.isNotEmpty()) {
             MyReceiver().addAlarmManager(ScheduleUtils.nextTask(scheduleAll)!!, context)
@@ -48,4 +53,3 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
 }
-
