@@ -15,12 +15,14 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.signature.ObjectKey
 import ru.ccoders.clay.R
 import ru.ccoders.clay.activities.DetailActivity
+import ru.ccoders.clay.controller.RestController
 import ru.ccoders.clay.dto.ScheduleModel
 import ru.ccoders.clay.utills.ImageUtil
 import java.io.File
 
 class ScheduleRecyclerViewAdapter  (val schedules:List<ScheduleModel>):
     RecyclerView.Adapter<ScheduleRecyclerViewAdapter.ScheduleRecyclerViewHolder>() {
+    private val TAG = ScheduleRecyclerViewAdapter::class.java.name
 
     private lateinit var context: Context
     class ScheduleRecyclerViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView){
@@ -61,6 +63,7 @@ class ScheduleRecyclerViewAdapter  (val schedules:List<ScheduleModel>):
         val id = schedule.id
         val appGallery = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         val file = File(appGallery!!.absolutePath + "/$id/")
+
         if (file.exists()) {
             val images = file.listFiles()
             if (images != null && images.size > 0) {
@@ -72,6 +75,7 @@ class ScheduleRecyclerViewAdapter  (val schedules:List<ScheduleModel>):
                     )
                 ).into(holder.imageSchedule)
             }
+
         }
 
         ImageUtil().resizeImage(holder.info,holder.imageSchedule,context.getResources().getDisplayMetrics().widthPixels)

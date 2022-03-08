@@ -2,6 +2,7 @@ package ru.ccoders.clay.viewModel
 
 import android.app.Application
 import android.content.Context
+import android.os.Environment
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import ru.ccoders.clay.controller.RestController
@@ -24,8 +25,11 @@ class AuthenticationViewModel(application: Application) : AndroidViewModel(appli
             password
         )
         val schedules = restController.downloadSchedule();
-
         syncSchedules(schedules)
+        val appGallery = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        schedules.forEach {
+            restController.downloadImage(it.getRemoteId(),it.id,appGallery.toString())
+        }
         authLiveData.postValue(authStatus)
 
     }

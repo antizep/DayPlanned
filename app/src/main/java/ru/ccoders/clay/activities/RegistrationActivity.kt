@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import ru.ccoders.clay.R
+import ru.ccoders.clay.RunActivity
 import ru.ccoders.clay.databinding.ActivityRegistrationBinding
 import ru.ccoders.clay.viewModel.RegistrationViewModel
 import java.util.regex.Pattern
@@ -67,7 +68,7 @@ class RegistrationActivity : AppCompatActivity() {
 
         registerObserver = Observer {
             if (it) {
-                val intent = Intent(this, MainActivity::class.java)
+                val intent = Intent(this, RunActivity::class.java)
                 startActivity(intent)
             } else {
                 Toast.makeText(this, "Не удлось зарегистрироваться", Toast.LENGTH_LONG).show()

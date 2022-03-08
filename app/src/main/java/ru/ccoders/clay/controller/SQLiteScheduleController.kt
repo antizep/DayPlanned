@@ -246,6 +246,13 @@ class SQLiteScheduleController(context: Context) :
         return scheduleModels;
     }
 
+    fun dropRemoteIdSchedules(){
+        val db = readableDatabase
+
+        db.delete(TABLE_NAME,"$REMOTE_ID > ?", arrayOf("0"))
+        db.close()
+    }
+
     fun delSchedule(id: Int) {
         val db = readableDatabase
         db.delete(TABLE_NAME, "$ID = ?", arrayOf(id.toString()))

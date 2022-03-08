@@ -41,5 +41,5 @@
     <string name="consent_policy">Требуется согласие с Privacy Policy!</string>
     <string name="mail_incorrect">Адрес почты не корректен!</string>
     <string name="password_incorrect">Пароль должен состоять не менее чем из восьми символов, по крайней мере одной буквы и одной цифры</string>
-
+    <string name="exit">выйти</string>
 </resources>

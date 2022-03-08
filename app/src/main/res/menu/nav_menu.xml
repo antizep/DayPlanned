@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/mainActivity"
+        android:icon="@mipmap/saved_tasks_icon"
+        android:title="" />
+
+<!--    <item-->
+<!--        android:id="@+id/searchFragment"-->
+<!--        android:icon="@mipmap/searching_icon"-->
+<!--        android:title="" />-->
+    <item
+        android:id="@+id/addScheduleActivity"
+        android:icon="@mipmap/add_task_icon"
+        android:title="" />
+    <item
+        android:id="@+id/authenticationActivity"
+        android:icon="@mipmap/my_profile_icon"
+        android:title="" />
+<!--    <item-->
+<!--        android:id="@+id/settingsFragment"-->
+<!--        android:icon="@mipmap/settings_icon"-->
+<!--        android:title="" />-->
+</menu>

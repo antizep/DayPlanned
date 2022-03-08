@@ -20,11 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DayPlanned"
         android:usesCleartextTraffic="true">
+
         <activity
             android:name=".activities.RegistrationActivity"
-            android:exported="false" />
-        <activity
-            android:name=".activities.AuthenticationActivity"
             android:exported="false" />
         <activity android:name=".activities.DetailActivity" />
 
@@ -48,7 +46,7 @@
         </receiver>
 
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".RunActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

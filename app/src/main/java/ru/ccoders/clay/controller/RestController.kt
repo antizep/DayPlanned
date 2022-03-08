@@ -1,6 +1,7 @@
 package ru.ccoders.clay.controller
 
 import android.content.SharedPreferences
+import android.graphics.BitmapFactory
 import android.util.Log
 import android.widget.Toast
 import com.bumptech.glide.RequestBuilder
@@ -11,6 +12,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
 import ru.ccoders.clay.dto.ScheduleModel
+import ru.ccoders.clay.utills.ImageUtil
 import java.io.File
 import java.io.IOException
 import java.lang.Exception
@@ -20,9 +22,12 @@ import kotlin.math.log
 
 //todo наличие записи в преференсы здесь сомнительно
 class RestController(val sharedPreferences: SharedPreferences) {
+    companion object {
 
-    private val domain = "http://192.168.0.11";
-    private val port = 8181;
+        val domain = "http://192.168.0.11";
+        val port = 8181;
+    }
+
     val TAG = RestController::class.java.canonicalName
 
     fun authentication(login: String, password: String): Boolean {
@@ -87,14 +92,29 @@ class RestController(val sharedPreferences: SharedPreferences) {
 
 
             val json = JSONArray(remoteSchedulesResponse.body?.string())
-            for(i in 0 until  json.length()){
+            for (i in 0 until json.length()) {
                 schedules.add(ScheduleModel.parseJson(json.getJSONObject(i)))
             }
-            Log.d(TAG,json.toString())
+            Log.d(TAG, json.toString())
         } catch (ex: Exception) {
             Log.d(TAG, "error", ex)
         }
         return schedules
+    }
+
+    fun downloadImage(remoteId: Long, localId: Int, path:String) {
+        val login = sharedPreferences.getString("login", null)
+        val password = sharedPreferences.getString("password", null)
+        val url =
+            "${RestController.domain}:${RestController.port}/lifequest/schedule/$remoteId/0.JPG"
+        val client = OkHttpClient.Builder()
+            .addInterceptor(BasicAuthInterceptor(login!!, password!!))
+            .build()
+        val response = client.newCall(
+            Request.Builder().url(url).build()
+        ).execute()
+
+        ImageUtil().saveImageToStorage(BitmapFactory.decodeStream(response.body!!.byteStream()),0 ,localId,path)
     }
 
     fun uploadToServer(scheduleModel: ScheduleModel, file: File): Long {
@@ -109,12 +129,13 @@ class RestController(val sharedPreferences: SharedPreferences) {
                 .build()
             val url = "$domain:$port/lifequest/schedule/save/"
 
-            val fileRequest = file.asRequestBody("image/jpeg".toMediaType())
             Log.d(TAG, file.name)
 
             val reqBody = MultipartBody.Builder()
-                .addFormDataPart("file", file.name, fileRequest)
-
+            if (file.exists()) {
+                val fileRequest = file.asRequestBody("image/jpeg".toMediaType())
+                reqBody.addFormDataPart("file", file.name, fileRequest)
+            }
             parseJSONObjectToFormData(scheduleModel.toJSONObject(), reqBody)
 
             val request = Request.Builder()

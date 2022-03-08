@@ -23,6 +23,7 @@ import ru.ccoders.clay.databinding.ActivityAddScheduleBinding
 import ru.ccoders.clay.dto.ScheduleModel
 import com.yalantis.ucrop.UCrop
 import org.json.JSONArray
+import ru.ccoders.clay.utills.ImageUtil
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -144,30 +145,7 @@ class AddScheduleActivity : AppCompatActivity() {
 
 
 
-    private fun saveImageToStorage(image: Bitmap, indexUri: Int, indexSchedule: Int) {
-        val appGallery = getExternalFilesDir(DIRECTORY_PICTURES);
-        var file = File(appGallery!!.absolutePath + "/$indexSchedule/")
-        if (!file.exists()) {
-            file.mkdir()
-        }
-        file = File(file.absolutePath + "/$indexUri.JPG")
 
-        try {
-            // Get the file output stream
-            val stream: OutputStream = FileOutputStream(file)
-            image.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-
-            // Flush the output stream
-            stream.flush()
-
-            // Close the output stream
-            stream.close()
-
-        } catch (e: IOException) { // Catch the exception
-            e.printStackTrace()
-        }
-
-    }
 
     private fun openGalleryForImages() {
 
@@ -228,7 +206,10 @@ class AddScheduleActivity : AppCompatActivity() {
             }
             if (index > 0) {
                 for (ind in scheduleImages.indices) {
-                    saveImageToStorage(scheduleImages[ind], ind, index)
+                    val appGallery = getExternalFilesDir(DIRECTORY_PICTURES);
+                    ImageUtil().saveImageToStorage(scheduleImages[ind], ind, index,
+                        appGallery.toString()
+                    )
                 }
                 finish()
                 val intent = Intent(this, SetPeriodActivity::class.java)

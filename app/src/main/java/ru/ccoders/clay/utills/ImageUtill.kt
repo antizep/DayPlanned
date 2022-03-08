@@ -1,11 +1,17 @@
 package ru.ccoders.clay.utills
 
+import android.graphics.Bitmap
+import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.cardview.widget.CardView
 import androidx.core.view.updateLayoutParams
 import ru.ccoders.clay.databinding.SheduleLayoutBinding
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
 
 class ImageUtil {
     fun resizeImage(infoPanel: View, image:ImageView, displayWidthPixel: Int) {
@@ -23,5 +29,30 @@ class ImageUtil {
         val height = (width / 1.78).toInt();
         imageView.layoutParams.width = width
         imageView.layoutParams.height = height
+    }
+
+    fun saveImageToStorage(image: Bitmap, indexUri: Int, indexSchedule: Int, directoryPictures: String) {
+
+        var file = File("$directoryPictures/$indexSchedule/")
+        if (!file.exists()) {
+            file.mkdir()
+        }
+        file = File(file.absolutePath + "/$indexUri.JPG")
+
+        try {
+            // Get the file output stream
+            val stream: OutputStream = FileOutputStream(file)
+            image.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+
+            // Flush the output stream
+            stream.flush()
+
+            // Close the output stream
+            stream.close()
+
+        } catch (e: IOException) { // Catch the exception
+            e.printStackTrace()
+        }
+
     }
 }

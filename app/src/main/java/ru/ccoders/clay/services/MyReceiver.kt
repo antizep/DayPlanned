@@ -9,7 +9,7 @@ import android.graphics.Color
 import android.os.Build
 import android.util.Log
 import android.widget.RemoteViews
-import ru.ccoders.clay.activities.MainActivity
+import ru.ccoders.clay.activities.MainFragment
 import ru.ccoders.clay.R
 import ru.ccoders.clay.controller.SQLiteScheduleController
 import ru.ccoders.clay.dto.ScheduleModel
@@ -56,7 +56,7 @@ class MyReceiver : BroadcastReceiver() {
 
 
 
-        val notificationIntent = Intent(context, MainActivity::class.java)
+        val notificationIntent = Intent(context, MainFragment::class.java)
         val pendingIntent = PendingIntent.getActivity(
             context,
             0, notificationIntent,

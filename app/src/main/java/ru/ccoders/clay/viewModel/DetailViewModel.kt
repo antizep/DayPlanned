@@ -2,12 +2,10 @@ package ru.ccoders.clay.viewModel
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import ru.ccoders.clay.activities.MainActivity
 import ru.ccoders.clay.controller.RestController
 import ru.ccoders.clay.controller.SQLiteScheduleController
 import ru.ccoders.clay.dto.ScheduleModel

@@ -17,7 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import ru.ccoders.clay.R
-import ru.ccoders.clay.controller.RestController
+import ru.ccoders.clay.RunActivity
 import ru.ccoders.clay.controller.SQLiteScheduleController
 import ru.ccoders.clay.databinding.ActivityDetailBinding
 import ru.ccoders.clay.databinding.SheduleLayoutBinding
@@ -68,7 +68,7 @@ class DetailActivity : AppCompatActivity() {
 
         activityDetailBinding.deleteScheduleButton.setOnClickListener {
             detailViewModel.delete(schedule.id)
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, RunActivity::class.java)
             startActivity(intent)
         }
         scheduleLayoutPane.timeScheduleLayout.setText(schedule.getTxtTimeNotSecond())
@@ -104,7 +104,7 @@ class DetailActivity : AppCompatActivity() {
                 val preferences = getSharedPreferences("authentication", Context.MODE_PRIVATE);
                 val username = preferences.getString("login", null)
                 if (username == null && !preferences.contains("password")) {
-                    val intent = Intent(this, AuthenticationActivity::class.java)
+                    val intent = Intent(this, AuthenticationFragment::class.java)
                     startActivity(intent);
                 }else{
                     CoroutineScope(Dispatchers.IO).async {

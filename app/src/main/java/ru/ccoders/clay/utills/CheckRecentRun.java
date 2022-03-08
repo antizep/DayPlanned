@@ -11,7 +11,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import ru.ccoders.clay.R;
-import ru.ccoders.clay.activities.MainActivity;
+import ru.ccoders.clay.activities.MainFragment;
 
 class CheckRecentRun extends Service {
 
@@ -52,7 +52,7 @@ class CheckRecentRun extends Service {
 
     public void sendNotification() {
 
-        Intent mainIntent = new Intent(this, MainActivity.class);
+        Intent mainIntent = new Intent(this, MainFragment.class);
         @SuppressWarnings("deprecation")
         Notification noti = new Notification.Builder(this)
                 .setAutoCancel(true)

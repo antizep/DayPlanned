@@ -2,37 +2,48 @@ package ru.ccoders.clay.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
+import android.content.Context.MODE_PRIVATE
 import android.icu.util.Calendar
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.get
+import androidx.core.view.size
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.ccoders.clay.R
 import ru.ccoders.clay.adapters.ScheduleRecyclerViewAdapter
-import ru.ccoders.clay.databinding.ActivityMainBinding
+import ru.ccoders.clay.databinding.FragmentMainBinding
 import ru.ccoders.clay.dto.ScheduleModel
 import ru.ccoders.clay.utills.ScheduleUtils
 import ru.ccoders.clay.viewModel.MainViewModel
 import java.util.*
 
 
-class MainActivity : AppCompatActivity() {
-    private lateinit var activityMainBinding: ActivityMainBinding
+class MainFragment : Fragment() {
+    private lateinit var activityMainBinding: FragmentMainBinding
+
     private lateinit var scheduleLiveData: MutableLiveData<List<ScheduleModel>>;
     private lateinit var scheduleObserver: Observer<List<ScheduleModel>>
-    private val TAG = MainActivity::class.java.name
+    private lateinit var provider:MainViewModel
+    private val TAG = MainFragment::class.java.name
+    lateinit var ctx: Context
 
     override fun onStart() {
         super.onStart()
+        provider.loadSchedule()
+        scheduleObserver = Observer {
+            loadSchedule(it);
+        }
         scheduleLiveData.observe(this, scheduleObserver)
+
     }
 
     override fun onStop() {
@@ -43,45 +54,25 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ctx = requireContext()
+
+        activityMainBinding = FragmentMainBinding.inflate(layoutInflater)
 
 
-        activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(activityMainBinding.root)
-
-        val provider = ViewModelProvider(this).get(MainViewModel::class.java)
-        provider.loadSchedule();
+        provider = ViewModelProvider(this).get(MainViewModel::class.java)
         scheduleLiveData = provider.scheduleLiveData;
-        scheduleObserver = Observer {
-            loadSchedule(it);
-        }
 
         createDayBtn()
 
-        activityMainBinding.createNewButton.setOnClickListener {
-            startActivity(Intent(this, AddScheduleActivity::class.java));
-        }
-        val preferences = getSharedPreferences("authentication", MODE_PRIVATE)
-
-        if (!preferences.contains("login") || !preferences.contains("password")) {
-
-            activityMainBinding.authButton.setOnClickListener {
-                val intent = Intent(this, AuthenticationActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-
-                startActivity(intent)
-            }
-        }
     }
 
-    override fun onResume() {
-        super.onResume()
-        val preferences = getSharedPreferences("authentication", MODE_PRIVATE)
-        Log.d(TAG, "onResume")
-        if (preferences.contains("login") && preferences.contains("password")) {
-            activityMainBinding.authButton.visibility = View.INVISIBLE
-        }
-
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return activityMainBinding.root
     }
+
 
 
     @SuppressLint("SetTextI18n")
@@ -90,17 +81,12 @@ class MainActivity : AppCompatActivity() {
         val scheduleLayout = activityMainBinding.scheduleLayout
 
         scheduleLayout.removeAllViews()
-        if (scheduleAll.size == 0) {
-            return
-        }
+
         val sorted = ScheduleUtils.sortByDay(scheduleAll, focusCalendar)
-//        if (sorted.size == 0) {
-//            return
-//        }
         val nextTask = ScheduleUtils.nextTask(sorted)
 
         var indexTask = 0
-        scheduleLayout.layoutManager = LinearLayoutManager(this)
+        scheduleLayout.layoutManager = LinearLayoutManager(ctx)
         scheduleLayout.adapter = ScheduleRecyclerViewAdapter(sorted)
         if (Objects.nonNull(nextTask)) {
             if (nextTask!!.time!!.get(Calendar.DAY_OF_YEAR) <= Calendar.getInstance()
@@ -111,7 +97,9 @@ class MainActivity : AppCompatActivity() {
                 indexTask = sorted.size - 1;
             }
             scheduleLayout.post {
-                activityMainBinding.SV.scrollTo(0, scheduleLayout[indexTask].top)
+                if(scheduleLayout.size > indexTask) {
+                    activityMainBinding.SV.scrollTo(0, scheduleLayout[indexTask].top)
+                }
                 activityMainBinding.SV.computeScroll()
             }
         }
@@ -142,14 +130,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         todayBatton!!.background = AppCompatResources.getDrawable(
-            this,
+            ctx,
             R.drawable.calendar_yellow_button
         )
         val onClickListener = View.OnClickListener {
             vineButton(todayBatton)
             if (today != it) {
                 it.background = AppCompatResources.getDrawable(
-                    this,
+                    ctx,
                     R.drawable.calendar_shady_button
                 )
                 if (it == mondayBtn) {
@@ -185,33 +173,33 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("ResourceType")
     fun vineButton(today: Button) {
         activityMainBinding.mondayBtn.background = AppCompatResources.getDrawable(
-            this,
+            ctx,
             R.drawable.calendar_inactive_button
         )
         activityMainBinding.tuesdayBtn.background = AppCompatResources.getDrawable(
-            this,
+            ctx,
             R.drawable.calendar_inactive_button
         )
         activityMainBinding.wednesdayBth.background = AppCompatResources.getDrawable(
-            this,
+            ctx,
             R.drawable.calendar_inactive_button
         )
         activityMainBinding.thursdayBtn.background = AppCompatResources.getDrawable(
-            this,
+            ctx,
             R.drawable.calendar_inactive_button
         )
         activityMainBinding.fridayBtn.background = AppCompatResources.getDrawable(
-            this,
+            ctx,
             R.drawable.calendar_inactive_button
         )
         activityMainBinding.saturdayBtn.background = AppCompatResources.getDrawable(
-            this,
+            ctx,
             R.drawable.calendar_inactive_button
         )
         activityMainBinding.sundayBtn.background = AppCompatResources.getDrawable(
-            this,
+            ctx,
             R.drawable.calendar_inactive_button
         )
-        today.background = AppCompatResources.getDrawable(this, R.drawable.calendar_yellow_button)
+        today.background = AppCompatResources.getDrawable(ctx, R.drawable.calendar_yellow_button)
     }
 }
