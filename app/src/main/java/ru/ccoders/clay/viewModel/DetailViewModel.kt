@@ -41,6 +41,7 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
 
     fun uploadToServer(schedule: ScheduleModel){
         val appGallery = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
         val file = File(appGallery!!.absolutePath + "/${schedule.id}/0.JPG")
         val remoteId = RestController(
             context.getSharedPreferences(
@@ -48,7 +49,6 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
                 Context.MODE_PRIVATE
             )
         ).uploadToServer(schedule,file)
-
         if(remoteId > 0L){
             schedule.setRemoteId(remoteId)
             sqlScheduleController.updateSchedule(schedule)

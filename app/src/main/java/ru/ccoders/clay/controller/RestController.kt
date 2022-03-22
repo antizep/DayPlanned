@@ -24,8 +24,10 @@ import kotlin.math.log
 class RestController(val sharedPreferences: SharedPreferences) {
     companion object {
 
-        val domain = "http://192.168.0.11";
-        val port = 8181;
+        val domain = "http://antizep.ru";
+        val port = 8191;
+        val LOGIN_FIELD = "login";
+        val PASSWORD_FIELD = "password"
     }
 
     val TAG = RestController::class.java.canonicalName
@@ -54,8 +56,9 @@ class RestController(val sharedPreferences: SharedPreferences) {
                 Log.d(this::class.java.name, resp.toString())
                 if (resp.getBoolean("enabled")) {
                     sharedPreferences.edit()
-                        .putString("login", login)
-                        .putString("password", password)
+                        .putString(LOGIN_FIELD, login)
+
+                        .putString(PASSWORD_FIELD, password)
                         .apply();
                 }
             } else {
@@ -73,8 +76,8 @@ class RestController(val sharedPreferences: SharedPreferences) {
     }
 
     fun downloadSchedule(): List<ScheduleModel> {
-        val login = sharedPreferences.getString("login", null)
-        val password = sharedPreferences.getString("password", null)
+        val login = sharedPreferences.getString(LOGIN_FIELD, null)
+        val password = sharedPreferences.getString(PASSWORD_FIELD, null)
         val schedules = mutableListOf<ScheduleModel>()
         val url = "$domain:$port/lifequest/schedule/findAll"
 
@@ -90,7 +93,10 @@ class RestController(val sharedPreferences: SharedPreferences) {
                     .build()
             ).execute()
 
-
+//todo проверки на null
+            if (remoteSchedulesResponse.body == null) {
+                return mutableListOf()
+            }
             val json = JSONArray(remoteSchedulesResponse.body?.string())
             for (i in 0 until json.length()) {
                 schedules.add(ScheduleModel.parseJson(json.getJSONObject(i)))
@@ -102,9 +108,9 @@ class RestController(val sharedPreferences: SharedPreferences) {
         return schedules
     }
 
-    fun downloadImage(remoteId: Long, localId: Int, path:String) {
-        val login = sharedPreferences.getString("login", null)
-        val password = sharedPreferences.getString("password", null)
+    fun downloadImage(remoteId: Long, localId: Int, path: String) {
+        val login = sharedPreferences.getString(LOGIN_FIELD, null)
+        val password = sharedPreferences.getString(PASSWORD_FIELD, null)
         val url =
             "${RestController.domain}:${RestController.port}/lifequest/schedule/$remoteId/0.JPG"
         val client = OkHttpClient.Builder()
@@ -113,13 +119,19 @@ class RestController(val sharedPreferences: SharedPreferences) {
         val response = client.newCall(
             Request.Builder().url(url).build()
         ).execute()
-
-        ImageUtil().saveImageToStorage(BitmapFactory.decodeStream(response.body!!.byteStream()),0 ,localId,path)
+        if (response.code == 200) {
+            ImageUtil().saveImageToStorage(
+                BitmapFactory.decodeStream(response.body!!.byteStream()),
+                0,
+                localId,
+                path
+            )
+        }
     }
 
     fun uploadToServer(scheduleModel: ScheduleModel, file: File): Long {
-        val login = sharedPreferences.getString("login", null)
-        val password = sharedPreferences.getString("password", null)
+        val login = sharedPreferences.getString(LOGIN_FIELD, null)
+        val password = sharedPreferences.getString(PASSWORD_FIELD, null)
         Log.d(TAG, "request: ${scheduleModel.toJSONObject()}")
         if (login == null || password == null) {
             return 0
@@ -209,7 +221,7 @@ class RestController(val sharedPreferences: SharedPreferences) {
             "$domain:$port/lifequest/profile/registration"
         val requestBody = FormBody.Builder()
             .add("username", mailAddress)
-            .add("password", password)
+            .add(PASSWORD_FIELD, password)
             .build()
         val request = Request.Builder()
             .url(url)
@@ -218,10 +230,9 @@ class RestController(val sharedPreferences: SharedPreferences) {
         return try {
             val response = client.newCall(request).execute()
             if (response.code == 200) {
-                //todo наличие записи в преференсы здесь сомнительно
                 sharedPreferences.edit()
-                    .putString("login", mailAddress)
-                    .putString("password", password)
+                    .putString(LOGIN_FIELD, mailAddress)
+                    .putString(PASSWORD_FIELD, password)
                     .apply()
                 true
             } else {

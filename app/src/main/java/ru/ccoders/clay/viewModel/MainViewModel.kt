@@ -32,9 +32,26 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     fun loadSchedule() {
 
         val scheduleAll = scheduleController.getSchedule();
+        val properties = context.getSharedPreferences("authentication", Context.MODE_PRIVATE)
         restController =
-            RestController(context.getSharedPreferences("authentication", Context.MODE_PRIVATE))
+            RestController(properties)
+        if (properties.contains(RestController.LOGIN_FIELD) && properties.contains(RestController.PASSWORD_FIELD)) {
+            CoroutineScope(Dispatchers.IO).async {
+                synch()
+            }
+        } else {
+            scheduleAll.stream().filter { it.getRemoteId() > 0 }.forEach {
+                scheduleController.delSchedule(it.id)
+            }
+            removeBad(scheduleAll)
 
+            refreshLiveDataAndNotification(scheduleAll)
+        }
+
+
+    }
+
+    private fun removeBad(scheduleAll: List<ScheduleModel>) {
         scheduleAll.forEach {
             if (it.time == null || it.mode == null) {
                 scheduleController.delSchedule(it.id)
@@ -45,11 +62,27 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
         }
+    }
 
+    private fun refreshLiveDataAndNotification(scheduleAll: MutableList<ScheduleModel>) {
         scheduleLiveData.postValue(scheduleAll)
         if (scheduleAll.isNotEmpty()) {
             MyReceiver().addAlarmManager(ScheduleUtils.nextTask(scheduleAll)!!, context)
         }
+    }
+
+    private fun synch() {
+        val remote = restController.downloadSchedule()
+        val appGallery = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+
+        remote.forEach {
+            scheduleController.updateScheduleByRemoteId(it)
+            restController.downloadImage(it.getRemoteId(), it.id, appGallery.toString())
+        }
+
+        val scheduleAll = scheduleController.getSchedule()
+        removeBad(scheduleAll)
+        refreshLiveDataAndNotification(scheduleAll)
     }
 
 }
