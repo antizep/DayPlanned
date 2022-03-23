@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/base_white"
-    tools:context=".Detail">
+    tools:context=".activities.DetailActivity">
 
     <Button
         android:id="@+id/editScheduleButton"
@@ -33,6 +33,20 @@
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/editScheduleButton" />
+
+    <Button
+        android:id="@+id/uploadScheduleButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+
+        android:layout_marginBottom="36dp"
+        android:background="@mipmap/cloud_round"
+        android:backgroundTintMode="add"
+        android:shadowColor="#A8A8A8"
+        app:layout_constraintBottom_toTopOf="@+id/editScheduleButton"
+        app:layout_constraintEnd_toEndOf="@+id/editScheduleButton"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/editScheduleButton" />
 
     <LinearLayout
         android:id="@+id/ImageLayout"

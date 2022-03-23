@@ -4,8 +4,8 @@
     <string name="day_of_week">Day of week</string>
     <string name="notification_time">Notification time</string>
     <string name="save_button">Save</string>
-    <string name="the_goal_title">The goal title...</string>
-    <string name="tell_us_mere_about_your_goal">Tell more about your goal...</string>
+    <string name="the_goal_title">The goal title…</string>
+    <string name="tell_us_mere_about_your_goal">Tell more about your goal…</string>
     <string name="continue_text">Continue</string>
     <string name="complited_text">Completed:</string>
     <string name="canceled_text">Canceled:</string>
@@ -19,4 +19,27 @@
     <string name="make_natification">    Accept</string>
     <string name="cancel_natification">Skip    </string>
     <string name="title">Clay - Task Manager, reminder</string>
+    <string name="clayapp">ClayApp</string>
+    <string name="add_image_button">add image button</string>
+    <string name="image_task">image task</string>
+
+    <string name="user_name">email address</string>
+    <string name="password">password</string>
+    <string name="repeat_password">repeat password</string>
+    <string name="i_agree_to_the">I agree to the </string>
+    <string name="privacy_policy" translatable="false"><u> Privacy Policy</u></string>
+
+    <string name="forgot_your_password"><u>Forgot your password?</u></string>
+    <string name="dont_nave_an_account_yet">Don\'t have an account yet?</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="sign_app"><u>Sign Up</u></string>
+    <string name="sign_in"><u>Sign In</u></string>
+    <string name="email_code">We just sent a confirmation code to your email</string>
+    <string name="enter_code">enter code</string>
+    <string name="resend_code"><u>Resend code</u></string>
+    <string name="password_dont_math">Passwords don\'t match!</string>
+    <string name="consent_policy">Consent to the privacy policy is required</string>
+    <string name="mail_incorrect">Mail is incorrect</string>
+    <string name="password_incorrect">The password must consist of at least eight characters, at least one letter and one digit</string>
+    <string name="exit">exit</string>
 </resources>

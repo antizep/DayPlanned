@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/mainActivity">
+
+    <fragment
+        android:id="@+id/mainActivity"
+        android:name="ru.ccoders.clay.activities.MainFragment"
+        android:label="activity_main"
+        tools:layout="@layout/fragment_main" />
+    <fragment
+        android:id="@+id/authenticationActivity"
+        android:name="ru.ccoders.clay.activities.AuthenticationFragment"
+        android:label="activity_authentication"
+        tools:layout="@layout/activity_authentication" >
+        <action
+            android:id="@+id/action_authenticationActivity_to_mainActivity"
+            app:destination="@id/mainActivity" />
+        <action
+            android:id="@+id/action_authenticationActivity_to_myProfileFragment"
+            app:destination="@id/myProfileFragment" />
+    </fragment>
+    <activity
+        android:id="@+id/addScheduleActivity"
+        android:name="ru.ccoders.clay.activities.AddScheduleActivity"
+        android:label="AddScheduleActivity" />
+    <fragment
+        android:id="@+id/myProfileFragment"
+        android:name="ru.ccoders.clay.MyProfileFragment"
+        android:label="my_profile_fragment"
+        tools:layout="@layout/my_profile_fragment" />
+</navigation>

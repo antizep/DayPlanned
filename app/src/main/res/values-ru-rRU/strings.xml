@@ -19,4 +19,27 @@
     <string name="make_natification">    Выполнить</string>
     <string name="cancel_natification">Отменить    </string>
     <string name="title">Clay-Планировщик задач, напоминания</string>
+    <string name="clayapp">ClayApp</string>
+    <string name="add_image_button">add image button</string>
+    <string name="image_task">image task</string>
+
+    <string name="user_name">email  адрес</string>
+    <string name="password">пароль</string>
+    <string name="repeat_password">повторите пароль</string>
+    <string name="i_agree_to_the">Я ознакомлен с </string>
+
+    <string name="forgot_your_password"><u>Забыли пароль</u></string>
+    <string name="already_have_an_account">Уже есть аккаунт</string>
+
+    <string name="dont_nave_an_account_yet"><u>У вас нет учетной записи?</u></string>
+    <string name="sign_app">Зарегистрировать</string>
+    <string name="sign_in"><u>Войти</u></string>
+    <string name="email_code">Мы только что отправили код подтверждения на ваш электронный адрес</string>
+    <string name="enter_code">введите код</string>
+    <string name="resend_code"><u>Повторить отправку</u></string>
+    <string name="password_dont_math">Пароли не совпадают!</string>
+    <string name="consent_policy">Требуется согласие с Privacy Policy!</string>
+    <string name="mail_incorrect">Адрес почты не корректен!</string>
+    <string name="password_incorrect">Пароль должен состоять не менее чем из восьми символов, по крайней мере одной буквы и одной цифры</string>
+    <string name="exit">выйти</string>
 </resources>
