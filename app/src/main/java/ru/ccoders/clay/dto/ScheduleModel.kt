@@ -9,10 +9,10 @@ import java.sql.Time
 
 data class ScheduleModel constructor(
     var id: Int,
-    val header: String?,
-    val description: String?,
-    val complete: Int?,
-    val skipped: Int?,
+    var header: String?,
+    var description: String?,
+    var complete: Int = 0,
+    var skipped: Int =0,
     var mode: Int?,
     var schedule: JSONArray?,
 
@@ -26,8 +26,8 @@ data class ScheduleModel constructor(
         id: Int,
         header: String?,
         description: String?,
-        complete: Int?,
-        skipped: Int?,
+        complete: Int = 0,
+        skipped: Int = 0,
         mode: Int?,
         schedule: JSONArray?,
         remoteId: Long, editableTime: Boolean

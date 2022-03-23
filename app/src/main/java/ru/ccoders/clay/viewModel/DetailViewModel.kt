@@ -6,6 +6,9 @@ import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import ru.ccoders.clay.controller.RestController
 import ru.ccoders.clay.controller.SQLiteScheduleController
 import ru.ccoders.clay.dto.ScheduleModel
@@ -17,20 +20,28 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
     val deleteLiveData = MutableLiveData<Boolean>();
     var sqlScheduleController = SQLiteScheduleController(application)
     val scheduleDeatailLiveData = MutableLiveData<ScheduleModel>()
-
     private var context = application
+    private val restController = RestController(context.getSharedPreferences("authentication",Context.MODE_PRIVATE))
 
     fun delete(scheduleId: Int) {
-        sqlScheduleController.delSchedule(scheduleId);
-        val appGallery = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        val file = File(appGallery!!.absolutePath + "/$scheduleId/")
+        val schedule = sqlScheduleController.getScheduleById(scheduleId)
+        CoroutineScope(Dispatchers.IO).async {
+            if (restController.deleteSchedule(schedule.getRemoteId())) {
 
-        if (file.exists()) {
-            file.deleteRecursively()
+                sqlScheduleController.delSchedule(scheduleId);
+                val appGallery = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                val file = File(appGallery!!.absolutePath + "/$scheduleId/")
+
+                if (file.exists()) {
+                    file.deleteRecursively()
+                }
+
+                deleteLiveData.postValue(true)
+
+            } else {
+                deleteLiveData.postValue(false)
+            }
         }
-
-        deleteLiveData.postValue(true)
-        deleteLiveData.value = true
 
     }
 
@@ -56,8 +67,9 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
                 this.javaClass.name,
                 "Saved schedule:" + schedule.toJSONObject().toString()
             )
-            scheduleDeatailLiveData.postValue(schedule)
+
         }
+        scheduleDeatailLiveData.postValue(schedule)
     }
 
 

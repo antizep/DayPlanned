@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -32,16 +33,19 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var scheduleLayoutPane: SheduleLayoutBinding;
     private lateinit var detailViewModel: DetailViewModel
     private lateinit var detailObserver: Observer<ScheduleModel>
+    private lateinit var deleteObserver: Observer<Boolean>
     private var idSchedule:Int = 0
 
     override fun onStart() {
         super.onStart()
         detailViewModel.scheduleDeatailLiveData.observe(this,detailObserver)
+        detailViewModel.deleteLiveData.observe(this,deleteObserver)
     }
 
     override fun onStop() {
         super.onStop()
         detailViewModel.scheduleDeatailLiveData.removeObserver(detailObserver)
+        detailViewModel.deleteLiveData.removeObserver(deleteObserver)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,6 +57,16 @@ class DetailActivity : AppCompatActivity() {
 
         detailObserver = Observer {
             printActivity(it)
+        }
+        val tosat =  Toast.makeText(this,"connection server error",Toast.LENGTH_LONG)
+        deleteObserver = Observer {
+            if(it){
+                val intent = Intent(this, RunActivity::class.java)
+                startActivity(intent)
+            }else{
+                tosat.show()
+                activityDetailBinding.deleteScheduleButton.isClickable = true
+            }
         }
         idSchedule =  intent.getIntExtra("id",0)
 
@@ -67,9 +81,10 @@ class DetailActivity : AppCompatActivity() {
         var file = File(appGallery!!.absolutePath + "/${schedule.id}/")
 
         activityDetailBinding.deleteScheduleButton.setOnClickListener {
+
             detailViewModel.delete(schedule.id)
-            val intent = Intent(this, RunActivity::class.java)
-            startActivity(intent)
+            activityDetailBinding.deleteScheduleButton.isClickable = false
+
         }
         scheduleLayoutPane.timeScheduleLayout.setText(schedule.getTxtTimeNotSecond())
         scheduleLayoutPane.scheduleHeader.setText(schedule.header)
@@ -103,11 +118,13 @@ class DetailActivity : AppCompatActivity() {
             activityDetailBinding.uploadScheduleButton.setOnClickListener {
                 val preferences = getSharedPreferences("authentication", Context.MODE_PRIVATE);
                 val username = preferences.getString("login", null)
+                activityDetailBinding.uploadScheduleButton.isClickable = false
                 if (username == null && !preferences.contains("password")) {
                     val intent = Intent(this, AuthenticationFragment::class.java)
                     startActivity(intent);
                 }else{
                     CoroutineScope(Dispatchers.IO).async {
+
                         detailViewModel.uploadToServer(schedule)
                     }
                 }

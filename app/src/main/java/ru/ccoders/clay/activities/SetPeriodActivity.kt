@@ -1,21 +1,28 @@
 package ru.ccoders.clay.activities
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.icu.util.Calendar
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import ru.ccoders.clay.controller.SQLiteScheduleController
 import ru.ccoders.clay.databinding.ActivitySetPeriodBinding
 import ru.ccoders.clay.dto.ScheduleModel
 import org.json.JSONArray
 import ru.ccoders.clay.R
 import ru.ccoders.clay.RunActivity
+import ru.ccoders.clay.controller.RestController
+import java.io.File
 import java.sql.Time
 
 class SetPeriodActivity : AppCompatActivity() {
@@ -27,14 +34,19 @@ class SetPeriodActivity : AppCompatActivity() {
 
     private lateinit var setPeriodBinding: ActivitySetPeriodBinding
 
+    private lateinit var restController: RestController
+
     @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         SQLScheduleController = SQLiteScheduleController(this)
+        restController =
+            RestController(this.getSharedPreferences("authentication", Context.MODE_PRIVATE))
         val id = intent.getIntExtra("id", 0);
         val t = intent.getStringExtra("time")
 
-        var mode = intent.getIntExtra(SQLiteScheduleController.MODE, SQLiteScheduleController.VEEKLY_MODE)
+        var mode =
+            intent.getIntExtra(SQLiteScheduleController.MODE, SQLiteScheduleController.VEEKLY_MODE)
         val scheduleS = intent.getStringExtra(SQLiteScheduleController.SCHEDULE)
 
         if (scheduleS != null) {
@@ -99,21 +111,35 @@ class SetPeriodActivity : AppCompatActivity() {
                 SetPeriodActivity::class.java.name,
                 "h" + setPeriodBinding.setTimePicker.hour + " m:" + setPeriodBinding.setTimePicker.minute
             )
-            var calendar = Calendar.getInstance()
-            calendar.set(Calendar.HOUR_OF_DAY, setPeriodBinding.setTimePicker.hour)
-            calendar.set(Calendar.MINUTE, setPeriodBinding.setTimePicker.minute)
-            calendar.set(Calendar.SECOND, 0)
-            val schedule = ScheduleModel(id, null, null, 0, 0, mode, shedle)
-            schedule.time = calendar;
-            SQLScheduleController!!.setTime(schedule)
-            Log.d(SetPeriodActivity::class.java.name, "s:" + schedule)
-            Log.d(SetPeriodActivity::class.java.name, "t:" + schedule.time)
-
             val intent = Intent(this, RunActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-            Toast.makeText(this, "Saved Successfully", Toast.LENGTH_LONG).show()
-            finish()
+            val toast = Toast.makeText(this, "Saved Successfully", Toast.LENGTH_LONG)
+            CoroutineScope(Dispatchers.IO).async {
+
+                var calendar = Calendar.getInstance()
+                calendar.set(Calendar.HOUR_OF_DAY, setPeriodBinding.setTimePicker.hour)
+                calendar.set(Calendar.MINUTE, setPeriodBinding.setTimePicker.minute)
+                calendar.set(Calendar.SECOND, 0)
+                val schedule = SQLScheduleController!!.getScheduleById(id)//ScheduleModel(id, null, null, 0, 0, mode, shedle)
+                schedule.mode = mode
+                schedule.schedule = shedle
+                schedule.time = calendar
+                SQLScheduleController!!.setTime(schedule)
+
+                if(schedule.getRemoteId()>0){
+                    val appGallery = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+                    val file = File(appGallery!!.absolutePath + "/$id/0.JPG")
+                    restController.uploadToServer(schedule,file)
+                }
+
+                Log.d(SetPeriodActivity::class.java.name, "s:" + schedule)
+                Log.d(SetPeriodActivity::class.java.name, "t:" + schedule.time)
+
+
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                toast.show()
+                finish()
+            }
         }
     }
 
@@ -156,19 +182,21 @@ class SetPeriodActivity : AppCompatActivity() {
 
             }
             var isChecked = false;
-            if(!shedle.getBoolean(id)) {
-                chip.background = AppCompatResources.getDrawable(this,
+            if (!shedle.getBoolean(id)) {
+                chip.background = AppCompatResources.getDrawable(
+                    this,
                     R.drawable.calendar_yellow_button
                 )
                 isChecked = true
-            }else{
-                chip.background =AppCompatResources.getDrawable(this,
+            } else {
+                chip.background = AppCompatResources.getDrawable(
+                    this,
                     R.drawable.calendar_inactive_button
                 )
                 isChecked = false;
             }
-            shedle.put(id,isChecked)
-            Log.d("SetPeriodActivity", "checked:" + button.id +"|"+isChecked)
+            shedle.put(id, isChecked)
+            Log.d("SetPeriodActivity", "checked:" + button.id + "|" + isChecked)
 
             Log.d("SetPeriodActivity", shedle.toString())
         }

@@ -76,7 +76,23 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val appGallery = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
         remote.forEach {
+            val scheduleLocal = scheduleController.getScheduleById(it.getRemoteId(), true)
+            if (scheduleLocal != null) {
+                var isUnSynch = false;
+                if (scheduleLocal.complete > it.complete) {
+                    it.complete = scheduleLocal.complete
+                    isUnSynch = true
+                }
+                if (scheduleLocal.skipped > it.skipped) {
+                    isUnSynch = true
+                    it.skipped = scheduleLocal.skipped
+                }
+                if (isUnSynch) {
+                    restController.uploadToServer(it, File(""))
+                }
+            }
             scheduleController.updateScheduleByRemoteId(it)
+
             restController.downloadImage(it.getRemoteId(), it.id, appGallery.toString())
         }
 

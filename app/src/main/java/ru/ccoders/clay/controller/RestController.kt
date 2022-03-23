@@ -9,6 +9,7 @@ import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.internal.EMPTY_REQUEST
 import org.json.JSONArray
 import org.json.JSONObject
 import ru.ccoders.clay.dto.ScheduleModel
@@ -24,8 +25,8 @@ import kotlin.math.log
 class RestController(val sharedPreferences: SharedPreferences) {
     companion object {
 
-        val domain = "http://antizep.ru";
-        val port = 8191;
+        val domain = "https://antizep.ru";
+        val port = 2443;
         val LOGIN_FIELD = "login";
         val PASSWORD_FIELD = "password"
     }
@@ -93,7 +94,6 @@ class RestController(val sharedPreferences: SharedPreferences) {
                     .build()
             ).execute()
 
-//todo проверки на null
             if (remoteSchedulesResponse.body == null) {
                 return mutableListOf()
             }
@@ -129,6 +129,24 @@ class RestController(val sharedPreferences: SharedPreferences) {
         }
     }
 
+    fun deleteSchedule(remoteId: Long):Boolean{
+        val login = sharedPreferences.getString(LOGIN_FIELD, null)
+        val password = sharedPreferences.getString(PASSWORD_FIELD, null)
+        val url =
+            "${RestController.domain}:${RestController.port}/lifequest/schedule/$remoteId/delete"
+        val client = OkHttpClient.Builder()
+            .addInterceptor(BasicAuthInterceptor(login!!, password!!))
+            .build()
+        val response = client.newCall(
+            Request.Builder().url(url).post(EMPTY_REQUEST).build()
+        ).execute()
+
+        if (response.code == 200) {
+            return true
+        }
+        return false
+    }
+
     fun uploadToServer(scheduleModel: ScheduleModel, file: File): Long {
         val login = sharedPreferences.getString(LOGIN_FIELD, null)
         val password = sharedPreferences.getString(PASSWORD_FIELD, null)
@@ -139,7 +157,7 @@ class RestController(val sharedPreferences: SharedPreferences) {
             val client = OkHttpClient.Builder()
                 .addInterceptor(BasicAuthInterceptor(login, password))
                 .build()
-            val url = "$domain:$port/lifequest/schedule/save/"
+            val url = "$domain:$port/lifequest/schedule/save"
 
             Log.d(TAG, file.name)
 
@@ -205,8 +223,9 @@ class RestController(val sharedPreferences: SharedPreferences) {
             .build()
         return try {
             val response = client.newCall(request).execute()
-
-            return response.code == 200
+            val responseBody = response.body!!.string()
+            Log.d(TAG,"responseBody:$responseBody")
+            return response.code == 200 && responseBody.toBoolean()
 
         } catch (ex: Exception) {
             Log.d(TAG, "Не удалось проверить mailCode", ex)

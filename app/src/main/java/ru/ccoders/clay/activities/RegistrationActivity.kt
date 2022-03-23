@@ -37,15 +37,27 @@ class RegistrationActivity : AppCompatActivity() {
     private lateinit var checkMailObserver: Observer<Boolean>
     private lateinit var checkMailCodeObserver: Observer<Boolean>
     private lateinit var registerObserver: Observer<Boolean>
-
+    override fun onBackPressed() {
+        if(mode == EMAIL_ADDRESS){
+            super.onBackPressed()
+        }else if(mode  == ENTER_CODE){
+            mode = EMAIL_ADDRESS
+            onResume()
+        }else if(mode == PASSWORD){
+            mode = EMAIL_ADDRESS
+            onResume()
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
-
 
         registrationBinding = ActivityRegistrationBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
+
         setContentView(registrationBinding.root)
         registrationViewModel = ViewModelProvider(this).get(RegistrationViewModel::class.java)
-
+        registrationBinding.signInRegistration.setOnClickListener {
+            super.onBackPressed()
+        }
         checkMailObserver = Observer { it ->
             if (it) {
                 registrationBinding.textEmailRegistration.isEnabled = false

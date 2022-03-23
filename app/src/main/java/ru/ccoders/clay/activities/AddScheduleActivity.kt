@@ -37,8 +37,8 @@ class AddScheduleActivity : AppCompatActivity() {
     val REQUEST_CODE = 200
     val PIC_CROP = 69
     val cont = this;
-    var mode:Int? = null;
-    var schedule:String? = null;
+    var mode: Int? = null;
+    var schedule: String? = null;
     var imageUri: Uri? = null;
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -52,21 +52,23 @@ class AddScheduleActivity : AppCompatActivity() {
         val header = intent.getStringExtra("header")
         val descr = intent.getStringExtra("description")
         val t = intent.getStringExtra("time")
-        mode = intent.getIntExtra(SQLiteScheduleController.MODE, SQLiteScheduleController.VEEKLY_MODE)
+        mode =
+            intent.getIntExtra(SQLiteScheduleController.MODE, SQLiteScheduleController.VEEKLY_MODE)
         schedule = intent.getStringExtra(SQLiteScheduleController.SCHEDULE)
 
         val appGallery = getExternalFilesDir(DIRECTORY_PICTURES);
         val file = File(appGallery!!.absolutePath + "/$id/0.JPG")
-        if(file.exists()){
+        if (file.exists()) {
 
-            Glide.with(cont).load(file).apply(RequestOptions().signature(ObjectKey(file.length()))).into(
-                addScheduleBinding. scheduleImage
-            )
+            Glide.with(cont).load(file).apply(RequestOptions().signature(ObjectKey(file.length())))
+                .into(
+                    addScheduleBinding.scheduleImage
+                )
             addScheduleBinding.scheduleImage.setOnClickListener {
                 openGalleryForImages()
             }
             addScheduleBinding.addImagesButton.hide()
-        }else {
+        } else {
             addScheduleBinding.addImagesButton.setOnClickListener {
                 openGalleryForImages()
             }
@@ -81,8 +83,8 @@ class AddScheduleActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (resultCode == RESULT_OK ) {
-            if(requestCode == PIC_CROP){
+        if (resultCode == RESULT_OK) {
+            if (requestCode == PIC_CROP) {
                 imageUri = Uri.fromFile(File(cacheDir, imageUri.hashCode().toString()))
 
                 Glide.with(cont).load(imageUri).addListener(object : RequestListener<Drawable> {
@@ -110,7 +112,7 @@ class AddScheduleActivity : AppCompatActivity() {
                     }
                 }).into(addScheduleBinding.scheduleImage)
             }
-            if(requestCode == REQUEST_CODE) {
+            if (requestCode == REQUEST_CODE) {
                 // if multiple images are selected
                 Log.d("AddScheduleActivity", "getImage")
 
@@ -143,10 +145,6 @@ class AddScheduleActivity : AppCompatActivity() {
     }
 
 
-
-
-
-
     private fun openGalleryForImages() {
 
         if (Build.VERSION.SDK_INT < 19) {
@@ -173,7 +171,7 @@ class AddScheduleActivity : AppCompatActivity() {
             .withAspectRatio(16F, 9F)
             .withMaxResultSize(640, 360)
             .start(this);
-        Log.d("AddScheduleActivity",imageUri.toString())
+        Log.d("AddScheduleActivity", imageUri.toString())
     }
 
     fun addSchedule(id: Int, head: String?, discr: String?, t: String?) {
@@ -185,29 +183,35 @@ class AddScheduleActivity : AppCompatActivity() {
         }
         addScheduleBinding.addScheduleButton.setOnClickListener {
             Log.d("AddScheduleActivity", "H:" + header + " D:" + descript);
-            val schedule = ScheduleModel(
-                id,
-                header.toString(),
-                descript.toString(),
-                0,
-                0,
-                0,
-                JSONArray()
-            );
+            var schedule: ScheduleModel
             var index: Int = 0;
             if (id == 0) {
+                schedule = ScheduleModel(
+                    id,
+                    header.toString(),
+                    descript.toString(),
+                    0,
+                    0,
+                    0,
+                    JSONArray()
+                );
                 if (!header.isBlank()) {
                     index = SQLScheduleController!!.addSchedule(schedule)
 
                 }
             } else {
+                schedule = SQLScheduleController!!.getScheduleById(id)
+                schedule.header = header.toString()
+                schedule.description = descript.toString()
+
                 SQLScheduleController!!.updateSchedule(schedule)
                 index = schedule.id
             }
             if (index > 0) {
                 for (ind in scheduleImages.indices) {
                     val appGallery = getExternalFilesDir(DIRECTORY_PICTURES);
-                    ImageUtil().saveImageToStorage(scheduleImages[ind], ind, index,
+                    ImageUtil().saveImageToStorage(
+                        scheduleImages[ind], ind, index,
                         appGallery.toString()
                     )
                 }

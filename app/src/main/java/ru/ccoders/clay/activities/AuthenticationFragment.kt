@@ -64,8 +64,8 @@ class AuthenticationFragment : Fragment() {
             CoroutineScope(Dispatchers.IO).async {
 
                 viewModel.auth(
-                    authenticationActivityBinding.textUsername.text.toString(),
-                    authenticationActivityBinding.textPassword.text.toString()
+                    authenticationActivityBinding.textUsername.text.toString().trim(),
+                    authenticationActivityBinding.textPassword.text.toString().trim()
                 )
 
             }
