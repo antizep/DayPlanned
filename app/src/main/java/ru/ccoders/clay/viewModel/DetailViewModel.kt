@@ -26,7 +26,7 @@ class DetailViewModel(application: Application) : AndroidViewModel(application) 
     fun delete(scheduleId: Int) {
         val schedule = sqlScheduleController.getScheduleById(scheduleId)
         CoroutineScope(Dispatchers.IO).async {
-            if (restController.deleteSchedule(schedule.getRemoteId())) {
+            if (schedule.getRemoteId() == 0L || restController.deleteSchedule(schedule.getRemoteId())) {
 
                 sqlScheduleController.delSchedule(scheduleId);
                 val appGallery = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
