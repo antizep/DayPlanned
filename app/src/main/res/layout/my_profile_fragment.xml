@@ -27,7 +27,7 @@
         android:id="@+id/myMailProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="240dp"
+        android:layout_marginTop="28dp"
         android:fontFamily="@font/inter_regular"
         android:text="MyMailAddress"
         android:textSize="16sp"
@@ -35,12 +35,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imageButton" />
 
     <Button
         android:id="@+id/exitButton"
         android:layout_width="154dp"
-        android:layout_height="38dp"
+        android:layout_height="48dp"
         android:layout_marginTop="48dp"
         android:background="@drawable/button_text_shape"
         android:fontFamily="@font/inter_regular"
@@ -52,4 +52,17 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/myMailProfile" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/base_none"
+        android:src="@mipmap/my_profile_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.359" />
 </androidx.constraintlayout.widget.ConstraintLayout>

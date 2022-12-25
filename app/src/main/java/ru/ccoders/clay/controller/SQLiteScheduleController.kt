@@ -11,15 +11,17 @@ import ru.ccoders.clay.dto.ScheduleModel
 import org.json.JSONArray
 import java.lang.Exception
 import java.sql.Time
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class SQLiteScheduleController(context: Context) :
     SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
-
+    private val TAG = SQLiteScheduleController::class.java.name
 
     companion object {
         private val DB_NAME = "plannedTime";
         private val TABLE_NAME = "schedule"
-        private val DB_VERSION = 14
+        private val DB_VERSION = 15
         private val ID = "id"
         private val HEADER = "header"
         private val DESCRIPTION = "description"
@@ -27,6 +29,7 @@ class SQLiteScheduleController(context: Context) :
         private var COMPLETED = "completed"
         private var SKIPPED = "skipped"
         private val REMOTE_ID = "remote_id"
+        private var COMPLETE_DATE = "complete_date"
         val MODE = "mode"
         val DAILY_MODE = 1
         val VEEKLY_MODE = 2
@@ -44,7 +47,8 @@ class SQLiteScheduleController(context: Context) :
                     " $SKIPPED Integer," +
                     " $MODE Integer," +
                     " $REMOTE_ID BIGINT," +
-                    " $SCHEDULE String)"
+                    " $SCHEDULE String," +
+                    " $COMPLETE_DATE String)"
         db?.execSQL(CREATE_TABLE)
 
     }
@@ -56,19 +60,22 @@ class SQLiteScheduleController(context: Context) :
             db.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $SCHEDULE String")
         } else if (oldVersion <= 13) {
             db!!.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $REMOTE_ID BIGINT")
+        } else if (oldVersion <= 14) {
+            db!!.execSQL("ALTER TABLE $TABLE_NAME ADD COLUMN $COMPLETE_DATE String")
         }
     }
 
     @SuppressLint("Range")
     fun complete(id: Int) {
         val db = this.writableDatabase
+        var localDate = nowDate()
         val cursor = db.rawQuery("Select $COMPLETED From $TABLE_NAME Where id = $id", null);
         var c = 0;
         if (cursor != null && cursor.moveToNext()) {
             c = cursor.getInt(cursor.getColumnIndex(COMPLETED));
         }
         c++
-        db.execSQL("UPDATE $TABLE_NAME SET $COMPLETED = $c WHERE id = $id");
+        db.execSQL("UPDATE $TABLE_NAME SET $COMPLETED = $c, $COMPLETE_DATE = '$localDate' WHERE id = $id");
     }
 
     @SuppressLint("Range")
@@ -76,11 +83,12 @@ class SQLiteScheduleController(context: Context) :
         val db = this.writableDatabase
         val cursor = db.rawQuery("Select $SKIPPED From $TABLE_NAME Where id = $id", null);
         var c = 0;
+        var localDate = nowDate();
         if (cursor != null && cursor.moveToNext()) {
             c = cursor.getInt(cursor.getColumnIndex(SKIPPED));
         }
         c++
-        db.execSQL("UPDATE $TABLE_NAME SET $SKIPPED = $c WHERE id = $id");
+        db.execSQL("UPDATE $TABLE_NAME SET $SKIPPED = $c,$COMPLETE_DATE = '$localDate' WHERE id = $id");
     }
 
     fun addSchedule(scheduleModel: ScheduleModel): Int {
@@ -122,7 +130,7 @@ class SQLiteScheduleController(context: Context) :
         cv.put(MODE, scheduleModel.mode)
         cv.put(SCHEDULE, scheduleModel.schedule.toString())
         cv.put(REMOTE_ID, scheduleModel.getRemoteId())
-        cv.put(TIME,scheduleModel.getTxtTime())
+        cv.put(TIME, scheduleModel.getTxtTime())
         val _success = db.update(
             TABLE_NAME,
             cv,
@@ -130,7 +138,7 @@ class SQLiteScheduleController(context: Context) :
             arrayOf(scheduleModel.id.toString())
         )
         db.close()
-        Log.d("schedules - ",getSchedule().toString())
+        Log.d("schedules - ", getSchedule().toString())
         return (_success)
     }
 
@@ -172,6 +180,7 @@ class SQLiteScheduleController(context: Context) :
                 val skipped = cursor.getInt(cursor.getColumnIndex(SKIPPED))
                 Log.d("AddScheduleController", "gs" + cursor.getColumnIndex(MODE))
                 val mode = cursor.getInt(cursor.getColumnIndex(MODE))
+                val completeDate = cursor.getString(cursor.getColumnIndex(COMPLETE_DATE))
                 var s = cursor.getString(cursor.getColumnIndex(SCHEDULE))
                 if (s == null) {
                     s = "[]"
@@ -180,7 +189,16 @@ class SQLiteScheduleController(context: Context) :
 
                 val remoteId = cursor.getLong(cursor.getColumnIndex(REMOTE_ID))
                 val arra = JSONArray(s)
-                val schedule = ScheduleModel(idInt, header, desc, completed, skipped, mode, arra)
+                val schedule = ScheduleModel(
+                    idInt,
+                    header,
+                    desc,
+                    completed,
+                    skipped,
+                    mode,
+                    parseDate(completeDate),
+                    arra
+                )
 
                 schedule.setRemoteId(remoteId)
                 if (!time.isNullOrBlank()) {
@@ -218,6 +236,7 @@ class SQLiteScheduleController(context: Context) :
                 val completed = cursor.getInt(cursor.getColumnIndex(COMPLETED))
                 val skipped = cursor.getInt(cursor.getColumnIndex(SKIPPED))
                 val remoteId = cursor.getLong(cursor.getColumnIndex(REMOTE_ID))
+                val completeDate = cursor.getString(cursor.getColumnIndex(COMPLETE_DATE))
                 Log.d("AddScheduleController", "gs" + cursor.getColumnIndex(MODE))
                 val mode = cursor.getInt(cursor.getColumnIndex(MODE))
                 var s = cursor.getString(cursor.getColumnIndex(SCHEDULE))
@@ -225,7 +244,16 @@ class SQLiteScheduleController(context: Context) :
                     s = "[]"
                 }
                 val arra = JSONArray(s)
-                val schedule = ScheduleModel(id, header, desc, completed, skipped, mode, arra)
+                val schedule = ScheduleModel(
+                    id,
+                    header,
+                    desc,
+                    completed,
+                    skipped,
+                    mode,
+                    parseDate(completeDate),
+                    arra
+                )
                 schedule.setRemoteId(remoteId)
                 if (!time.isNullOrBlank()) {
                     try {
@@ -246,10 +274,26 @@ class SQLiteScheduleController(context: Context) :
         return scheduleModels;
     }
 
-    fun dropRemoteIdSchedules(){
+    fun parseDate(date: String?): LocalDate? {
+        Log.d(TAG, "date:" + date)
+        return if (date != null)
+            LocalDate.parse(
+                date,
+                DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            )
+        else null;
+    }
+
+    fun nowDate(): String {
+        val d = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        Log.d(TAG, "nowDate:" + d)
+        return d
+    }
+
+    fun dropRemoteIdSchedules() {
         val db = readableDatabase
 
-        db.delete(TABLE_NAME,"$REMOTE_ID > ?", arrayOf("0"))
+        db.delete(TABLE_NAME, "$REMOTE_ID > ?", arrayOf("0"))
         db.close()
     }
 

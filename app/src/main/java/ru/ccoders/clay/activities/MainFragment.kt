@@ -73,8 +73,6 @@ class MainFragment : Fragment() {
         return activityMainBinding.root
     }
 
-
-
     @SuppressLint("SetTextI18n")
     fun loadSchedule(scheduleAll: List<ScheduleModel>) {
 

@@ -28,6 +28,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
+import java.time.LocalDate
 
 
 class AddScheduleActivity : AppCompatActivity() {
@@ -193,6 +194,7 @@ class AddScheduleActivity : AppCompatActivity() {
                     0,
                     0,
                     0,
+                    LocalDate.now(),
                     JSONArray()
                 );
                 if (!header.isBlank()) {

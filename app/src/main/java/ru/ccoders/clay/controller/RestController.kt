@@ -97,7 +97,9 @@ class RestController(val sharedPreferences: SharedPreferences) {
             if (remoteSchedulesResponse.body == null) {
                 return mutableListOf()
             }
-            val json = JSONArray(remoteSchedulesResponse.body?.string())
+            val resp = remoteSchedulesResponse.body?.string();
+            Log.d(TAG,"response:"+resp)
+            val json = JSONArray(resp)
             for (i in 0 until json.length()) {
                 schedules.add(ScheduleModel.parseJson(json.getJSONObject(i)))
             }

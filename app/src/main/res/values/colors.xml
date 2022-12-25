@@ -8,6 +8,14 @@
     <color name="base_white_glass">#B3FFFFFF</color>
     <color name="base_shady3">#949494</color>
     <color name="base_violet">#7542B5</color>
+    <color name="base_none">#007542B5</color>
 
-
+    <color name="dialog_text">#EEEEEE</color>
+    <color name="dialog_buttons_color">#C62828</color>
+    <color name="dialog_checkbox">#FFF</color>
+    <color name="dialog_checkbox_activated">#FF0000</color>
+    <color name="dialog_list_item">#FFF</color>
+    <color name="dialog_accent_button">#FFF</color>
+    <color name="dialog_button">@color/base_black</color>
+    <color name="dialog_background">#283593</color>
 </resources>

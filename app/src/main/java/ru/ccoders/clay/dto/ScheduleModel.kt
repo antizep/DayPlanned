@@ -4,7 +4,9 @@ import android.icu.util.Calendar
 import org.json.JSONArray
 import org.json.JSONObject
 import ru.ccoders.clay.controller.SQLiteScheduleController
+import java.sql.Date
 import java.sql.Time
+import java.time.LocalDate
 
 
 data class ScheduleModel constructor(
@@ -12,16 +14,15 @@ data class ScheduleModel constructor(
     var header: String?,
     var description: String?,
     var complete: Int = 0,
-    var skipped: Int =0,
+    var skipped: Int = 0,
     var mode: Int?,
+    var completeDate: LocalDate?,
     var schedule: JSONArray?,
-
     ) {
     var time: Calendar? = null;
     private var remoteId = 0L
     private var editableTime = true
-    var DAILY_MODE = 1
-    var VEEKLY_MODE = 2
+
     constructor(
         id: Int,
         header: String?,
@@ -31,7 +32,8 @@ data class ScheduleModel constructor(
         mode: Int?,
         schedule: JSONArray?,
         remoteId: Long, editableTime: Boolean
-    ) : this(id, header, description, complete, skipped, mode, schedule) {
+    ) : this(id, header, description, complete, skipped, mode,null, schedule) {
+        this.completeDate= null
         this.remoteId = remoteId
         this.editableTime = editableTime
     }
@@ -46,36 +48,40 @@ data class ScheduleModel constructor(
         val DONE = "done"
         val REJECTED = "rejected"
         val PROFILE = "profile"
-        val REMOTE_ID= "remoteId"
+        val REMOTE_ID = "remoteId"
         val EDIT_TIME = "edit_time"
-        val ID= "id"
-        fun parseJson(jsonObject: JSONObject):ScheduleModel{
+        val ID = "id"
+        fun parseJson(jsonObject: JSONObject): ScheduleModel {
 
-            val mode = if (jsonObject.getBoolean(DAILY)) SQLiteScheduleController.DAILY_MODE else SQLiteScheduleController.VEEKLY_MODE
-            val schedule = ScheduleModel(0,
+            val mode =
+                if (jsonObject.getBoolean(DAILY)) SQLiteScheduleController.DAILY_MODE else SQLiteScheduleController.VEEKLY_MODE
+            val schedule = ScheduleModel(
+                0,
                 jsonObject.getString(HEADER),
                 jsonObject.optString(DESCRIPTION),
                 jsonObject.getInt(DONE),
                 jsonObject.getInt(REJECTED),
                 mode,
                 JSONArray(jsonObject.getString(DAY_OF_WEEK)),
-                jsonObject.optLong(ID,0),
-                jsonObject.optBoolean(EDIT_TIME,false)
+                jsonObject.optLong(ID, 0),
+                jsonObject.optBoolean(EDIT_TIME, false)
             )
 
             val time = Time.valueOf(jsonObject.optString(TIME))
             schedule.time = Calendar.getInstance();
             schedule.remoteId = jsonObject.optLong(REMOTE_ID)
-            schedule.time!!.set(Calendar.HOUR_OF_DAY,time.hours)
-            schedule.time!!.set(Calendar.MINUTE,time.minutes)
-            schedule.time!!.set(Calendar.SECOND,0)
+            schedule.time!!.set(Calendar.HOUR_OF_DAY, time.hours)
+            schedule.time!!.set(Calendar.MINUTE, time.minutes)
+            schedule.time!!.set(Calendar.SECOND, 0)
             return schedule
         }
     }
-    fun getRemoteId():Long{
+
+    fun getRemoteId(): Long {
         return remoteId
     }
-    fun setRemoteId(remoteId: Long){
+
+    fun setRemoteId(remoteId: Long) {
         this.remoteId = remoteId
     }
 
@@ -118,7 +124,6 @@ data class ScheduleModel constructor(
     }
 
 
-
     fun toJSONObject(): JSONObject {
         return JSONObject().put(HEADER, header)
             .put(DESCRIPTION, description)
@@ -127,6 +132,6 @@ data class ScheduleModel constructor(
             .put(TIME, getTxtTime())
             .put(DONE, complete)
             .put(REJECTED, skipped)
-            .put(REMOTE_ID,remoteId)
+            .put(REMOTE_ID, remoteId)
     }
 }
